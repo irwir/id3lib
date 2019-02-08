@@ -551,7 +551,7 @@ Abstract
 
   TCOM
    The 'Composer(s)' frame is intended for the name of the composer(s).
-   They are seperated with the "/" character.
+   They are separated with the "/" character.
 
   TCON
    The 'Content type', which previously was stored as a one byte numeric
@@ -603,7 +603,7 @@ Abstract
 
   TEXT
    The 'Lyricist(s)/Text writer(s)' frame is intended for the writer(s)
-   of the text or lyrics in the recording. They are seperated with the
+   of the text or lyrics in the recording. They are separated with the
    "/" character.
 
   TFLT
@@ -769,13 +769,13 @@ Abstract
    The 'Original lyricist(s)/text writer(s)' frame is intended for the
    text writer(s) of the original recording, if for example the music in
    the file should be a cover of a previously released song. The text
-   writers are seperated with the "/" character.
+   writers are separated with the "/" character.
 
   TOPE
    The 'Original artist(s)/performer(s)' frame is intended for the
    performer(s) of the original recording, if for example the music in
    the file should be a cover of a previously released song. The
-   performers are seperated with the "/" character.
+   performers are separated with the "/" character.
 
   TORY
    The 'Original release year' frame is intended for the year when the
@@ -789,7 +789,7 @@ Abstract
 
   TPE1
    The 'Lead artist(s)/Lead performer(s)/Soloist(s)/Performing group' is
-   used for the main artist(s). They are seperated with the "/"
+   used for the main artist(s). They are separated with the "/"
    character.
 
   TPE2
@@ -1521,7 +1521,7 @@ Abstract
    information from another ID3v2 tag that might reside in another audio
    file or alone in a binary file. It is recommended that this method is
    only used when the files are stored on a CD-ROM or other
-   circumstances when the risk of file seperation is low. The frame
+   circumstances when the risk of file separation is low. The frame
    contains a frame identifier, which is the frame that should be linked
    into this tag, a URL [URL] field, where a reference to the file where
    the frame is given, and additional ID data, if needed. Data should be
@@ -1613,8 +1613,8 @@ Abstract
    size and encoding fields, with a price string field. A price is
    constructed by one three character currency code, encoded according
    to ISO 4217 [ISO-4217] alphabetic currency code, followed by a
-   numerical value where "." is used as decimal seperator. In the price
-   string several prices may be concatenated, seperated by a "/"
+   numerical value where "." is used as decimal separator. In the price
+   string several prices may be concatenated, separated by a "/"
    character, but there may only be one currency of each type.
 
    The price string is followed by an 8 character date string in the

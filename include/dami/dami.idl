@@ -105,7 +105,7 @@ module dami
         GenreID NEW_WAVE          =  66;
         GenreID PSYCHADELIC       =  67;
         GenreID RAVE              =  68;
-        GenreID SHOWTUNES         =  69;  
+        GenreID SHOWTUNES         =  69;
         GenreID TRAILER           =  70;
         GenreID LO_FI             =  71;
         GenreID TRIBAL            =  72;
@@ -164,7 +164,7 @@ module dami
         GenreID DANCE_HALL        = 125;
         GenreID UNKNOWN           = 0xFF;
       };
-      
+
       interface Tag
       {
         attribute string<30> title;
@@ -175,16 +175,16 @@ module dami
         // id3v1.1: if track > 0, comment[28] = 0 and comment[29] = track
         attribute octet      track;
         attribute octet      genre;
-        
+
         Tag clone();
       };
     };
-    
+
     module v2
     {
       interface Frame;
       interface Field;
-      
+
       module field
       {
         module flags
@@ -209,18 +209,18 @@ module dami
 
         attribute readonly Frames     frames;
         attribute readonly FramesList conflicts;
-        
+
         Frame createFrame(in string<4> abbrev);
         Frame importFrame(in Frame);
         Frame removeFrame(in Frame);
-        
+
         Tag clone();
       };
 
       interface Frame
       {
         typedef sequence<Field> Fields;
-        
+
         attribute readonly Tag       tag;
         attribute readonly string<4> longName;
         attribute readonly string<3> shortName;
@@ -228,7 +228,7 @@ module dami
         attribute readonly boolean   tagDiscard;
         attribute readonly boolean   fileDiscard;
         attribute readonly Fields    fields;
-        
+
         Frame clone();
       };
 
@@ -252,7 +252,7 @@ module dami
       {
         attribute readonly unsigned short numItems;
         attribute          string         text;
-        
+
         string getTextItem(in unsigned short index);
         void   addTextItem(in string item);
         void   removeTextItem();

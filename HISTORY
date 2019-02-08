@@ -5,7 +5,7 @@ ID3Lib History
 The following is a history of id3lib up to version 3.05a.  Please see the
 NEWS file for changes since then.
 
-23 Nov 1998     3.05a   - Released 3.05a in which the only change was the 
+23 Nov 1998     3.05a   - Released 3.05a in which the only change was the
                           inclusion of a C header file for using the DLL
                           (how forgetful I am!).
 
@@ -15,16 +15,16 @@ NEWS file for changes since then.
                           stuff.  Contains both C++ class and C functions (the
                           C++ classes that are exported to the DLL are Tag,
                           Frame, Field and Error).
-                        - Took out the SetVersion function from the ID3_Tag 
+                        - Took out the SetVersion function from the ID3_Tag
                           class.  This is because I no longer wish ID3Lib to be
                           able to create the old ID3v2-2.0 tags.  ID3Lib will
                           always create the latest version tags it is capable
                           of creating.
 
  1 Nov 1998     3.05    - Removed the encryption and grouping stuff.  I have a
-                          lot to do before I finish that section and I might 
+                          lot to do before I finish that section and I might
                           end up implementing it differently, so I thought it
-                          best to remove it before people started using it 
+                          best to remove it before people started using it
                           (no-one should since it wasn't fully functional
                           anyway).
 
@@ -39,7 +39,7 @@ NEWS file for changes since then.
                           just yet.
 
  5 Oct 1998     3.04    - Changed the ID3_AddHandler() function to include a
-                          parameter which specifies the factor by which the 
+                          parameter which specifies the factor by which the
                           size of the frame may increase as a result of
                           encryption or encoding.  This is used for buffer and
                           size estimates.
@@ -52,7 +52,7 @@ NEWS file for changes since then.
                         - Added a function to ID3_Tag which makes attaching
                           arrays of ID3_Frame objects easy.
 
- 1 Oct 1998     3.03    - Yesterday, ID3v2-3.0 became an informal standard.  
+ 1 Oct 1998     3.03    - Yesterday, ID3v2-3.0 became an informal standard.
                           Due to this, ID3Lib now does not create ID3v2-3.0
                           tags with the EXPERIMENTAL bit set.
 
@@ -90,7 +90,7 @@ NEWS file for changes since then.
                         - Added code that allows ID3Lib and applications to
                           track whether a tag has been altered since the last
                           parse or render.
-                        - Slightly altered the padding strategy when a tag 
+                        - Slightly altered the padding strategy when a tag
                           shrinks in size.
                         - No more requirements on when ID3_Tag::SetVersion()
                           etc must be called, except that they should be called
@@ -249,10 +249,10 @@ NEWS file for changes since then.
 27 July 1998    2.07    - Fixed a bug which had the WXX and TXX frames
                           including a language field which they shouldn't.
                         - Fixed a bug in the string's ID3C_Get command which
-                          wrongly interpreted the presence of a '/' symbol in 
+                          wrongly interpreted the presence of a '/' symbol in
                           the string as meaning that the string was a textlist.
 
-21 July 1998    2.06    - Added support for frame compression via zlib.  This 
+21 July 1998    2.06    - Added support for frame compression via zlib.  This
                           means that all frames have an extra attribute which
                           specifies whether the frame should be compressed.
                         - Changed some typedefs and macro names so as not to
@@ -294,7 +294,7 @@ NEWS file for changes since then.
                 2.02    - Adjusted the '::Do()' function slightly - you can now
                           chain commands together.  The last parameter to this
                           call must now always be 'ID3C_DONE'.
-                
+
  1 July 1998    2.01    - Added the 'ID3_IsTagHeader()' function and an
                           appropriately adjusted ID3C_Parse command.
 

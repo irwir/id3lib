@@ -30,7 +30,7 @@
 #define _ID3LIB_UTILS_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -90,10 +90,10 @@ namespace dami
   }
 #endif
 
-  size_t ID3_C_EXPORT renderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
+  size_t ID3_C_EXPORT renderNumber(uchar *buffer, size_t val, size_t size = sizeof(uint32));
   String ID3_C_EXPORT renderNumber(uint32 val, size_t size = sizeof(uint32));
 
-  String ID3_C_EXPORT toString(uint32 val);
+  String ID3_C_EXPORT toString(size_t val);
   WString ID3_C_EXPORT toWString(const unicode_t[], size_t);
 
   size_t ID3_C_EXPORT ucslen(const unicode_t *unicode);
@@ -103,11 +103,11 @@ namespace dami
   size_t ID3_C_EXPORT getFileSize(fstream&);
   size_t ID3_C_EXPORT getFileSize(ifstream&);
   size_t ID3_C_EXPORT getFileSize(ofstream&);
-  ID3_Err ID3_C_EXPORT createFile(String, fstream&);
-  ID3_Err ID3_C_EXPORT openWritableFile(String, fstream&);
-  ID3_Err ID3_C_EXPORT openWritableFile(String, ofstream&);
-  ID3_Err ID3_C_EXPORT openReadableFile(String, fstream&);
-  ID3_Err ID3_C_EXPORT openReadableFile(String, ifstream&);
+  ID3_Err ID3_C_EXPORT createFile(const String&, fstream&);
+  ID3_Err ID3_C_EXPORT openWritableFile(const String&, fstream&);
+  ID3_Err ID3_C_EXPORT openWritableFile(const String&, ofstream&);
+  ID3_Err ID3_C_EXPORT openReadableFile(const String&, fstream&);
+  ID3_Err ID3_C_EXPORT openReadableFile(const String&, ifstream&);
 
 };
 

@@ -2,7 +2,7 @@
 !IF "$(CFG)" == ""
 CFG=zlib - Win32 NASM Debug
 !MESSAGE No configuration specified. Defaulting to zlib - Win32 NASM Debug.
-!ENDIF 
+!ENDIF
 
 !IF "$(CFG)" != "zlib - Win32 Release" && "$(CFG)" != "zlib - Win32 Debug" &&\
  "$(CFG)" != "zlib - Win32 NASM Debug" && "$(CFG)" !=\
@@ -10,24 +10,24 @@ CFG=zlib - Win32 NASM Debug
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "zlib.mak" CFG="zlib - Win32 NASM Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "zlib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "zlib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "zlib - Win32 NASM Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "zlib - Win32 NASM Release" (based on "Win32 (x86) Static Library")
-!MESSAGE 
+!MESSAGE
 !ERROR An invalid configuration is specified.
-!ENDIF 
+!ENDIF
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
-!ELSE 
+!ELSE
 NULL=nul
-!ENDIF 
+!ENDIF
 
 CPP=cl.exe
 
@@ -36,15 +36,15 @@ CPP=cl.exe
 OUTDIR=.\Release
 INTDIR=.\Release
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "..\zlib.lib"
 
-!ELSE 
+!ELSE
 
 ALL : "..\zlib.lib"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\adler32.obj"
@@ -69,15 +69,15 @@ CLEAN :
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
  "_WINDOWS" /Fp"$(INTDIR)\zlib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c\
- 
+
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\zlib.lib" 
+LIB32_FLAGS=/nologo /out:"..\zlib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\adler32.obj" \
 	"$(INTDIR)\compress.obj" \
@@ -104,15 +104,15 @@ LIB32_OBJS= \
 OUTDIR=.\Debug
 INTDIR=.\Debug
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "..\zlib.lib"
 
-!ELSE 
+!ELSE
 
 ALL : "..\zlib.lib"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\adler32.obj"
@@ -137,15 +137,15 @@ CLEAN :
 
 CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
  "_WINDOWS" /Fp"$(INTDIR)\zlib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c\
- 
+
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\zlib.lib" 
+LIB32_FLAGS=/nologo /out:"..\zlib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\adler32.obj" \
 	"$(INTDIR)\compress.obj" \
@@ -172,15 +172,15 @@ LIB32_OBJS= \
 OUTDIR=.\Debug
 INTDIR=.\Debug
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "..\zlib.lib"
 
-!ELSE 
+!ELSE
 
 ALL : "..\zlib.lib"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\adler32.obj"
@@ -205,15 +205,15 @@ CLEAN :
 
 CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "..\include" /D "WIN32" /D "_DEBUG" /D\
  "_WINDOWS" /Fp"$(INTDIR)\zlib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c\
- 
+
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\zlib.lib" 
+LIB32_FLAGS=/nologo /out:"..\zlib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\adler32.obj" \
 	"$(INTDIR)\compress.obj" \
@@ -240,15 +240,15 @@ LIB32_OBJS= \
 OUTDIR=.\Release
 INTDIR=.\Release
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "..\zlib.lib"
 
-!ELSE 
+!ELSE
 
 ALL : "..\zlib.lib"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\adler32.obj"
@@ -273,15 +273,15 @@ CLEAN :
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\include" /D "WIN32" /D "NDEBUG" /D\
  "_WINDOWS" /Fp"$(INTDIR)\zlib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c\
- 
+
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\zlib.bsc"
 BSC32_SBRS= \
-	
+
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"..\zlib.lib" 
+LIB32_FLAGS=/nologo /out:"..\zlib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\adler32.obj" \
 	"$(INTDIR)\compress.obj" \
@@ -303,36 +303,36 @@ LIB32_OBJS= \
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
 
-!ENDIF 
+!ENDIF
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 
@@ -347,7 +347,7 @@ DEP_CPP_ADLER=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\adler32.obj" : $(SOURCE) $(DEP_CPP_ADLER) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -358,7 +358,7 @@ DEP_CPP_ADLER=\
 DEP_CPP_ADLER=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\adler32.obj" : $(SOURCE) $(DEP_CPP_ADLER) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -369,7 +369,7 @@ DEP_CPP_ADLER=\
 DEP_CPP_ADLER=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\adler32.obj" : $(SOURCE) $(DEP_CPP_ADLER) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -381,13 +381,13 @@ DEP_CPP_ADLER=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\adler32.obj" : $(SOURCE) $(DEP_CPP_ADLER) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\compress.c
 
@@ -397,7 +397,7 @@ DEP_CPP_COMPR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\compress.obj" : $(SOURCE) $(DEP_CPP_COMPR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -408,7 +408,7 @@ DEP_CPP_COMPR=\
 DEP_CPP_COMPR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\compress.obj" : $(SOURCE) $(DEP_CPP_COMPR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -419,7 +419,7 @@ DEP_CPP_COMPR=\
 DEP_CPP_COMPR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\compress.obj" : $(SOURCE) $(DEP_CPP_COMPR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -431,13 +431,13 @@ DEP_CPP_COMPR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\compress.obj" : $(SOURCE) $(DEP_CPP_COMPR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\crc32.c
 
@@ -447,7 +447,7 @@ DEP_CPP_CRC32=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\crc32.obj" : $(SOURCE) $(DEP_CPP_CRC32) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -458,7 +458,7 @@ DEP_CPP_CRC32=\
 DEP_CPP_CRC32=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\crc32.obj" : $(SOURCE) $(DEP_CPP_CRC32) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -469,7 +469,7 @@ DEP_CPP_CRC32=\
 DEP_CPP_CRC32=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\crc32.obj" : $(SOURCE) $(DEP_CPP_CRC32) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -481,13 +481,13 @@ DEP_CPP_CRC32=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\crc32.obj" : $(SOURCE) $(DEP_CPP_CRC32) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\deflate.c
 
@@ -499,7 +499,7 @@ DEP_CPP_DEFLA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\deflate.obj" : $(SOURCE) $(DEP_CPP_DEFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -512,7 +512,7 @@ DEP_CPP_DEFLA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\deflate.obj" : $(SOURCE) $(DEP_CPP_DEFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -525,7 +525,7 @@ DEP_CPP_DEFLA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\deflate.obj" : $(SOURCE) $(DEP_CPP_DEFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -539,13 +539,13 @@ DEP_CPP_DEFLA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\deflate.obj" : $(SOURCE) $(DEP_CPP_DEFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\gzio.c
 
@@ -556,7 +556,7 @@ DEP_CPP_GZIO_=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\gzio.obj" : $(SOURCE) $(DEP_CPP_GZIO_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -568,7 +568,7 @@ DEP_CPP_GZIO_=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\gzio.obj" : $(SOURCE) $(DEP_CPP_GZIO_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -580,7 +580,7 @@ DEP_CPP_GZIO_=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\gzio.obj" : $(SOURCE) $(DEP_CPP_GZIO_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -593,13 +593,13 @@ DEP_CPP_GZIO_=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\gzio.obj" : $(SOURCE) $(DEP_CPP_GZIO_) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\infblock.c
 
@@ -614,7 +614,7 @@ DEP_CPP_INFBL=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infblock.obj" : $(SOURCE) $(DEP_CPP_INFBL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -630,7 +630,7 @@ DEP_CPP_INFBL=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infblock.obj" : $(SOURCE) $(DEP_CPP_INFBL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -646,7 +646,7 @@ DEP_CPP_INFBL=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infblock.obj" : $(SOURCE) $(DEP_CPP_INFBL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -663,13 +663,13 @@ DEP_CPP_INFBL=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infblock.obj" : $(SOURCE) $(DEP_CPP_INFBL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\infcodes.c
 
@@ -685,7 +685,7 @@ DEP_CPP_INFCO=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infcodes.obj" : $(SOURCE) $(DEP_CPP_INFCO) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -702,7 +702,7 @@ DEP_CPP_INFCO=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infcodes.obj" : $(SOURCE) $(DEP_CPP_INFCO) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -719,7 +719,7 @@ DEP_CPP_INFCO=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infcodes.obj" : $(SOURCE) $(DEP_CPP_INFCO) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -737,13 +737,13 @@ DEP_CPP_INFCO=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infcodes.obj" : $(SOURCE) $(DEP_CPP_INFCO) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\inffast.c
 
@@ -759,7 +759,7 @@ DEP_CPP_INFFA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inffast.obj" : $(SOURCE) $(DEP_CPP_INFFA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -776,7 +776,7 @@ DEP_CPP_INFFA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inffast.obj" : $(SOURCE) $(DEP_CPP_INFFA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -793,7 +793,7 @@ DEP_CPP_INFFA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inffast.obj" : $(SOURCE) $(DEP_CPP_INFFA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -811,13 +811,13 @@ DEP_CPP_INFFA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inffast.obj" : $(SOURCE) $(DEP_CPP_INFFA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\inflate.c
 
@@ -829,7 +829,7 @@ DEP_CPP_INFLA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inflate.obj" : $(SOURCE) $(DEP_CPP_INFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -842,7 +842,7 @@ DEP_CPP_INFLA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inflate.obj" : $(SOURCE) $(DEP_CPP_INFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -855,7 +855,7 @@ DEP_CPP_INFLA=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inflate.obj" : $(SOURCE) $(DEP_CPP_INFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -869,13 +869,13 @@ DEP_CPP_INFLA=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inflate.obj" : $(SOURCE) $(DEP_CPP_INFLA) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\inftrees.c
 
@@ -888,7 +888,7 @@ DEP_CPP_INFTR=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inftrees.obj" : $(SOURCE) $(DEP_CPP_INFTR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -902,7 +902,7 @@ DEP_CPP_INFTR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inftrees.obj" : $(SOURCE) $(DEP_CPP_INFTR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -916,7 +916,7 @@ DEP_CPP_INFTR=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\inftrees.obj" : $(SOURCE) $(DEP_CPP_INFTR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -931,13 +931,13 @@ DEP_CPP_INFTR=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\inftrees.obj" : $(SOURCE) $(DEP_CPP_INFTR) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\infutil.c
 
@@ -952,7 +952,7 @@ DEP_CPP_INFUT=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infutil.obj" : $(SOURCE) $(DEP_CPP_INFUT) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -968,7 +968,7 @@ DEP_CPP_INFUT=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infutil.obj" : $(SOURCE) $(DEP_CPP_INFUT) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -984,7 +984,7 @@ DEP_CPP_INFUT=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\infutil.obj" : $(SOURCE) $(DEP_CPP_INFUT) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1001,13 +1001,13 @@ DEP_CPP_INFUT=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\infutil.obj" : $(SOURCE) $(DEP_CPP_INFUT) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\trees.c
 
@@ -1020,7 +1020,7 @@ DEP_CPP_TREES=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\trees.obj" : $(SOURCE) $(DEP_CPP_TREES) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1034,7 +1034,7 @@ DEP_CPP_TREES=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\trees.obj" : $(SOURCE) $(DEP_CPP_TREES) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1048,7 +1048,7 @@ DEP_CPP_TREES=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\trees.obj" : $(SOURCE) $(DEP_CPP_TREES) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1063,13 +1063,13 @@ DEP_CPP_TREES=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\trees.obj" : $(SOURCE) $(DEP_CPP_TREES) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\uncompr.c
 
@@ -1079,7 +1079,7 @@ DEP_CPP_UNCOM=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\uncompr.obj" : $(SOURCE) $(DEP_CPP_UNCOM) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1090,7 +1090,7 @@ DEP_CPP_UNCOM=\
 DEP_CPP_UNCOM=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\uncompr.obj" : $(SOURCE) $(DEP_CPP_UNCOM) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1101,7 +1101,7 @@ DEP_CPP_UNCOM=\
 DEP_CPP_UNCOM=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
-	
+
 
 "$(INTDIR)\uncompr.obj" : $(SOURCE) $(DEP_CPP_UNCOM) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1113,13 +1113,13 @@ DEP_CPP_UNCOM=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\uncompr.obj" : $(SOURCE) $(DEP_CPP_UNCOM) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 SOURCE=..\src\zutil.c
 
@@ -1130,7 +1130,7 @@ DEP_CPP_ZUTIL=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\zutil.obj" : $(SOURCE) $(DEP_CPP_ZUTIL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1142,7 +1142,7 @@ DEP_CPP_ZUTIL=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\zutil.obj" : $(SOURCE) $(DEP_CPP_ZUTIL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1154,7 +1154,7 @@ DEP_CPP_ZUTIL=\
 	"..\include\zconf.h"\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
-	
+
 
 "$(INTDIR)\zutil.obj" : $(SOURCE) $(DEP_CPP_ZUTIL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -1167,14 +1167,14 @@ DEP_CPP_ZUTIL=\
 	"..\include\zlib.h"\
 	"..\include\zutil.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\zutil.obj" : $(SOURCE) $(DEP_CPP_ZUTIL) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ENDIF 
+!ENDIF
 
 
-!ENDIF 
+!ENDIF
 

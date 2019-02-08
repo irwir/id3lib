@@ -7,19 +7,19 @@
 CFG=id3com - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "id3com.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "id3com.mak" CFG="id3com - Win32 Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "id3com - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "id3com - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -61,9 +61,9 @@ InputPath=.\Debug\id3com.dll
 SOURCE="$(InputPath)"
 
 "$(OutDir)\regsvr32.trg" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	regsvr32 /s /c "$(TargetPath)" 
-	echo regsvr32 exec. time > "$(OutDir)\regsvr32.trg" 
-	
+	regsvr32 /s /c "$(TargetPath)"
+	echo regsvr32 exec. time > "$(OutDir)\regsvr32.trg"
+
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "id3com - Win32 Release"
@@ -98,12 +98,12 @@ InputPath=.\Release\id3com.dll
 SOURCE="$(InputPath)"
 
 "$(OutDir)\regsvr32.trg" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	regsvr32 /s /c "$(TargetPath)" 
-	echo regsvr32 exec. time > "$(OutDir)\regsvr32.trg" 
-	
+	regsvr32 /s /c "$(TargetPath)"
+	echo regsvr32 exec. time > "$(OutDir)\regsvr32.trg"
+
 # End Custom Build
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 

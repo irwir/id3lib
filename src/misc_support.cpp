@@ -25,10 +25,9 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <ctype.h> //for isdigit()
 #include <stdio.h>
 
-#include "misc_support.h"
+#include "id3/misc_support.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
 int ID3_strncasecmp (const char *s1, const char *s2, int n);
@@ -37,17 +36,18 @@ int ID3_strncasecmp (const char *s1, const char *s2, int n);
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
   char *text = NULL;
-//  if (NULL != frame)
-  ID3_Field* fld;
-  if (NULL != frame && NULL != (fld = frame->GetField(fldName)))
+  if (NULL != frame)
   {
-//    ID3_Field* fld = frame->GetField(fldName);
-    ID3_TextEnc enc = fld->GetEncoding();
-    fld->SetEncoding(ID3TE_ISO8859_1);
-    size_t nText = fld->Size();
-    text = LEAKTESTNEW(char[nText + 1]);
-    fld->Get(text, nText + 1);
-    fld->SetEncoding(enc);
+    ID3_Field* fld = frame->GetField(fldName);
+    if (NULL != fld)
+    {
+      ID3_TextEnc enc = fld->GetEncoding();
+      fld->SetEncoding(ID3TE_ISO8859_1);
+      size_t nText = fld->Size();
+      text = LEAKTESTNEW(char[nText + 1]);
+      fld->Get(text, nText + 1);
+      fld->SetEncoding(enc);
+    }
   }
   return text;
 }
@@ -66,7 +66,6 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName, size_t nIndex)
 
 void ID3_FreeString(char *str)
 {
-  if(str != NULL)
     delete [] str;
 }
 
@@ -78,11 +77,11 @@ char *ID3_GetArtist(const ID3_Tag *tag)
     return sArtist;
   }
 
-  ID3_Frame *frame = NULL;
-  if ((frame = tag->Find(ID3FID_LEADARTIST)) ||
-      (frame = tag->Find(ID3FID_BAND))       ||
-      (frame = tag->Find(ID3FID_CONDUCTOR))  ||
-      (frame = tag->Find(ID3FID_COMPOSER)))
+  ID3_Frame *frame;
+  if ((frame = tag->Find(ID3FID_LEADARTIST)) != NULL ||
+      (frame = tag->Find(ID3FID_BAND)) != NULL       ||
+      (frame = tag->Find(ID3FID_CONDUCTOR)) != NULL  ||
+      (frame = tag->Find(ID3FID_COMPOSER)) != NULL)
   {
     sArtist = ID3_GetString(frame, ID3FN_TEXT);
   }
@@ -92,7 +91,7 @@ char *ID3_GetArtist(const ID3_Tag *tag)
 ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != text && strlen(text) > 0)
+  if (NULL != tag && NULL != text && *text)
   {
     if (replace)
     {
@@ -105,7 +104,7 @@ ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool replace)
          tag->Find(ID3FID_COMPOSER)   == NULL))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_LEADARTIST));
-      if (frame)
+//      if (frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
@@ -125,25 +124,25 @@ size_t ID3_RemoveArtists(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_LEADARTIST)))
+  while ((frame = tag->Find(ID3FID_LEADARTIST)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
     num_removed++;
   }
-  while ((frame = tag->Find(ID3FID_BAND)))
+  while ((frame = tag->Find(ID3FID_BAND)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
     num_removed++;
   }
-  while ((frame = tag->Find(ID3FID_CONDUCTOR)))
+  while ((frame = tag->Find(ID3FID_CONDUCTOR)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
     num_removed++;
   }
-  while ((frame = tag->Find(ID3FID_COMPOSER)))
+  while ((frame = tag->Find(ID3FID_COMPOSER)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -161,7 +160,7 @@ char *ID3_GetAlbum(const ID3_Tag *tag)
     return sAlbum;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_ALBUM);
+  const ID3_Frame *frame = tag->Find(ID3FID_ALBUM);
   if (frame != NULL)
   {
     sAlbum = ID3_GetString(frame, ID3FN_TEXT);
@@ -172,7 +171,7 @@ char *ID3_GetAlbum(const ID3_Tag *tag)
 ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != text && strlen(text) > 0)
+  if (NULL != tag && NULL != text && *text)
   {
     if (replace)
     {
@@ -181,7 +180,7 @@ ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool replace)
     if (replace || tag->Find(ID3FID_ALBUM) == NULL)
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_ALBUM) );
-      if (frame)
+//      if (frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
@@ -202,7 +201,7 @@ size_t ID3_RemoveAlbums(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_ALBUM)))
+  while ((frame = tag->Find(ID3FID_ALBUM)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -220,7 +219,7 @@ char *ID3_GetTitle(const ID3_Tag *tag)
     return sTitle;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_TITLE);
+  const ID3_Frame *frame = tag->Find(ID3FID_TITLE);
   if (frame != NULL)
   {
     sTitle = ID3_GetString(frame, ID3FN_TEXT);
@@ -231,7 +230,7 @@ char *ID3_GetTitle(const ID3_Tag *tag)
 ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != text && strlen(text) > 0)
+  if (NULL != tag && NULL != text && *text)
   {
     if (replace)
     {
@@ -240,7 +239,7 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool replace)
     if (replace || tag->Find(ID3FID_TITLE) == NULL)
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_TITLE));
-      if (frame)
+//      if (frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
@@ -261,7 +260,7 @@ size_t ID3_RemoveTitles(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_TITLE)))
+  while ((frame = tag->Find(ID3FID_TITLE)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -279,7 +278,7 @@ char *ID3_GetYear(const ID3_Tag *tag)
     return sYear;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_YEAR);
+  const ID3_Frame *frame = tag->Find(ID3FID_YEAR);
   if (frame != NULL)
   {
     sYear = ID3_GetString(frame, ID3FN_TEXT);
@@ -290,7 +289,7 @@ char *ID3_GetYear(const ID3_Tag *tag)
 ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != text && strlen(text) > 0)
+  if (NULL != tag && NULL != text && *text)
   {
     if (replace)
     {
@@ -299,7 +298,7 @@ ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool replace)
     if (replace || tag->Find(ID3FID_YEAR) == NULL)
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_YEAR));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
@@ -320,7 +319,7 @@ size_t ID3_RemoveYears(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_YEAR)))
+  while ((frame = tag->Find(ID3FID_YEAR)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -373,7 +372,7 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
   if (NULL != tag  &&
       NULL != text &&
       NULL != desc &&
-      strlen(text) > 0)
+      *text)
   {
     bool bAdd = true;
     if (replace)
@@ -384,7 +383,6 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
     {
       // See if there is already a comment with this description
       ID3_Tag::Iterator* iter = tag->CreateIterator();
-      ID3_Frame* frame = NULL;
       while ((frame = iter->GetNext()) != NULL)
       {
         if (frame->GetID() == ID3FID_COMMENT)
@@ -406,7 +404,7 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
     if (bAdd)
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_COMMENT));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_LANGUAGE)->Set(lang);
         frame->GetField(ID3FN_DESCRIPTION)->Set(desc);
@@ -470,7 +468,7 @@ char *ID3_GetTrack(const ID3_Tag *tag)
     return sTrack;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_TRACKNUM);
+  const ID3_Frame *frame = tag->Find(ID3FID_TRACKNUM);
   if (frame != NULL)
   {
     sTrack = ID3_GetString(frame, ID3FN_TEXT);
@@ -502,18 +500,18 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
     if (replace || NULL == tag->Find(ID3FID_TRACKNUM))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_TRACKNUM));
-      if (frame)
+//      if (frame)
       {
         char *sTrack = NULL;
         if (0 == ttl)
         {
           sTrack = LEAKTESTNEW(char[4]);
-          sprintf(sTrack, "%lu", (luint) trk);
+          sprintf_s(sTrack, 4, "%lu", (luint)trk);
         }
         else
         {
           sTrack = LEAKTESTNEW(char[8]);
-          sprintf(sTrack, "%lu/%lu", (luint) trk, (luint) ttl);
+          sprintf_s(sTrack, 8, "%lu/%lu", (luint)trk, (luint)ttl);
         }
 
         frame->GetField(ID3FN_TEXT)->Set(sTrack);
@@ -537,7 +535,7 @@ int ID3_GetPictureData(const ID3_Tag *tag, const char *TempPicPath)
     frame = tag->Find(ID3FID_PICTURE);
     if (frame != NULL)
     {
-      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      const ID3_Field* myField = frame->GetField(ID3FN_DATA);
       if (myField != NULL)
       {
         myField->ToFile(TempPicPath);
@@ -572,7 +570,7 @@ bool ID3_HasPicture(const ID3_Tag* tag)
     return false;
   else
   {
-    ID3_Frame* frame = tag->Find(ID3FID_PICTURE);
+    const ID3_Frame* frame = tag->Find(ID3FID_PICTURE);
     if (frame != NULL)
     {
       return frame->GetField(ID3FN_DATA) != NULL;
@@ -592,7 +590,7 @@ ID3_Frame* ID3_AddPicture(ID3_Tag* tag, const char* TempPicPath, const char* Mim
     if (replace || NULL == tag->Find(ID3FID_PICTURE))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_PICTURE));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_DATA)->FromFile(TempPicPath);
         frame->GetField(ID3FN_MIMETYPE)->Set(MimeType);
@@ -612,7 +610,7 @@ size_t ID3_RemovePictures(ID3_Tag* tag)
   if (NULL == tag)
     return num_removed;
 
-  while ((frame = tag->Find(ID3FID_PICTURE)))
+  while ((frame = tag->Find(ID3FID_PICTURE)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -636,7 +634,7 @@ size_t ID3_RemovePictureType(ID3_Tag* tag, ID3_PictureType pictype)
   {
     if (frame->GetID() == ID3FID_PICTURE)
     {
-      if (frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+      if (frame->GetField(ID3FN_PICTURETYPE)->Get() == (size_t)pictype)
         break;
     }
   }
@@ -659,14 +657,14 @@ ID3_Frame* ID3_AddPicture(ID3_Tag *tag, const char *TempPicPath, const char *Mim
   {
     if (replace)
       ID3_RemovePictureType(tag, pictype);
-    if (replace || NULL == tag->Find(ID3FID_PICTURE, ID3FN_PICTURETYPE, (uint32)pictype))
+    if (replace || NULL == tag->Find(ID3FID_PICTURE, ID3FN_PICTURETYPE, pictype))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_PICTURE));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_DATA)->FromFile(TempPicPath);
         frame->GetField(ID3FN_MIMETYPE)->Set(MimeType);
-        frame->GetField(ID3FN_PICTURETYPE)->Set((uint32)pictype);
+        frame->GetField(ID3FN_PICTURETYPE)->Set(pictype);
         frame->GetField(ID3FN_DESCRIPTION)->Set(Description);
         tag->AttachFrame(frame);
       }
@@ -689,7 +687,7 @@ size_t ID3_GetPictureDataOfPicType(ID3_Tag* tag, const char* TempPicPath, ID3_Pi
     {
       if(frame->GetID() == ID3FID_PICTURE)
       {
-        if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+        if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (size_t)pictype)
           break;
       }
     }
@@ -697,7 +695,7 @@ size_t ID3_GetPictureDataOfPicType(ID3_Tag* tag, const char* TempPicPath, ID3_Pi
 
     if (frame != NULL)
     {
-      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      const ID3_Field* myField = frame->GetField(ID3FN_DATA);
       if (myField != NULL)
       {
         myField->ToFile(TempPicPath);
@@ -723,7 +721,7 @@ char* ID3_GetMimeTypeOfPicType(ID3_Tag* tag, ID3_PictureType pictype)
   {
     if(frame->GetID() == ID3FID_PICTURE)
     {
-      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (size_t)pictype)
         break;
     }
   }
@@ -750,7 +748,7 @@ char* ID3_GetDescriptionOfPicType(ID3_Tag* tag, ID3_PictureType pictype)
   {
     if(frame->GetID() == ID3FID_PICTURE)
     {
-      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (size_t)pictype)
         break;
     }
   }
@@ -774,7 +772,7 @@ size_t ID3_RemoveTracks(ID3_Tag* tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_TRACKNUM)))
+  while ((frame = tag->Find(ID3FID_TRACKNUM)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -792,7 +790,7 @@ char *ID3_GetGenre(const ID3_Tag *tag)
     return sGenre;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_CONTENTTYPE);
+  const ID3_Frame *frame = tag->Find(ID3FID_CONTENTTYPE);
   if (frame != NULL)
   {
     sGenre = ID3_GetString(frame, ID3FN_TEXT);
@@ -830,12 +828,11 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
   return ulGenre;
 }
 
-size_t ID3_GetV1GenreNum(char* sGenre)
+size_t ID3_GetV1GenreNum(char* sGenre, unsigned maxlen)
 {
   dami::String tmpgenre;
   size_t ulGenre = 0xFF;
-  uint32 iStart = 0;
-  uint32 digits;
+  size_t iStart = 0;
 
   if (strlen(sGenre) < 3)
     return ulGenre;
@@ -844,7 +841,7 @@ size_t ID3_GetV1GenreNum(char* sGenre)
   // "ddd" is the genre number---get it
   while (1)
   {
-    digits = 0;
+    size_t digits = 0;
     if (sGenre[iStart] == '(')
     {
       char *pCur = &sGenre[iStart + 1];
@@ -861,11 +858,11 @@ size_t ID3_GetV1GenreNum(char* sGenre)
         continue;
       }
       if (*pCur == '\0')
-        break; //allready at end of text, only text has "(\0"
+        break; //already at end of text, only text has "(\0"
       if (*pCur == '(')
       { // starts with "((" so rest is text
         sGenre += iStart;
-        if (strlen(sGenre) > 0)
+        if (*sGenre)
           tmpgenre.append(sGenre, strlen(sGenre));
         sGenre -= iStart;
         break;
@@ -895,7 +892,7 @@ size_t ID3_GetV1GenreNum(char* sGenre)
           else
           { //copy the remainder of the text, we found a valid genre number
             sGenre += iStart + 2 + digits; //two for "(" and ")"
-            if (strlen(sGenre) > 0)
+            if (*sGenre)
               tmpgenre.append(sGenre, strlen(sGenre));
             sGenre -= iStart + 2 + digits;
             break;
@@ -911,42 +908,42 @@ size_t ID3_GetV1GenreNum(char* sGenre)
       break;
     else
     {
-      tmpgenre.append(sGenre[iStart], 1);
+      tmpgenre.append(&sGenre[iStart], 1);
       ++iStart;
     }
   }
-  if (tmpgenre.size() > 0)
+  if (!tmpgenre.empty())
   {
-     sprintf(sGenre, tmpgenre.c_str());
+     sprintf_s(sGenre, maxlen, tmpgenre.c_str()); //size of string should be passed as a parameter
   }
 
   return ulGenre;
 }
 
-bool ID3_HasChars(char* text, char* chars)
+bool ID3_HasChars(char* text, const char* chars, unsigned maxlen)
 {
   dami::String tmptext;
 //  char* newtext = text;
-  uint32 iStart = 0;
-
-  while (strlen(text) >= strlen(chars))
+  size_t iStart = 0;
+  size_t lenchars = strlen(chars);
+  while (strlen(text) >= lenchars)
   {
-    if (strncmp(text, chars, strlen(chars)) == 0)
+    if (strncmp(text, chars, lenchars) == 0)
     { //found, copy 0 to iStart and iStart to remainder
       if (iStart > 0)
       {
         text -= iStart; //get the original string back
         tmptext.append(text, iStart);
       }
-      if (strlen(text) > (iStart + strlen(chars)))
+      if (strlen(text) > (iStart + lenchars))
       { //copy the remainder
-        text += strlen(chars) + iStart;
+        text += lenchars + iStart;
         tmptext.append(text, strlen(text));
-        text -= strlen(chars) + iStart;
+        text -= lenchars + iStart;
       }
-      if (tmptext.size() > 0)
+      if (!tmptext.empty())
       {
-        sprintf(text, tmptext.c_str());
+        sprintf_s(text, maxlen, tmptext.c_str()); //size of string should be passed as a parameter
       }
       else
         text[0] = '\0';
@@ -961,7 +958,7 @@ bool ID3_HasChars(char* text, char* chars)
   //not found
   return false;
 }
-
+/*
 char* chartest(char** input)
 {
 //_CrtMemState* test1 = &s1;
@@ -978,7 +975,8 @@ char* chartest(char** input)
   input = &tmpchars;
   return genre;
 }
-
+*/
+#define BUFSIZE (1024)
 ID3_Frame* ID3_AddGenre(ID3_Tag* tag, size_t genreNum, char* genre, bool add_v1_genre_number, bool add_v1_genre_description, bool addRXorCR, bool replace)
 {
 /* This routine should work for the following (all examples):
@@ -992,63 +990,61 @@ ID3_Frame* ID3_AddGenre(ID3_Tag* tag, size_t genreNum, char* genre, bool add_v1_
   size_t newGenreNum2 = 0xFF; //this is the one found in the text by matching the string
   bool writeRX = false;
   bool writeCR = false;
-  char* tmpgenre1 = LEAKTESTNEW(char[1024]);// = NULL;
+  char tmpgenre1[BUFSIZE];
   const char* tmpgenre = NULL;
   const char* remainder = NULL;
-  dami::String* newgenre = LEAKTESTNEW(dami::String);
-  int iCompare;
+  dami::String newgenre;
 
   if (add_v1_genre_number == false && add_v1_genre_description == false)
   { // you don't want me to do anything? Fine by me
-    delete newgenre;
-    delete [] tmpgenre1;
     return NULL;
   }
-  if (genre != NULL && strlen(genre) == 0)
+  if (genre != NULL && !*genre)
     genre = NULL;
 
+  tmpgenre1[0] = '\0';
   if (genre != NULL)
   { //see if there are references to v1 genre numbers in it, e.g. "(" + number + ")" + description
     if (strlen(genre) > 1023)
-    {
-      delete newgenre;
-      delete [] tmpgenre1;
       return NULL;
-    }
-    sprintf(tmpgenre1, "%s", genre);
 
-    newGenreNum1 = ID3_GetV1GenreNum(tmpgenre1); //get's the first and strips it
-    if (strlen(tmpgenre1) != 0)
+    sprintf_s(tmpgenre1, BUFSIZE, "%s", genre);
+
+    newGenreNum1 = ID3_GetV1GenreNum(tmpgenre1, BUFSIZE); //get's the first and strips it
+    if (*tmpgenre1)
     { //see if there are references to v1 genre numbers in it, e.g. "(" + number + ")" + description
-      writeRX = ID3_HasChars(tmpgenre1, "(RX)");
+      writeRX = ID3_HasChars(tmpgenre1, "(RX)", BUFSIZE);
     }
-    if (strlen(tmpgenre1) != 0)
+    if (*tmpgenre1)
     { //see if there are references to v1 genre numbers in it, e.g. "(" + number + ")" + description
-      writeCR = ID3_HasChars(tmpgenre1, "(CR)");
+      writeCR = ID3_HasChars(tmpgenre1, "(CR)", BUFSIZE);
     }
     // search for an additional genre number, from a match
-    if (strlen(tmpgenre1) != 0) //try to find an additional number from the remaining genre
+    if (*tmpgenre1) //try to find an additional number from the remaining genre
     {
       for (newGenreNum2 = 0; newGenreNum2 < ID3_NR_OF_V1_GENRES; ++newGenreNum2)
       {
-        tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum2);
-        // if tmpgenre = "Blues" and tmpgenre1 = "Blues, HardRock" they should match i accept a space, a comma and a ; as de;imters
+//        tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum2); - no point to use that macro with checks for signed int values while here only valid unsigned numbers are present
+        tmpgenre = ID3_v1_genre_description[newGenreNum2];
+        // if tmpgenre = "Blues" and tmpgenre1 = "Blues, HardRock" they should match i accept a space, a comma and a ; as delimiters
         // if tmpgenre = "Pop" and tmpgenre1 = "Pop-Folk" they shouldn't match
         // if tmpgenre = "Jazz" and tmpgenre1 = "Jazz+Funk" they shouldn't match
-        iCompare = ID3_strncasecmp(tmpgenre, tmpgenre1, 23); //biggest genre is "Contemporary Christian" which is 22 chars
+        int iCompare = ID3_strncasecmp(tmpgenre, tmpgenre1, 23); //biggest genre is "Contemporary Christian" which is 22 chars
         if (iCompare == 0) //perfect match, nothing remains
         { //strip it off
           tmpgenre1[0] = '\0';
           break;
         }
-        else if (iCompare == -2 && (tmpgenre1[strlen(tmpgenre)] == ',' || tmpgenre1[strlen(tmpgenre)] == ' ' || tmpgenre1[strlen(tmpgenre)] == ';' )) //tmpgenre was earlier null terminated
-        {
-          iCompare = strlen(tmpgenre);
-          tmpgenre1 += iCompare;
-          remainder = tmpgenre1; //remainder now holds the remainder of the string
-          tmpgenre1 -= iCompare; //reset for delete
-          break;
-        }
+        else
+          if (iCompare == -2)
+          {
+            size_t i = strlen(tmpgenre);
+            if (tmpgenre1[i] == ',' || tmpgenre1[i] == ' ' || tmpgenre1[i] == ';' ) //tmpgenre was earlier null terminated
+            {
+              remainder = &tmpgenre1[i]; //remainder now holds the remainder of the string
+              break;
+            }
+          }
       } //for
       if ( newGenreNum2 == ID3_NR_OF_V1_GENRES) //no match
         remainder = tmpgenre1;
@@ -1056,70 +1052,66 @@ ID3_Frame* ID3_AddGenre(ID3_Tag* tag, size_t genreNum, char* genre, bool add_v1_
   }
   // after breaking, now trying to rebuild things
   if (add_v1_genre_number)
-  { //they want a genrenumber
-    char* sGenre = LEAKTESTNEW(char[6]);
+  { //they want a genre number
+    char sGenre[6];
     size_t size;
     if (genreNum < ID3_NR_OF_V1_GENRES)
     {
-      size = sprintf(sGenre, "(%lu)", (luint) genreNum);
-      newgenre->append(sGenre, size);
+      size = sprintf_s(sGenre, 6, "(%lu)", (luint) genreNum);
+      newgenre.append(sGenre, size);
     }
     if (newGenreNum1 < ID3_NR_OF_V1_GENRES && newGenreNum1 != genreNum)
     {
-      size = sprintf(sGenre, "(%lu)", (luint) newGenreNum1);
-      newgenre->append(sGenre, size);
+      size = sprintf_s(sGenre, 6, "(%lu)", (luint) newGenreNum1);
+      newgenre.append(sGenre, size);
     }
     if (newGenreNum2 < ID3_NR_OF_V1_GENRES && newGenreNum2 != genreNum && newGenreNum2 != newGenreNum1)
     {
-      size = sprintf(sGenre, "(%lu)", (luint) newGenreNum2);
-      newgenre->append(sGenre, size);
+      size = sprintf_s(sGenre, 6, "(%lu)", (luint) newGenreNum2);
+      newgenre.append(sGenre, size);
     }
-    delete [] sGenre;
   }
   if (addRXorCR)
   { // they want CR or RX o be added, if there is
     if (writeRX)
-      newgenre->append("(RX)", 4);
+      newgenre.append("(RX)", 4);
     if (writeCR)
-      newgenre->append("(CR)", 4);
+      newgenre.append("(CR)", 4);
   }
   if (add_v1_genre_description)
   {
     if (genreNum < ID3_NR_OF_V1_GENRES)
     {
-      tmpgenre = ID3_V1GENRE2DESCRIPTION(genreNum);
-      newgenre->append(tmpgenre, strlen(tmpgenre));
+//      tmpgenre = ID3_V1GENRE2DESCRIPTION(genreNum);
+      tmpgenre = ID3_v1_genre_description[genreNum];
+      newgenre.append(tmpgenre, strlen(tmpgenre));
     }
     if (newGenreNum1 < ID3_NR_OF_V1_GENRES && newGenreNum1 != genreNum)
     {
       if (genreNum < ID3_NR_OF_V1_GENRES) //also valid
-        newgenre->append(", ", 2);
-      tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum1);
-      newgenre->append(tmpgenre, strlen(tmpgenre));
+        newgenre.append(", ", 2);
+//      tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum1);
+      tmpgenre = ID3_v1_genre_description[newGenreNum1];
+      newgenre.append(tmpgenre, strlen(tmpgenre));
     }
     if (newGenreNum2 < ID3_NR_OF_V1_GENRES && newGenreNum2 != genreNum && newGenreNum2 != newGenreNum1)
     {
       if (genreNum < ID3_NR_OF_V1_GENRES || newGenreNum1 < ID3_NR_OF_V1_GENRES)
-        newgenre->append(", ", 2);
-      tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum2);
-      newgenre->append(tmpgenre, strlen(tmpgenre));
+        newgenre.append(", ", 2);
+//      tmpgenre = ID3_V1GENRE2DESCRIPTION(newGenreNum2);
+      tmpgenre = ID3_v1_genre_description[newGenreNum2];
+      newgenre.append(tmpgenre, strlen(tmpgenre));
     }
     // add any remaining text
     if (remainder != NULL)
-      newgenre->append(remainder, strlen(remainder));
-  }
-  //clean memory
-  if (newgenre->size() == 0)
-  {
-    delete newgenre;
-    delete [] tmpgenre1;
-    return NULL;
+      newgenre.append(remainder, strlen(remainder));
   }
 
-  sprintf(tmpgenre1, newgenre->c_str());
-  delete newgenre;
+  if (newgenre.empty())
+    return NULL;
+
+  sprintf_s(tmpgenre1, BUFSIZE, newgenre.c_str());
   ID3_Frame* newframe = ID3_AddGenre(tag, tmpgenre1, replace);
-  delete [] tmpgenre1;
   return newframe;
 }
 
@@ -1127,7 +1119,7 @@ ID3_Frame* ID3_AddGenre(ID3_Tag* tag, size_t genreNum, char* genre, bool add_v1_
 ID3_Frame* ID3_AddGenre(ID3_Tag* tag, const char* genre, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != genre && strlen(genre) > 0)
+  if (NULL != tag && NULL != genre && *genre)
   {
     if (replace)
     {
@@ -1136,7 +1128,7 @@ ID3_Frame* ID3_AddGenre(ID3_Tag* tag, const char* genre, bool replace)
     if (replace || NULL == tag->Find(ID3FID_CONTENTTYPE))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_CONTENTTYPE));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(genre);
         tag->AttachFrame(frame);
@@ -1152,13 +1144,10 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genreNum, bool replace)
   if(0xFF != genreNum)
   {
     char sGenre[6];
-    sprintf(sGenre, "(%lu)", (luint) genreNum);
+    sprintf_s(sGenre, 6, "(%lu)", (luint) genreNum);
     return(ID3_AddGenre(tag, sGenre, replace));
   }
-  else
-  {
-    return(NULL);
-  }
+  return(NULL);
 }
 
 size_t ID3_RemoveGenres(ID3_Tag *tag)
@@ -1171,7 +1160,7 @@ size_t ID3_RemoveGenres(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_CONTENTTYPE)))
+  while ((frame = tag->Find(ID3FID_CONTENTTYPE)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -1189,7 +1178,7 @@ char *ID3_GetLyrics(const ID3_Tag *tag)
     return sLyrics;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_UNSYNCEDLYRICS);
+  const ID3_Frame *frame = tag->Find(ID3FID_UNSYNCEDLYRICS);
   if (frame != NULL)
   {
     sLyrics = ID3_GetString(frame, ID3FN_TEXT);
@@ -1212,7 +1201,7 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
                          const char* lang, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && strlen(text) > 0)
+  if (NULL != tag && *text)
   {
     if (replace)
     {
@@ -1221,7 +1210,7 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
     if (replace || tag->Find(ID3FID_UNSYNCEDLYRICS) == NULL)
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_UNSYNCEDLYRICS));
-      if (NULL != frame)
+//      if (NULL != frame)
       {
         frame->GetField(ID3FN_LANGUAGE)->Set(lang);
         frame->GetField(ID3FN_DESCRIPTION)->Set(desc);
@@ -1244,7 +1233,7 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
+  while ((frame = tag->Find(ID3FID_UNSYNCEDLYRICS)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -1262,7 +1251,7 @@ char *ID3_GetLyricist(const ID3_Tag *tag)
     return sLyricist;
   }
 
-  ID3_Frame *frame = tag->Find(ID3FID_LYRICIST);
+  const ID3_Frame *frame = tag->Find(ID3FID_LYRICIST);
   if (frame != NULL)
   {
     sLyricist = ID3_GetString(frame, ID3FN_TEXT);
@@ -1273,7 +1262,7 @@ char *ID3_GetLyricist(const ID3_Tag *tag)
 ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && NULL != text && strlen(text) > 0)
+  if (NULL != tag && NULL != text && *text)
   {
     if (replace)
     {
@@ -1282,7 +1271,7 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool replace)
     if (replace || (tag->Find(ID3FID_LYRICIST) == NULL))
     {
       frame = LEAKTESTNEW( ID3_Frame(ID3FID_LYRICIST));
-      if (frame)
+//      if (frame)
       {
         frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
@@ -1303,7 +1292,7 @@ size_t ID3_RemoveLyricist(ID3_Tag *tag)
     return num_removed;
   }
 
-  while ((frame = tag->Find(ID3FID_LYRICIST)))
+  while ((frame = tag->Find(ID3FID_LYRICIST)) != NULL)
   {
     frame = tag->RemoveFrame(frame);
     delete frame;
@@ -1341,7 +1330,7 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
 {
   ID3_Frame* frame = NULL;
   // language and descriptor should be mandatory
-  if ((NULL == lang) || (NULL == desc))
+  if ((NULL == lang) || (NULL == desc) ||  (NULL == tag))
   {
     return NULL;
   }
@@ -1353,7 +1342,7 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
     frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
 
-  if (NULL != tag && NULL != data)
+  if (NULL != data)
   {
     if (replace && frmExist)
     {
@@ -1368,7 +1357,7 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
       return NULL;
     }
 
-    ID3_Frame* frame = LEAKTESTNEW( ID3_Frame(ID3FID_SYNCEDLYRICS));
+    frame = LEAKTESTNEW( ID3_Frame(ID3FID_SYNCEDLYRICS));
 
     frame->GetField(ID3FN_LANGUAGE)->Set(lang);
     frame->GetField(ID3FN_DESCRIPTION)->Set(desc);

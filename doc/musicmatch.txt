@@ -92,7 +92,7 @@ Abstract
     This document borrows heavily from specifications written by Martin
     Nillson, author of the ID3v2 tagging standard.  Much of the structure,
     formatting, and other such conventions used in the ID3v2 specifications are
-    carried over into this document.  
+    carried over into this document.
 
     Text within "" is a text string exactly as it appears in a tag.  Numbers
     preceded with $ are hexadecimal and numbers preceded with % are binary. $xx
@@ -247,7 +247,7 @@ Abstract
     section is always 7868 bytes in length.  All subsequent versions allowed
     three possible lengths for this section: 7936, 8004, and 8132 bytes.  The
     conditions under which a particular length from these three possibilities
-    was used is unknown.  In all cases, this section is padded with dashes 
+    was used is unknown.  In all cases, this section is padded with dashes
     ($2D) to achieve this constant size.
 
     Due to the great number of fields in this portion of the tag, they are
@@ -258,7 +258,7 @@ Abstract
     clarification does allow for easier description of the meta-data as a
     whole.  At any rate, the actual fields in this section of the tag appear
     sequentially in the order presented.
-    
+
 
 4.6.1.  Single-line text fields
 
@@ -291,7 +291,7 @@ Abstract
     and Comatose.
 
     The Situation entry describes in which situation this music is best played.
-    Expect the following: None, Dance, Party, Romantic, Dinner, Background, 
+    Expect the following: None, Dance, Party, Romantic, Dinner, Background,
     Seasonal, Rave, and Drunken Brawl.
 
     The Preference entry allows the user to rate the song.  Possible values
@@ -317,25 +317,25 @@ Abstract
 
 4.6.2.  Non-text fields
 
-    The next group of fields is described here as "non-text".  They are 
+    The next group of fields is described here as "non-text".  They are
     probably better described as entries that are auto-created (i.e., not
     entered in by a user), although this isn't entirely accurate, either, as
     the track number field is determined by user input.  At any rate, they've
     been separated to clarify the presentation of the material.
 
     The "Song duration" entry consists of two fields: a size and text.  The
-    text is formatted as "minutes:seconds", and thus the size field is 
+    text is formatted as "minutes:seconds", and thus the size field is
     typically 4 ($04 00).
 
     The only field that is neither a string nor a LSB numerical value is the
     creation date.  It is 8-byte floating-point value.  It can be interpreted
-    as a TDateTime in the Delphi programming language, where the integral 
-    portion is the number of elapsed days since 1899-12-30, and the mantissa 
-    portion represents the fractional portion of that day, where .0 would be 
-    midnight, .5 would be noon, and .99999... would be just before midnight 
+    as a TDateTime in the Delphi programming language, where the integral
+    portion is the number of elapsed days since 1899-12-30, and the mantissa
+    portion represents the fractional portion of that day, where .0 would be
+    midnight, .5 would be noon, and .99999... would be just before midnight
     of the next day.  In practice, this field is typically unused and will be
     filled with 8 null ($00) bytes.
-    
+
     The next field is the play counter, presumably maintained by the Jukebox
     application.  Most of the time this field is unused, and is typically 0
     ($00 00 00 00).
@@ -387,7 +387,7 @@ Abstract
       Artist email               <ASCII string>
 
 4.6.5.  Padding
- 
+
     The data fields are then followed by 16 null ($00) bytes.  Presumably these
     were intended for (up to 8) future text fields.
 
@@ -406,7 +406,7 @@ Abstract
     of the audio meta-data section must be calculated in a different manner.
 
       Image extension offset     $xx xx xx xx
-      Image binary offset        $xx xx xx xx  
+      Image binary offset        $xx xx xx xx
       Unused offset              $xx xx xx xx
       Version info offset        $xx xx xx xx
       Audio meta-data offset     $xx xx xx xx
@@ -431,8 +431,8 @@ Abstract
 
 5.   Identifying and parsing a MusicMatch tag
 
-    Finding and parsing a MusicMatch tag is not difficult to do, but due to 
-    lack of foresight and questionable design decisions by MusicMatch, care 
+    Finding and parsing a MusicMatch tag is not difficult to do, but due to
+    lack of foresight and questionable design decisions by MusicMatch, care
     must be taken to ensure it is done correctly.
 
     <unfinished />
@@ -474,7 +474,7 @@ Abstract
 
 8.   References
 
-    [MMTrailer] Peter "The Videoripper" Luijer, 
+    [MMTrailer] Peter "The Videoripper" Luijer,
     'Description of the MusicMatch trailer in MP3 files'
 
       <url:http://members.xoom.com/videoripper/warez/mmtrailer.txt>
@@ -484,7 +484,7 @@ Abstract
       <url:http://www.id3.org/id3v2.3.0.txt>
 
     [id3lib] Scott Thomas Haug, 'The ID3v1/ID3v2 Tagging Library'
- 
+
       <url:http://www.id3lib.org>
 
     [ISO-8859-1] ISO/IEC DIS 8859-1.
@@ -516,7 +516,7 @@ Abstract
 
     [UTF-8] F. Yergeau, 'UTF-8, a transformation format of ISO 10646',
     RFC 2279, January 1998.
-   
+
       <url:ftp://ftp.isi.edu/in-notes/rfc2279.txt>
 
 

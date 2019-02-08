@@ -31,7 +31,7 @@
 
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 //#include "io_helpers.h"
-#include "io_strings.h"
+#include "id3/io_strings.h"
 #include "frame_def.h"
 
 ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
@@ -40,12 +40,10 @@ ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
 int ID3_strncasecmp (const char *s1, const char *s2, int n)
 {
   // this routine is borrowed from half-life
-  int c1, c2;
-
   while (1)
   {
-    c1 = *s1++;
-    c2 = *s2++;
+    int c1 = *s1++;
+    int c2 = *s2++;
 
     if (!n--)
       return 0; // strings are equal until end point n
@@ -66,41 +64,35 @@ int ID3_strncasecmp (const char *s1, const char *s2, int n)
     else if (c1 == 0 && c2 == 0)
       return 0; // strings are equal
   }
-  return -1; //should not reach here
+//  return -1; //should not reach here
 }
 
 
 using namespace dami;
 
-bool IsUrl(String tmpUrl)//char* url)
+bool IsUrl(const String& tmpUrl)//char* url)
 {
   // a url should start with http:// and be at least 11 chars (http://a.bb) OR
   // should start with ftp:// and be at least 10 chars (ftp://a.bb) OR
   // should start with mailto: and be at least 13 chars (mailto:a@b.cc)
   // these sizes do not take into consideration those that have emails or links directly at TLD's (e.g. a@b or http://a/ )
-  if ((tmpUrl.size() > 11 && ID3_strncasecmp(tmpUrl.c_str(), "http://", 7) == 0) ||
+  return ((tmpUrl.size() > 11 && ID3_strncasecmp(tmpUrl.c_str(), "http://", 7) == 0) ||
       (tmpUrl.size() > 10 && ID3_strncasecmp(tmpUrl.c_str(), "ftp://", 6) == 0) ||
-      (tmpUrl.size() > 13 && ID3_strncasecmp(tmpUrl.c_str(), "mailto:", 7) == 0))
-    return true;
-  else
-    return false;
+      (tmpUrl.size() > 13 && ID3_strncasecmp(tmpUrl.c_str(), "mailto:", 7) == 0));
 }
 
-bool ValidFrameOwner(String owner)
+bool ValidFrameOwner(const String& owner)
 {
-  if (IsUrl(owner))
-    return true;
-  else
-    return false;
+  return (IsUrl(owner));
 }
 
-size_t ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
+uint32 ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
 {
   io::ExitTrigger et(reader);
-  size_t tagSize = 0;
+  uint32 tagSize = 0;
   String id = io::readText(reader, ID3_TagHeader::ID_SIZE);
   String ver = io::readText(reader, 2);
-  char flags = reader.readChar();
+/*  char flags =*/ (void)reader.readChar();
   String size = io::readText(reader, 4);
 
   if (id == ID3_TagHeader::ID &&
@@ -164,9 +156,7 @@ ID3_TagImpl::ID3_TagImpl(const char *name, flags_t flags)
 #endif
   this->Clear();
   if (name)
-  {
     this->Link(name, flags);
-  }
 }
 
 ID3_TagImpl::ID3_TagImpl(const ID3_Tag &tag)
@@ -212,10 +202,9 @@ void ID3_TagImpl::Clear()
   _hdr.SetSpec(ID3V2_LATEST);
 
   _tags_to_parse.clear();
-  if (_mp3_info)
-    delete _mp3_info; // Also deletes _mp3_header
+  delete _mp3_info; // Also deletes _mp3_header
 
-  _file_name = "";
+  _file_name.clear();
   _mp3_info = NULL;
   _last_error = ID3E_NoError;
   _changed = true;
@@ -242,37 +231,38 @@ void ID3_TagImpl::AddFrame(const ID3_Frame* frame)
   }
 }
 
-bool ID3_TagImpl::IsValidFrame(ID3_Frame& frame, bool testlinkedFrames)
+bool ID3_TagImpl::IsValidFrame(ID3_Frame *frame, bool testlinkedFrames)
 {
-  ID3_Frame* testframe = &frame;
+  if (NULL == frame)
+    return false;
+
+  ID3_Frame* testframe = frame;
   ID3_Field* tmpField;
   ID3_Frame* tmpFrame;
 
-  if (NULL == testframe)
-    return false;
-
   // check if the frame is outdated
-  ID3_FrameDef* myFrameDef = ID3_FindFrameDef(testframe->GetID());
-  if (myFrameDef != NULL && (this->GetSpec() > myFrameDef->eLastAppearance || this->GetSpec() < myFrameDef->eFirstAppearance))
-  {
-    if (myFrameDef->convert != NULL)
+  const ID3_FrameDef* myFrameDef = ID3_FindFrameDef(testframe->GetID());
+  if (myFrameDef != NULL)
+    if ((this->GetSpec() > myFrameDef->eLastAppearance || this->GetSpec() < myFrameDef->eFirstAppearance))
     {
-      tmpFrame = myFrameDef->convert(testframe, this->GetSpec());
-      if (tmpFrame)
+      if (myFrameDef->convert != NULL)
       {
-        testframe = tmpFrame;
-        frame = *tmpFrame;
+        tmpFrame = myFrameDef->convert(testframe, this->GetSpec());
+        if (tmpFrame)
+        {
+          testframe = tmpFrame;
+          *frame = *tmpFrame;
+        }
+        else //it's too old, and i couldn't convert
+          return false; //disregard frame
       }
-      else //it's too old, and i couldn't convert
+      else //it's too old and doesn't have a conversion routine
         return false; //disregard frame
     }
-    else //it's too old and doesn't have a conversion routine
-      return false; //disregard frame
-  }
-  else if (myFrameDef->convert != NULL) //fields have stayed the same, but inside the field was a structure change
-  {
-    //TODO: add here code when conversion routine of tcon is ready v2.3 <> v2.4
-  }
+    else if (myFrameDef->convert != NULL) //fields have stayed the same, but inside the field was a structure change
+    {
+      //TODO: add here code when conversion routine of tcon is ready v2.3 <> v2.4
+    }
   // check the frames on their restrictions
   switch (testframe->GetID())
   {
@@ -287,9 +277,7 @@ bool ID3_TagImpl::IsValidFrame(ID3_Frame& frame, bool testlinkedFrames)
           this->RemoveFrame(tmpFrame); //remove old one, there can be only one
         return true;
       }
-      else
-        return false;
-      break;
+      return false;
     } //
     case ID3FID_CRYPTOREG:
     {
@@ -306,9 +294,7 @@ bool ID3_TagImpl::IsValidFrame(ID3_Frame& frame, bool testlinkedFrames)
           this->RemoveFrame(tmpFrame); //remove old one, there can be only one
         return true;
       }
-      else
-        return false;
-      break;
+      return false;
     }
     case ID3FID_GROUPINGREG:
     {
@@ -320,121 +306,51 @@ bool ID3_TagImpl::IsValidFrame(ID3_Frame& frame, bool testlinkedFrames)
         if (tmpFrame && tmpFrame != testframe)
           this->RemoveFrame(tmpFrame); //remove old one, there can be only one
         tmpField = testframe->GetField(ID3FN_ID);
-        tmpFrame = this->Find(ID3FID_CRYPTOREG, ID3FN_ID, tmpField->Get());
+        tmpFrame = this->Find(ID3FID_GROUPINGREG, ID3FN_ID, tmpField->Get()); //was CRYPTOREG, possibly an error
         if (tmpFrame && tmpFrame != testframe)
           this->RemoveFrame(tmpFrame); //remove old one, there can be only one
         return true;
       }
-      else
-        return false;
-      break;
+      return false;
     }
     case ID3FID_PRIVATE:
     {
       //check for same owner
       tmpField = testframe->GetField(ID3FN_OWNER);
-      if (ValidFrameOwner((char *)tmpField->GetRawText()))
-      {
-        // here the id3v2.4 specification is not clear, it states the content of the frame cannot be the same
-        // do they mean that the there can be only one frame with the same owner?
-        // or that the data field cannot be the same, or both..
-        return true;
-      }
-      else
-        return false;
-      break;
+      // here the id3v2.4 specification is not clear, it states the content of the frame cannot be the same
+      // do they mean that the there can be only one frame with the same owner?
+      // or that the data field cannot be the same, or both..
+      return ValidFrameOwner((char *)tmpField->GetRawText());
     } //
     case ID3FID_PRODUCEDNOTICE:
-    {
-      //should have at least a year and a space
-      tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 4)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    } //
     case ID3FID_COPYRIGHT:
-    {
       //should have at least a year and a space
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 4)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    } //
+      return  (tmpField->GetText().size() > 4);
+    //case ID3FID_COPYRIGHT:
+    //  //should have at least a year and a space
+    //  tmpField = testframe->GetField(ID3FN_TEXT);
+    //  return  (tmpField->GetText().size() > 4);
     case ID3FID_ENCODINGTIME:
-    {
       //should have at least a year, contains a timestamp yyyy[-MM[-dd[THH[:mm[:ss]]]]] (between brackets [] is optional)
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 3)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    }
+      return  (tmpField->GetText().size() > 3);
     case ID3FID_ORIGRELEASETIME:
-    {
       //should have at least a year, contains a timestamp yyyy[-MM[-dd[THH[:mm[:ss]]]]] (between brackets [] is optional)
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 3)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    }
+      return  (tmpField->GetText().size() > 3);
     case ID3FID_RECORDINGTIME:
-    {
       //should have at least a year, contains a timestamp yyyy[-MM[-dd[THH[:mm[:ss]]]]] (between brackets [] is optional)
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 3)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    }
+      return  (tmpField->GetText().size() > 3);
     case ID3FID_RELEASETIME:
-    {
       //should have at least a year, contains a timestamp yyyy[-MM[-dd[THH[:mm[:ss]]]]] (between brackets [] is optional)
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 3)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    }
+      return  (tmpField->GetText().size() > 3);
     case ID3FID_TAGGINGTIME:
-    {
       //should have at least a year, contains a timestamp yyyy[-MM[-dd[THH[:mm[:ss]]]]] (between brackets [] is optional)
       tmpField = testframe->GetField(ID3FN_TEXT);
-      String tmpText = tmpField->GetText();
-      if (tmpText.size() > 3)
-      {
-        return true;
-      }
-      else
-        return false;
-      break;
-    }
+      return (tmpField->GetText().size() > 3);
     case ID3FID_CDID:
     {
       //should have at least a 4 + 8*x + 8 bytes (x is nr of tracks), with a minimum of 1 track it's 20 bytes, maximum is 804 bytes (99 tracks)
@@ -447,19 +363,14 @@ bool ID3_TagImpl::IsValidFrame(ID3_Frame& frame, bool testlinkedFrames)
           tmpFrame = this->Find(ID3FID_TRACKNUM);
           if (tmpFrame)
             return true; //todo...
-          else
-            return false;
+          return false;
         }
-        else return true;
+        return true;
       }
-      else return false;
-      break;
+      return false;
     }//
     default:
-    {
       return true;
-      break;
-    }
   }
 }
 
@@ -470,9 +381,7 @@ void ID3_TagImpl::checkFrames()
   for (iterator iter = this->begin(); iter != this->end(); ++iter)
   {
     ID3_Frame* frame = *iter;
-    ID3_Frame& testframe = *frame;
-
-    if (this->IsValidFrame(testframe, true) == false)
+    if (this->IsValidFrame(frame, true) == false)
     {
       _frames.erase(iter);
       delete frame;
@@ -486,23 +395,14 @@ void ID3_TagImpl::checkFrames()
 
 bool ID3_TagImpl::AttachFrame(ID3_Frame* frame)
 {
-  ID3_Frame& testframe = *frame;
-
-  bool isvalid = IsValidFrame(testframe, false);
-  if (isvalid)
+  if (IsValidFrame(frame, false))
   {
-    frame = &testframe;
     _frames.push_back(frame);
     _cursor = _frames.begin();
     _changed = true;
     return true;
   }
-  else
-  {
-    if (frame)
-      delete frame;
-    frame = NULL;
-  }
+  delete frame;
   return false;
 }
 
@@ -528,21 +428,9 @@ bool ID3_TagImpl::HasChanged() const
 {
   bool changed = _changed;
 
-  if (! changed)
-  {
-    for (const_iterator fi = _frames.begin(); fi != _frames.end(); ++fi)
-    {
-      if (*fi)
-      {
-        changed = (*fi)->HasChanged();
-      }
-
-      if (changed)
-      {
-        break;
-      }
-    }
-  }
+  for (const_iterator fi = _frames.begin(); !changed && fi != _frames.end(); ++fi)
+    if (*fi)
+      changed = (*fi)->HasChanged();
 
   return changed;
 }
@@ -550,7 +438,7 @@ bool ID3_TagImpl::HasChanged() const
 bool ID3_TagImpl::SetSpec(ID3_V2Spec spec)
 {
   bool changed = _hdr.SetSpec(spec);
-  _changed = _changed || changed;
+  _changed |= changed;
   return changed;
 }
 
@@ -562,21 +450,21 @@ ID3_V2Spec ID3_TagImpl::GetSpec() const
 bool ID3_TagImpl::SetUnsync(bool b)
 {
   bool changed = _hdr.SetUnsync(b);
-  _changed = changed || _changed;
+  _changed |= changed;
   return changed;
 }
 
 bool ID3_TagImpl::SetExtended(bool ext)
 {
   bool changed = _hdr.SetExtended(ext);
-  _changed = changed || _changed;
+  _changed |= changed;
   return changed;
 }
 
 bool ID3_TagImpl::SetExperimental(bool exp)
 {
   bool changed = _hdr.SetExperimental(exp);
-  _changed = changed || _changed;
+  _changed |= changed;
   return changed;
 }
 
@@ -608,22 +496,20 @@ size_t ID3_TagImpl::GetExtendedBytes() const
     ID3_V2Spec spec2use = this->GetSpec(); //this is set in tag_file.cpp right before RenderV2ToFile
     if (spec2use == ID3V2_4_0)
       return 6; //minimal ID3v2.4 ext header size
-    else if (spec2use == ID3V2_3_0)
+    if (spec2use == ID3V2_3_0)
       return 10; //minimal ID3v2.3 ext header size
-    else
-      return 0; //not implemented
+//    return 0; //not implemented
   }
-  else
-    return 0;;
+  return 0;
 }
 
 bool ID3_TagImpl::SetPadding(bool pad)
 {
   bool changed = (_is_padded != pad);
-  _changed = changed || _changed;
   if (changed)
   {
-    _is_padded = pad;
+      _changed = true;
+      _is_padded = pad;
   }
 
   return changed;

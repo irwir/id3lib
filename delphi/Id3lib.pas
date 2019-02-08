@@ -104,7 +104,7 @@ ID3_FieldID =
 {**
  ** Enumeration of the different types of frames recognized by id3lib
  **}
-  ID3_FrameID = 
+  ID3_FrameID =
 (
   { ???? } ID3FID_NOFRAME = 0,       //< No known frame */
   { AENC } ID3FID_AUDIOCRYPTO,       //< Audio encryption */
@@ -248,7 +248,7 @@ ID3_FieldID =
   procedure ID3TagConstIterator_Delete( tagiter:ID3TagConstIterator); stdcall; external 'ID3Lib.dll';
   function  ID3TagConstIterator_GetNext( tagiter:ID3TagConstIterator):ID3Frame; stdcall; external 'ID3Lib.dll';
 
-  // frame wrappers 
+  // frame wrappers
   function  ID3Frame_New:ID3Frame; stdcall; external 'ID3Lib.dll';
   function  ID3Frame_NewID( id:ID3_FrameID):ID3Frame; stdcall; external 'ID3Lib.dll';
   procedure ID3Frame_Delete( frame:ID3Frame); stdcall; external 'ID3Lib.dll';
@@ -346,7 +346,7 @@ begin
   if (i<0) or (i>maxChars+1) then
     i:=0;
   SetLength( ws, i);
-  result := ws; 
+  result := ws;
 end;
 
 end.

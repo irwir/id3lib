@@ -28,7 +28,7 @@ function startCode() {
 
 /*
 <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="3"><TR><TD ALIGN="center" BGCOLOR="#EEEEEE"><B><FONT FACE="Lucida,Verdana,Helvetica,Arial"><FONT COLOR="#000000">navigator</FONT></FONT></B></TD></TR><TR><TD BGCOLOR="#FFFFFF"><SMALL><FONT FACE="Lucida,Verdana,Helvetica,Arial">
-*/ 
+*/
 
     echo  "<TABLE WIDTH=\"";
     echo 100-(($subsection+1)*5);
@@ -184,7 +184,7 @@ When creating tags for a version of ID3v2 in which compression isn't defined, th
 <?php printHeader( "ID3_Tag::SetPadding()"); ?>
 <?php startSection(); ?>
 When using ID3v2 tags in association with files, ID3Lib can optionally add padding to the tags to ensure minimal file write times when updating the tag in the future.
-<P> 
+<P>
 When the padding option is switched on, ID3Lib automatically creates padding according the 'ID3v2 Programming Guidelines'.  Specifically, enough padding will be added to round out the entire file (song plus tag) to an even multiple of 2K.  Padding will only be created when the tag is attached to a file and that file is not empty (aside from a pre-existing tag).
 <P>
 My own addition to the guidelines for padding, and that which ID3Lib follows is that if frames are removed from a pre-existing tag (or the tag simply shrinks because of other reasons), the new tag will continue to stay the same size as the old tag (with padding making the difference of course) until such time as the padding is greater than 4K.  When this happens, the padding will be reduced and the new tag will be smaller than the old.
@@ -403,7 +403,7 @@ myTag.Strip ( true );
 <?php printHeader( "ID3_Tag::Find()");; ?>
 <?php startSection(); ?>
 This function takes a required ID3_FrameID parameter that specifies the ID of the frame you wish to locate.  If present in the tag, the first such frame will be returned as a pointer to an ID3_Frame object.  If no frame is found, this returns NULL.  If there are multiple frames in the tag with the same ID (which, for some frames, is allowed), then subsequent calls to ::Find() will return subsequent frame pointers, until it wraps around again.
- 
+
 <?php startCode(); ?>
 ID3_Frame *myFrame;
 
@@ -431,7 +431,7 @@ if ( myFrame = myTag.Find ( ID3FID_TITLE, ID3FN_TEXT, "Nirvana" ) )
 <?php endCode(); ?>
 
 This example with return the first frame that is a TITLE frame and whose TEXT field is 'Nirvana'.  I emphasis 'is' because currently there is no provision for things like 'contains', 'greater than' or 'less than'.  If there happens to be more than one of these frames, subsequent calls to the ::Find() function will return subsequent frames and will wrap around to the beginning.
-<P> 
+<P>
 Another example:
 
 <?php startCode(); ?>
@@ -642,7 +642,7 @@ This fills the buffer with up to the first 1024 characters from the third elemen
 <?php printHeader( "Unicode String Fields"); ?>
 <?php startSection(); ?>
 Without elaborating, the Unicode functions behave exactly as it's ASCII counterparts, taking wchar_t pointers in place of char pointers.  The ::Get() function still takes a max size in characters (not bytes).
- 
+
 <?php startCode(); ?>
 wchar_t buffer[ 1024 ];
 char charsUsed;
@@ -813,7 +813,7 @@ freeWhenDone = false );
 void        RemoveFrame        ( ID3_Frame *oldFrame );
 luint        Size            ( void );
 luint        Render            ( uchar *buffer );
-void        Parse 
+void        Parse
 ( uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer );
 
 luint        Link            ( char *name );
@@ -992,7 +992,7 @@ When you subscribe, please include a brief message about why you are subscribing
 <?php printHeader( "Special Thanks and Credits");; ?>
 <?php startSection(); ?>
 I would like to extend my many thanks to the people who have contributed to the ID3Lib project.  The show of support has been tremendous.  I consider ID3Lib to be a very 'international' product, as contributions have come from almost literally every corner of the globe.  If I have missed you, please forgive my lapse of memory.
- 
+
 <UL>
 <LI>Jean-loup Gailly and Mark Adler – for their great zlib compression library and for making it free.
 <LI>Tord Jansson – for much help with teaching me how to make and use DLLs.

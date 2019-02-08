@@ -90,7 +90,7 @@ ID3_Reader::pos_type io::WindowedReader::setBeg(pos_type beg)
 
 ID3_Reader::pos_type io::WindowedReader::setEnd(pos_type end)
 {
-  // make sure the position we want to set to isn't beforen the current
+  // make sure the position we want to set to isn't before the current
   // beginning position or the superclass's end position
   if (this->getBeg() <= end && end <= _reader.getEnd())
   {
@@ -155,10 +155,10 @@ ID3_Reader::size_type io::CharReader::readChars(char_type buf[], size_type len)
     {
       break;
     }
-    char_type ch = this->readChar();
+    int_type ch = this->readChar();
     if (buf != NULL)
     {
-      buf[numChars] = ch;
+      buf[numChars] = (char_type)ch;
     }
   }
   ID3D_NOTICE( "CharReader::readChars(): numChars = " << len );
@@ -171,14 +171,14 @@ ID3_Reader::int_type io::LineFeedReader::readChar()
   {
     return END_OF_READER;
   }
-  char_type ch = _reader.readChar();
+  int_type ch = _reader.readChar();
   if (ch == 0x0D && this->peekChar() == 0x0A)
   {
     ID3D_NOTICE( "LineFeedReader::readChar(): found CRLF at pos " <<
                  this->getCur() );
     ch = _reader.readChar();
   }
-  return ch;
+  return (char_type)ch;
 };
 
 ID3_Reader::int_type io::UnsyncedReader::readChar()
@@ -187,17 +187,17 @@ ID3_Reader::int_type io::UnsyncedReader::readChar()
   {
     return END_OF_READER;
   }
-  char_type ch = _reader.readChar();
+  int_type ch = _reader.readChar();
   if (ch == 0xFF && this->peekChar() == 0x00)
   {
     ID3D_NOTICE( "UnsyncedReader::readChar(): found sync at pos " <<
                  this->getCur() );
     _reader.readChar();
   }
-  return ch;
+  return (char_type)ch;
 }
 
-io::CompressedReader::CompressedReader(ID3_Reader& reader, size_type newSize)
+io::CompressedReader::CompressedReader(ID3_Reader& reader, uLong newSize)
   : _uncompressed(new char_type[newSize])
 {
   size_type oldSize = reader.remainingBytes();
@@ -205,9 +205,9 @@ io::CompressedReader::CompressedReader(ID3_Reader& reader, size_type newSize)
   BString binary = readBinary(reader, oldSize);
 
   ::uncompress(_uncompressed,
-               reinterpret_cast<luint*>(&newSize),
-               reinterpret_cast<const uchar*>(binary.data()),
-               oldSize);
+               &newSize,
+               static_cast<const uchar*>(binary.data()),
+               static_cast<uLong>(oldSize));
   this->setBuffer(_uncompressed, newSize);
 }
 
@@ -221,7 +221,7 @@ ID3_Writer::int_type io::UnsyncedWriter::writeChar(char_type ch)
   if (_last == 0xFF && (ch == 0x00 || ch >= 0xE0))
   {
     _writer.writeChar('\0');
-    _numSyncs++;
+    ++_numSyncs;
   }
   _last = _writer.writeChar(ch);
   return _last;
@@ -232,7 +232,7 @@ void io::UnsyncedWriter::flush()
   if (_last == 0xFF)
   {
     _last = _writer.writeChar('\0');
-    _numSyncs++;
+    ++_numSyncs;
   }
   _writer.flush();
 }
@@ -257,33 +257,32 @@ io::UnsyncedWriter::writeChars(const char_type buf[], size_type len)
 
 void io::CompressedWriter::flush()
 {
-  if (_data.size() == 0)
+  if (_data.empty())
   {
     return;
   }
-  const char_type* data = reinterpret_cast<const char_type*>(_data.data());
-  size_type dataSize = _data.size();
-  _origSize = dataSize;
+  const char_type* data = static_cast<const char_type *>(_data.data());
+  _origSize = _data.size();
   // The zlib documentation specifies that the destination size needs to
-  // be an unsigned long at least 0.1% larger than the source buffer,
+  // be an unsigned long at least 10% larger than the source buffer,
   // plus 12 bytes
-  unsigned long newDataSize = dataSize + (dataSize / 10) + 12;
+  uLong newDataSize = static_cast<uLong>(_origSize + (_origSize / 10) + 12);
   char_type* newData = LEAKTESTNEW(char_type[newDataSize]);
-  if (::compress(newData, &newDataSize, data, dataSize) != Z_OK)
+  if (::compress(newData, &newDataSize, data, static_cast<uLong>(_origSize)) != Z_OK)
   {
     // log this
     ID3D_WARNING("io::CompressedWriter: error compressing");
-    _writer.writeChars(data, dataSize);
+    _writer.writeChars(data, _origSize);
   }
-  else if (newDataSize < dataSize)
+  else if (newDataSize < (uLong)_origSize)
   {
-    ID3D_NOTICE("io::CompressedWriter: compressed size = " << newDataSize << ", original size = " << dataSize );
+    ID3D_NOTICE("io::CompressedWriter: compressed size = " << newDataSize << ", original size = " << _origSize);
     _writer.writeChars(newData, newDataSize);
   }
   else
   {
     ID3D_NOTICE("io::CompressedWriter: no compression!compressed size = " << newDataSize << ", original size = " << dataSize );
-    _writer.writeChars(data, dataSize);
+    _writer.writeChars(data, _origSize);
   }
   delete [] newData;
   _data.erase();
@@ -296,4 +295,3 @@ io::CompressedWriter::writeChars(const char_type buf[], size_type len)
   _data.append(buf, len);
   return len;
 }
-

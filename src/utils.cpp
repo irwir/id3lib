@@ -47,20 +47,20 @@
 #    undef HAVE_ICONV_H
 #  endif
 #else
-#  if (defined(WIN32) && ((defined(_MSC_VER) && _MSC_VER > 1000) || (defined(__BORLANDC__) && __BORLANDC__  >= 0x0520)))
+#  if (defined(_WIN32) && ((defined(_MSC_VER) && _MSC_VER > 1000) || (defined(__BORLANDC__) && __BORLANDC__  >= 0x0520)))
 #    include <mlang.h>
 #    define HAVE_MS_CONVERT
 #    define ID3_MSCODEPAGE_UTF16BE   1201  //"Unicode (Big-Endian)", "unicodeFFFE", 1201
 #    define ID3_MSCODEPAGE_UTF16     1200  //"Unicode", "unicode", 1200
 #    define ID3_MSCODEPAGE_UTF8      65001 //"Unicode (UTF-8)", "utf-8", 65001
 #    define ID3_MSCODEPAGE_ISO8859_1 28591 //"Western European (ISO)", "iso-8859-1", 28591
-#  endif //if (defined(WIN32) && defined (_MSC_VER) && _MSC_VER > 1000)
+#  endif //if (defined(_WIN32) && defined (_MSC_VER) && _MSC_VER > 1000)
 #endif //#if defined HAVE_ICONV_H
 
 using namespace dami;
 
   // converts an ASCII string into a Unicode one
-String mbstoucs(String data)
+String mbstoucs(const String& data)
 {
   size_t size = data.size();
   String unicode(size * 2, '\0');
@@ -72,7 +72,7 @@ String mbstoucs(String data)
 }
 
 // converts a Unicode string into ASCII
-String ucstombs(String data)
+String ucstombs(const String& data)
 {
   size_t size = data.size() / 2;
   String ascii(size, '\0');
@@ -83,7 +83,7 @@ String ucstombs(String data)
   return ascii;
 }
 
-String oldconvert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
+String oldconvert(const String& data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   String target;
   if (ID3TE_IS_SINGLE_BYTE_ENC(sourceEnc) && ID3TE_IS_DOUBLE_BYTE_ENC(targetEnc))
@@ -104,20 +104,15 @@ UINT GetMSCodePage(ID3_TextEnc enc)
   {
     case ID3TE_ISO8859_1:
       return ID3_MSCODEPAGE_ISO8859_1;
-      break;
     case ID3TE_UTF16: //id3lib strips the byte order, hence the actual string becomes ID3TE_UTF16BE
-      return ID3_MSCODEPAGE_UTF16BE; // this would be used if it had a unicode two byte byteorder: ID3_MSCODEPAGE_UTF16;
-      break;
+      //return ID3_MSCODEPAGE_UTF16; // this would be used if it had a Unicode two-byte byte order mark: ID3_MSCODEPAGE_UTF16;
     case ID3TE_UTF16BE:
       return ID3_MSCODEPAGE_UTF16BE;
-      break;
     case ID3TE_UTF8:
       return ID3_MSCODEPAGE_UTF8;
-      break;
-    default:
-      return 0;
-      break;
+    //default:
   }
+   return 0;
 }
 
 String msconvert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
@@ -129,7 +124,7 @@ String msconvert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
   UINT uiSrcCodePage = GetMSCodePage(sourceEnc);
   UINT uiDstCodePage = GetMSCodePage(targetEnc);
 
-  if (uiSrcCodePage == uiDstCodePage) //this can happen when converting between ID3TE_UTF16BE and ID3TE_UTF16, since the byteorder is stripped they are treated equally
+  if (uiSrcCodePage == uiDstCodePage) //this can happen when converting between ID3TE_UTF16BE and ID3TE_UTF16, since the byte order mark is stripped they are treated equally
     return data;
 
   if (uiSrcCodePage == 0 || uiDstCodePage == 0)
@@ -153,34 +148,36 @@ String msconvert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
   hResult = mlang->CreateConvertCharset(uiSrcCodePage, uiDstCodePage, 0, (struct IMLangConvertCharset **) &conv);
   if ( hResult != S_OK || NULL == conv )
   {
+    mlang->Release();
     CoUninitialize();
     return oldconvert(data, sourceEnc, targetEnc);
   }
 
   unsigned char* src = (unsigned char*)data.data();
-  UINT srcsize = data.size();
+  UINT srcsize = static_cast<UINT>(data.size());
   unsigned char* dst = LEAKTESTNEW(unsigned char[2 * data.size()]);
-  UINT dstsize = (2 * data.size()) + 2; //big enough for 1 byte to two byte conversion, plus two bytes for byteorder header
+  UINT dstsize = static_cast<UINT>((2u * data.size()) + 2u); //big enough for 1 byte to two byte conversion, plus two bytes for byte order mark
 
   hResult = conv->DoConversion(src, &srcsize, dst, &dstsize);
+  conv->Release();
+  mlang->Release();
+  CoUninitialize();
   if ( hResult != S_OK )
   {
-    CoUninitialize();
-    delete dst;
+    delete[] dst;
     return oldconvert(data, sourceEnc, targetEnc);
   }
 
-  CoUninitialize();
   target = (char*)dst;
-  delete dst;
+  delete[] dst;
   return target;
 }
 #endif //defined(HAVE_MS_CONVERT)
 
-size_t dami::renderNumber(uchar *buffer, uint32 val, size_t size)
+size_t dami::renderNumber(uchar *buffer, size_t val, size_t size)
 {
-  uint32 num = val;
-  for (size_t i = 0; i < size; i++)
+  size_t num = val;
+  for (size_t i = 0; i < size; ++i)
   {
     buffer[size - i - 1] = (uchar)(num & MASK8);
     num >>= 8;
@@ -192,7 +189,7 @@ String dami::renderNumber(uint32 val, size_t size)
 {
   String str(size, '\0');
   uint32 num = val;
-  for (size_t i = 0; i < size; i++)
+  for (size_t i = 0; i < size; ++i)
   {
     str[size - i - 1] = (uchar)(num & MASK8);
     num >>= 8;
@@ -221,7 +218,7 @@ namespace
     char buf[ID3LIB_BUFSIZ];
     char *target_str = buf;
     size_t target_size = ID3LIB_BUFSIZ;
-    
+
     do
     {
       errno = 0;
@@ -279,7 +276,7 @@ namespace
 String dami::convert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   String target;
-  if ((sourceEnc != targetEnc) && (data.size() > 0 ))
+  if ((sourceEnc != targetEnc) && !data.empty())
   {
 #if !defined HAVE_ICONV_H
 #  if defined(HAVE_MS_CONVERT)
@@ -295,7 +292,7 @@ String dami::convert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
     if (cd != (iconv_t) -1)
     {
       target = convert_i(cd, data);
-      if (target.size() == 0)
+      if (target.empty())
       {
         //try it without iconv
         target = oldconvert(data, sourceEnc, targetEnc);
@@ -328,14 +325,14 @@ size_t dami::ucslen(const unicode_t *unicode)
 
 namespace
 {
-  bool exists(String name)
+  bool exists(const String& name)
   {
     ifstream file(name.c_str(), NOCREATE);
     return file.is_open() != 0;
   }
 };
 
-ID3_Err dami::createFile(String name, fstream& file)
+ID3_Err dami::createFile(const String& name, fstream& file)
 {
   if (file.is_open())
   {
@@ -358,7 +355,7 @@ size_t dami::getFileSize(fstream& file)
   {
     streamoff curpos = file.tellg();
     file.seekg(0, ios::end);
-    size = file.tellg();
+    size = static_cast<size_t>(file.tellg());
     file.seekg(curpos);
   }
   return size;
@@ -371,7 +368,7 @@ size_t dami::getFileSize(ifstream& file)
   {
     streamoff curpos = file.tellg();
     file.seekg(0, ios::end);
-    size = file.tellg();
+    size = static_cast<size_t>(file.tellg());
     file.seekg(curpos);
   }
   return size;
@@ -384,13 +381,13 @@ size_t dami::getFileSize(ofstream& file)
   {
     streamoff curpos = file.tellp();
     file.seekp(0, ios::end);
-    size = file.tellp();
+    size = static_cast<size_t>(file.tellp());
     file.seekp(curpos);
   }
   return size;
 }
 
-ID3_Err dami::openWritableFile(String name, fstream& file)
+ID3_Err dami::openWritableFile(const String& name, fstream& file)
 {
   if (!exists(name))
   {
@@ -410,7 +407,7 @@ ID3_Err dami::openWritableFile(String name, fstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openWritableFile(String name, ofstream& file)
+ID3_Err dami::openWritableFile(const String& name, ofstream& file)
 {
   if (!exists(name))
   {
@@ -430,7 +427,7 @@ ID3_Err dami::openWritableFile(String name, ofstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openReadableFile(String name, fstream& file)
+ID3_Err dami::openReadableFile(const String& name, fstream& file)
 {
   if (file.is_open())
   {
@@ -445,7 +442,7 @@ ID3_Err dami::openReadableFile(String name, fstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openReadableFile(String name, ifstream& file)
+ID3_Err dami::openReadableFile(const String& name, ifstream& file)
 {
   if (file.is_open())
   {
@@ -460,7 +457,7 @@ ID3_Err dami::openReadableFile(String name, ifstream& file)
   return ID3E_NoError;
 }
 
-String dami::toString(uint32 val)
+String dami::toString(size_t val)
 {
   if (val == 0)
   {
@@ -469,10 +466,8 @@ String dami::toString(uint32 val)
   String text;
   while (val > 0)
   {
-    String tmp;
     char ch = (val % 10) + '0';
-    tmp += ch;
-    text = tmp + text;
+    text = ch + text;
     val /= 10;
   }
   return text;

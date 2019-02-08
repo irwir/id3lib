@@ -2,28 +2,28 @@
 !IF "$(CFG)" == ""
 CFG=id3lib - Win32 Debug
 !MESSAGE No configuration specified. Defaulting to id3lib - Win32 Debug.
-!ENDIF 
+!ENDIF
 
 !IF "$(CFG)" != "id3lib - Win32 Release" && "$(CFG)" != "id3lib - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "id3lib.mak" CFG="id3lib - Win32 Debug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "id3lib - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "id3lib - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE 
+!MESSAGE
 !ERROR An invalid configuration is specified.
-!ENDIF 
+!ENDIF
 
 !IF "$(OS)" == "Windows_NT"
 NULL=
-!ELSE 
+!ELSE
 NULL=nul
-!ENDIF 
+!ENDIF
 
 CPP=cl.exe
 MTL=midl.exe
@@ -37,15 +37,15 @@ INTDIR=.\Release
 OutDir=.\Release
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "$(OUTDIR)\id3lib.dll"
 
-!ELSE 
+!ELSE
 
 ALL : "$(OUTDIR)\id3lib.dll"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\c_wrapper.obj"
@@ -83,20 +83,20 @@ CLEAN :
 CPP_PROJ=/nologo /MT /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I\
  "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS"\
  /D "HAVE_CONFIG_H" /D "__DLL" /Fp"$(INTDIR)\id3lib.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+ /Fd"$(INTDIR)\\" /FD /c
 CPP_OBJS=.\Release/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 
+MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\id3lib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\id3lib.bsc"
 BSC32_SBRS= \
-	
+
 LINK32=link.exe
 LINK32_FLAGS=zlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
  comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib\
  odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:no\
  /pdb:"$(OUTDIR)\id3lib.pdb" /machine:I386 /out:"$(OUTDIR)\id3lib.dll"\
- /implib:"$(OUTDIR)\id3lib.lib" /libpath:"..\zlib" 
+ /implib:"$(OUTDIR)\id3lib.lib" /libpath:"..\zlib"
 LINK32_OBJS= \
 	"$(INTDIR)\c_wrapper.obj" \
 	"$(INTDIR)\error.obj" \
@@ -136,15 +136,15 @@ INTDIR=.\Debug
 OutDir=.\Debug
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
+!IF "$(RECURSE)" == "0"
 
 ALL : "$(OUTDIR)\id3lib.dll"
 
-!ELSE 
+!ELSE
 
 ALL : "$(OUTDIR)\id3lib.dll"
 
-!ENDIF 
+!ENDIF
 
 CLEAN :
 	-@erase "$(INTDIR)\c_wrapper.obj"
@@ -185,20 +185,20 @@ CLEAN :
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\\" /I "..\\" /I "..\include" /I\
  "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
  /D "HAVE_CONFIG_H" /D "__DLL" /Fp"$(INTDIR)\id3lib.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+ /Fd"$(INTDIR)\\" /FD /c
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
-MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32 
+MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /o NUL /win32
 BSC32=bscmake.exe
-BSC32_FLAGS=/nologo /o"$(OUTDIR)\id3lib.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\id3lib.bsc"
 BSC32_SBRS= \
-	
+
 LINK32=link.exe
 LINK32_FLAGS=zlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
  comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib\
  odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes\
  /pdb:"$(OUTDIR)\id3lib.pdb" /debug /machine:I386 /out:"$(OUTDIR)\id3lib.dll"\
- /implib:"$(OUTDIR)\id3lib.lib" /pdbtype:sept /libpath:"..\zlib" 
+ /implib:"$(OUTDIR)\id3lib.lib" /pdbtype:sept /libpath:"..\zlib"
 LINK32_OBJS= \
 	"$(INTDIR)\c_wrapper.obj" \
 	"$(INTDIR)\error.obj" \
@@ -230,36 +230,36 @@ LINK32_OBJS= \
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
-!ENDIF 
+!ENDIF
 
 .c{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(CPP_OBJS)}.obj::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .c{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cpp{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 .cxx{$(CPP_SBRS)}.sbr::
    $(CPP) @<<
-   $(CPP_PROJ) $< 
+   $(CPP_PROJ) $<
 <<
 
 
@@ -277,7 +277,7 @@ DEP_CPP_DLL_W=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\c_wrapper.obj" : $(SOURCE) $(DEP_CPP_DLL_W) "$(INTDIR)"\
  "..\config.h"
@@ -287,7 +287,7 @@ DEP_CPP_DLL_W=\
 SOURCE=..\src\error.cpp
 DEP_CPP_ERROR=\
 	"..\config.h"\
-	
+
 
 "$(INTDIR)\error.obj" : $(SOURCE) $(DEP_CPP_ERROR) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -301,7 +301,7 @@ DEP_CPP_FIELD=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\field.obj" : $(SOURCE) $(DEP_CPP_FIELD) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -315,7 +315,7 @@ DEP_CPP_FIELD_=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\field_binary.obj" : $(SOURCE) $(DEP_CPP_FIELD_) "$(INTDIR)"\
  "..\config.h"
@@ -330,7 +330,7 @@ DEP_CPP_FIELD_I=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\field_integer.obj" : $(SOURCE) $(DEP_CPP_FIELD_I) "$(INTDIR)"\
  "..\config.h"
@@ -351,7 +351,7 @@ DEP_CPP_FIELD_S=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\field_string_ascii.obj" : $(SOURCE) $(DEP_CPP_FIELD_S) "$(INTDIR)"\
  "..\config.h"
@@ -372,7 +372,7 @@ DEP_CPP_FIELD_ST=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\field_string_unicode.obj" : $(SOURCE) $(DEP_CPP_FIELD_ST)\
  "$(INTDIR)" "..\config.h"
@@ -392,7 +392,7 @@ DEP_CPP_FRAME=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\frame.obj" : $(SOURCE) $(DEP_CPP_FRAME) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -413,7 +413,7 @@ DEP_CPP_FRAME_=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\frame_parse.obj" : $(SOURCE) $(DEP_CPP_FRAME_) "$(INTDIR)"\
  "..\config.h"
@@ -437,7 +437,7 @@ DEP_CPP_FRAME_R=\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\frame_render.obj" : $(SOURCE) $(DEP_CPP_FRAME_R) "$(INTDIR)"\
  "..\config.h"
@@ -449,7 +449,7 @@ DEP_CPP_HEADE=\
 	"..\config.h"\
 	"..\include\id3\globals.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\globals.obj" : $(SOURCE) $(DEP_CPP_HEADE) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -462,7 +462,7 @@ DEP_CPP_HEADE=\
 	"..\include\id3\header.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\header.obj" : $(SOURCE) $(DEP_CPP_HEADE) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -479,7 +479,7 @@ DEP_CPP_HEADER=\
 	"..\include\id3\header_tag.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\header_frame.obj" : $(SOURCE) $(DEP_CPP_HEADER) "$(INTDIR)"\
  "..\config.h"
@@ -494,7 +494,7 @@ DEP_CPP_HEADER_=\
 	"..\include\id3\header_tag.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\header_tag.obj" : $(SOURCE) $(DEP_CPP_HEADER_) "$(INTDIR)"\
  "..\config.h"
@@ -507,7 +507,7 @@ DEP_CPP_INT28=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	
+
 
 "$(INTDIR)\int28.obj" : $(SOURCE) $(DEP_CPP_INT28) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -527,7 +527,7 @@ DEP_CPP_MISC_=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\misc_support.obj" : $(SOURCE) $(DEP_CPP_MISC_) "$(INTDIR)"\
  "..\config.h"
@@ -547,7 +547,7 @@ DEP_CPP_TAG_C=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag.obj" : $(SOURCE) $(DEP_CPP_TAG_C) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -566,7 +566,7 @@ DEP_CPP_TAG_F=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_file.obj" : $(SOURCE) $(DEP_CPP_TAG_F) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -586,7 +586,7 @@ DEP_CPP_TAG_FI=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_find.obj" : $(SOURCE) $(DEP_CPP_TAG_FI) "$(INTDIR)"\
  "..\config.h"
@@ -609,7 +609,7 @@ DEP_CPP_TAG_P=\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
 	{$(INCLUDE)}"sys\types.h"\
-	
+
 
 "$(INTDIR)\tag_parse.obj" : $(SOURCE) $(DEP_CPP_TAG_P) "$(INTDIR)"\
  "..\config.h"
@@ -630,7 +630,7 @@ DEP_CPP_TAG_PA=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_parse_lyrics3.obj" : $(SOURCE) $(DEP_CPP_TAG_PA) "$(INTDIR)"\
  "..\config.h"
@@ -651,7 +651,7 @@ DEP_CPP_TAG_PAR=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_parse_v1.obj" : $(SOURCE) $(DEP_CPP_TAG_PAR) "$(INTDIR)"\
  "..\config.h"
@@ -672,7 +672,7 @@ DEP_CPP_TAG_R=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_render.obj" : $(SOURCE) $(DEP_CPP_TAG_R) "$(INTDIR)"\
  "..\config.h"
@@ -692,7 +692,7 @@ DEP_CPP_TAG_S=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	
+
 
 "$(INTDIR)\tag_sync.obj" : $(SOURCE) $(DEP_CPP_TAG_S) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -714,8 +714,8 @@ InputPath=..\config.win32
 "..\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy ..\config.win32 ..\config.h
 
-!ENDIF 
+!ENDIF
 
 
-!ENDIF 
+!ENDIF
 

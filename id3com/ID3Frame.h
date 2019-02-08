@@ -30,7 +30,7 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CID3Frame
-class ATL_NO_VTABLE CID3Frame : 
+class ATL_NO_VTABLE CID3Frame :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CID3Frame, &CLSID_ID3ComFrame>,
 	public ISupportErrorInfo,

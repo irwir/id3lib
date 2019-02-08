@@ -30,7 +30,7 @@
 #define _ID3LIB_STRINGS_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -59,15 +59,15 @@ namespace std
       typedef mbstate_t       state_type;
 
       static void
-      assign(char_type& __c1, const char_type& __c2)
+      assign(char_type& __c1, const char_type __c2)
       { __c1 = __c2; }
 
       static bool
-      eq(const char_type& __c1, const char_type& __c2)
+      eq(const char_type __c1, const char_type __c2)
       { return __c1 == __c2; }
 
       static bool
-      lt(const char_type& __c1, const char_type& __c2)
+      lt(const char_type __c1, const char_type __c2)
       { return __c1 < __c2; }
 
       static int
@@ -83,17 +83,17 @@ namespace std
       length(const char_type* __s)
       {
         const char_type* __p = __s;
-        while (__p)
+        while (*__p)
           ++__p;
         return (__p - __s);
       }
 
       static const char_type*
-      find(const char_type* __s, size_t __n, const char_type& __a)
+      find(const char_type* __s, size_t __n, const char_type __a)
       {
         for (const char_type* __p = __s; size_t(__p - __s) < __n; ++__p)
           if (*__p == __a) return __p;
-        return 0;
+        return NULL;
       }
 
       static char_type*
@@ -113,22 +113,22 @@ namespace std
       }
 
       static char_type
-      to_char_type(const int_type& __c)
+      to_char_type(const int_type /*__c*/)
       { return char_type(); }
 
       static int_type
-      to_int_type(const char_type& __c) { return int_type(); }
+      to_int_type(const char_type /*__c*/) { return int_type(); }
 
       static bool
-      eq_int_type(const int_type& __c1, const int_type& __c2)
+      eq_int_type(const int_type __c1, const int_type __c2)
       { return __c1 == __c2; }
 
       static int_type
-      eof() { return static_cast<int_type>(-1); }
+      eof() { return static_cast<int_type>(-1L); }
 
       static int_type
-      not_eof(const int_type& __c)
-      { return eq_int_type(__c, eof()) ? int_type(0) : __c; }
+      not_eof(const int_type __c)
+      { return eq_int_type(__c, eof()) ? (int_type)0 : __c; }
     };
 } // namespace std
 #endif

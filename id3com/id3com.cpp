@@ -30,14 +30,14 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
 // Note: Proxy/Stub Information
-//      To build a separate proxy/stub DLL, 
+//      To build a separate proxy/stub DLL,
 //      run nmake -f ID3libCOMps.mk in the project directory.
 
 #include "stdafx.h"

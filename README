@@ -3,7 +3,7 @@ General Information
 
 id3lib is a software library for manipulating ID3v1/v1.1 and ID3v2 tags.
 id3lib 3.0.x conforms to all ID3v2 standards up to and including the ID3v2.3.0
-informal standard.  
+informal standard.
 
 The id3lib project makes use of the resources available through
 SourceForge.net.  Using SourceForge, the id3lib project is able to provide
@@ -22,7 +22,7 @@ The id3lib developers' mailing list's address is:
 You can subscribe, unsubscribe, and view mailing list archives at:
   http://lists.sourceforge.net/mailman/listinfo/id3lib-devel
 
-Information about ID3v2 and related standards can be found at: 
+Information about ID3v2 and related standards can be found at:
    http://www.id3.org
 
 Installation
@@ -66,9 +66,9 @@ If you send it to the mailing list, please include the following:
 
   And anything else you think is relevant.
 
-* How to reproduce the bug. 
+* How to reproduce the bug.
 
-  Please include either a short test program that exhibits the 
+  Please include either a short test program that exhibits the
   behavior or an example tag that isn't correctly parsed/rendered by
   the library.  As a last resort, you can also provide a pointer to
   a larger piece of software or tagged file that can be downloaded.

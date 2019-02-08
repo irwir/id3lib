@@ -16,11 +16,11 @@
 
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -130,7 +130,7 @@ EXTRA_DIST = \
 	makewin32.bat
 
 @ID3_NEEDZLIB_TRUE@zlib_subdir = zlib
-@ID3_NEEDZLIB_FALSE@zlib_subdir = 
+@ID3_NEEDZLIB_FALSE@zlib_subdir =
 
 SUBDIRS = . m4 $(zlib_subdir) doc include id3com src examples
 DIST_SUBDIRS = . m4 zlib doc include id3com src examples prj libprj
@@ -170,7 +170,7 @@ $(top_builddir)/config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 $(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
 	cd $(srcdir) && $(AUTOCONF)
 
-$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in 
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.in
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 
 config.h: stamp-h1
@@ -483,10 +483,10 @@ uninstall-info: uninstall-info-recursive
 	uninstall-info-recursive uninstall-recursive
 
 
-config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in 
+config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in 
+id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 .PHONY: release snapshot docs-release docs

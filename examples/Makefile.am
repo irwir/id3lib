@@ -1,9 +1,9 @@
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -25,7 +25,7 @@ endif
 if ID3_NEEDGETOPT_LONG
 getopt_lib = getopt.o getopt1.o
 else
-getopt_lib = 
+getopt_lib =
 endif
 
 LDADD =  $(top_builddir)/src/libid3.la $(zlib_lib) $(ID3_DEBUG_LIBS) $(getopt_lib)
@@ -74,12 +74,12 @@ tag_files =             \
   230-syncedlyrics.tag  \
   thatspot.tag          \
   ozzy.tag              \
-  crc53865.mp3 
+  crc53865.mp3
 
 getopt_files =          \
   getopt.c              \
   getopt.h              \
-  getopt1.c             
+  getopt1.c
 
 header_files =          \
   demo_tag_options.h    \
@@ -90,7 +90,7 @@ header_files =          \
 EXTRA_DIST =            \
   $(tag_files)          \
   $(getopt_files)       \
-  $(header_files)       
+  $(header_files)
 
 PROGNAME = gengetopt
 
@@ -105,4 +105,4 @@ demo_%.cpp: demo_%_options.c
 demo_simple: demo_simple.o
 	$(LINK) $(C_LINK_ADD) $<
 
-	
+

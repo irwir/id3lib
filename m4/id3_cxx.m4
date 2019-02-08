@@ -1,7 +1,7 @@
 dnl Autoconf support for C++
 
 AC_DEFUN([ID3_CXX_WARNINGS],[
-  AC_ARG_ENABLE(cxx-warnings, 
+  AC_ARG_ENABLE(cxx-warnings,
     [  --enable-cxx-warnings=[no/minimum/yes]	Turn on compiler warnings.],,enable_cxx_warnings=minimum)
 
   AC_MSG_CHECKING(what warning flags to pass to the C++ compiler)
@@ -59,7 +59,7 @@ AC_DEFUN([ID3_CXX_WARNINGS],[
 #    data type
 # 2. Defines CXX_HAS_BUGGY_FOR_LOOPS if the compiler has buggy
 #    scoping for the for-loop
-# Seperately we provide some config.h.bot code to be added to acconfig.h
+# Separately we provide some config.h.bot code to be added to acconfig.h
 # that implements work-arounds for these problems.
 # -----------------------------------------------------------------------
 
@@ -102,33 +102,33 @@ AC_DEFUN(ID3_CXX_PORTABILITY,[
 ])
 
 dnl ACCONFIG BOTTOM
-dnl 
+dnl
 dnl // This file defines portability work-arounds for various proprietory
 dnl // C++ compilers
-dnl 
+dnl
 dnl // Workaround for compilers with buggy for-loop scoping
 dnl // That's quite a few compilers actually including recent versions of
 dnl // Dec Alpha cxx, HP-UX CC and SGI CC.
-dnl // The trivial "if" statement provides the correct scoping to the 
+dnl // The trivial "if" statement provides the correct scoping to the
 dnl // for loop
-dnl 
+dnl
 dnl #ifdef CXX_HAS_BUGGY_FOR_LOOPS
 dnl #undef for
 dnl #define for if(1) for
 dnl #endif
-dnl 
+dnl
 dnl //
 dnl // If the C++ compiler we use doesn't have bool, then
-dnl // the following is a near-perfect work-around. 
+dnl // the following is a near-perfect work-around.
 dnl // You must make sure your code does not depend on "int" and "bool"
 dnl // being two different types, in overloading for instance.
 dnl //
-dnl 
+dnl
 dnl #ifdef CXX_HAS_NO_BOOL
 dnl #define bool int
 dnl #define true 1
 dnl #define false 0
 dnl #endif
-dnl    
+dnl
 dnl END ACCONFIG
 

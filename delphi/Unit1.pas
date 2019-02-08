@@ -39,7 +39,7 @@ implementation
 procedure TForm1.FileListBox1Click(Sender: TObject);
 var
     otag : CoID3ComTag;
-    
+
     myFrame : ID3ComFrame;
     myField: ID3ComField;
 

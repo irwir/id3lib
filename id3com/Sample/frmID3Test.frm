@@ -1,5 +1,5 @@
 VERSION 5.00
-Begin VB.Form frmID3Test 
+Begin VB.Form frmID3Test
    Caption         =   "ID3 Test"
    ClientHeight    =   5595
    ClientLeft      =   60
@@ -9,7 +9,7 @@ Begin VB.Form frmID3Test
    ScaleHeight     =   5595
    ScaleWidth      =   7845
    StartUpPosition =   3  'Windows Default
-   Begin VB.CommandButton cmdVersion 
+   Begin VB.CommandButton cmdVersion
       Caption         =   "Show ID3COM Version"
       Height          =   375
       Left            =   5640
@@ -17,7 +17,7 @@ Begin VB.Form frmID3Test
       Top             =   2160
       Width           =   2175
    End
-   Begin VB.CommandButton cmdRemoveV2 
+   Begin VB.CommandButton cmdRemoveV2
       Caption         =   "Remove ID3v2"
       Height          =   375
       Left            =   5640
@@ -25,7 +25,7 @@ Begin VB.Form frmID3Test
       Top             =   1200
       Width           =   2175
    End
-   Begin VB.CommandButton cmdAddTestTag 
+   Begin VB.CommandButton cmdAddTestTag
       Caption         =   "Add Test Tag"
       Height          =   375
       Left            =   5640
@@ -33,7 +33,7 @@ Begin VB.Form frmID3Test
       Top             =   1680
       Width           =   2175
    End
-   Begin VB.CommandButton cmdCopyV1toV2 
+   Begin VB.CommandButton cmdCopyV1toV2
       Caption         =   "Copy ID3 v1 to v2"
       Enabled         =   0   'False
       Height          =   375
@@ -42,7 +42,7 @@ Begin VB.Form frmID3Test
       Top             =   240
       Width           =   2175
    End
-   Begin VB.CommandButton cmdRemoveV1 
+   Begin VB.CommandButton cmdRemoveV1
       Caption         =   "Remove ID3v1"
       Enabled         =   0   'False
       Height          =   375
@@ -51,14 +51,14 @@ Begin VB.Form frmID3Test
       Top             =   720
       Width           =   2175
    End
-   Begin VB.ListBox List1 
+   Begin VB.ListBox List1
       Height          =   2595
       Left            =   120
       TabIndex        =   3
       Top             =   2880
       Width           =   5415
    End
-   Begin VB.FileListBox File1 
+   Begin VB.FileListBox File1
       Height          =   2625
       Left            =   2400
       Pattern         =   "*.mp3;*.tag"
@@ -66,14 +66,14 @@ Begin VB.Form frmID3Test
       Top             =   120
       Width           =   3135
    End
-   Begin VB.DirListBox Dir1 
+   Begin VB.DirListBox Dir1
       Height          =   2115
       Left            =   120
       TabIndex        =   1
       Top             =   600
       Width           =   2055
    End
-   Begin VB.DriveListBox Drive1 
+   Begin VB.DriveListBox Drive1
       Height          =   315
       Left            =   120
       TabIndex        =   0
@@ -146,9 +146,9 @@ Private Sub File1_Click()
     Dim FrameLine As String
     Dim n As Long
     Dim m As Long
-    
+
     List1.Clear
-    
+
     Set oTag = New ID3ComTag
 
     oTag.Link File1.Path & "\" & File1.FileName
@@ -156,14 +156,14 @@ Private Sub File1_Click()
     cmdCopyV1toV2.Enabled = oTag.HasV1Tag And Not oTag.HasV2Tag
     cmdRemoveV1.Enabled = oTag.HasV1Tag
     cmdRemoveV2.Enabled = oTag.HasV2Tag
-    
+
     For Each oFrame In oTag
         FrameLine = oFrame.FrameName
         Set oField = oFrame.Field(ID3_FIELD_DESCRIPTION)
         If Not oField Is Nothing Then
             FrameLine = FrameLine & " - " & oField.Text(1)
         End If
-        
+
         For n = ID3_FIELD_NOFIELD + 1 To ID3_FIELD_LASTFIELDID - 1
             If n <> ID3_FIELD_DESCRIPTION Then
                 Set oField = oFrame.Field(n)

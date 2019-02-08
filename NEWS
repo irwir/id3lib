@@ -39,9 +39,9 @@ Old News:
 * Improved build process for platforms without popt or zlib
 * New documentation about the MusicMatch tagging format
 * Minor updates to ID3_Field interface
-* New interface behavior: 
+* New interface behavior:
     // copies entire string (same for unicode_t*)
-    size_t ID3_Field::Get(const uchar*, size_t) 
+    size_t ID3_Field::Get(const uchar*, size_t)
     // for lists, copies a specific item in string (0-based)
     size_t ID3_Field::Get(const uchar*, size_t, index_t);
     // returns the size in characters for strings, in bytes for all else
@@ -63,12 +63,12 @@ Old News:
 2000-07-05 Version 3.7.11
 
 * Now parses and converts files with MusicMatch tags (beta - needs testing!)
-* New tag type enums: ID3TT_LYRICS3, ID3TT_LYRICS3V2, ID3TT_MUSICMATCH, 
+* New tag type enums: ID3TT_LYRICS3, ID3TT_LYRICS3V2, ID3TT_MUSICMATCH,
   ID3TT_PREPENDED, ID3TT_APPENDED.  Deprecated ID3TT_LYRICS
 * Improved file processing routines; cleaned up interface w.r.t. files
 * Stripping one type of appended tag strips them all
 * New C function: ID3Tag_HasTagType
-* New methods for ID3_Tag: GetPrependedBytes(), GetAppendedBytes(), 
+* New methods for ID3_Tag: GetPrependedBytes(), GetAppendedBytes(),
   GetFileSize(), and GetFileName()
 * New function for calculating size of non-tag data in file: ID3_GetDataSize()
 * Render now parameterized on ID3_TagType
@@ -83,7 +83,7 @@ Old News:
   bug reports)
 * Fixed bugs/memory leaks with removing frames and updating tag (thanks to Luca
   Leonardo Scorcia for the bug reports)
-* Fixed finding of frames with empty text fields (thanks to Luca Leonardo 
+* Fixed finding of frames with empty text fields (thanks to Luca Leonardo
   Scorcia for the bug reports)
 * Improved documentation/implementation for uint28
 * Added GetTextID() method for ID3_Frame objects
@@ -98,9 +98,9 @@ Old News:
 
 * Added new test programs in examples/ for creating example tag files
 * Further improvements to compile on (Unix) systems that don't have zlib
-* Fixed a bug when parsing compressed frames (thanks to Christian Becker for 
+* Fixed a bug when parsing compressed frames (thanks to Christian Becker for
   the bug report and example file)
-* Fixed several bugs when writing to files (thanks to Lothar Egger and Peter 
+* Fixed several bugs when writing to files (thanks to Lothar Egger and Peter
   Thorstenson for the bug reports)
 * New delphi example code for use with id3com (thanks Michael Little)
 * Bugfixes for id3com (thanks John Adcock)
@@ -114,11 +114,11 @@ Old News:
   frame's memory
 * Cleaned up C interface so that appropriate function parameters are const
 * Cleaned up implementation of ID3_Tag::Clear() to fix inconsistencies
-* Deprecated ID3_Tag's HasV2Tag(), HasV1Tag(), and HasLyrics() methods in 
+* Deprecated ID3_Tag's HasV2Tag(), HasV1Tag(), and HasLyrics() methods in
   favor of ID3_Tag::HasTagType() method
 * All Render() methods now const
 * Added GetUnsync() method to ID3_Tag
-* Cleaned up internal class definitions (thereby destroying binary 
+* Cleaned up internal class definitions (thereby destroying binary
   compatibility)
 * ID3v2 tag now won't render (and its reported size is 0) if there aren't any
   frames (per the spec)
@@ -138,13 +138,13 @@ Old News:
 2000-05-10 Version 3.7.7
 
 * As part of the major rewrite of underlying codebase started with previous
-  release, this release features near-complete reimplementation of most of the 
+  release, this release features near-complete reimplementation of most of the
   ID3v2 parsing code - smaller, faster, and better organized
 * Much imporved Lyrics3 v2 tag support, along with much improved synchronized
   lyrics (SYLT) support (thanks Severino Delaurenti)
 * Updated id3com to reflect changes to compression strategy introduced in last
   release (thanks John Adcock)
-* Cleaned up the parameters to several functions/methods with regards to 
+* Cleaned up the parameters to several functions/methods with regards to
   constness
 * Several new methods to several classes
 * A variety of bugfixes
@@ -159,8 +159,8 @@ Old News:
 * Add descriptions to frames; can access either through a ID3_Frame method for
   a frame object, or via the static method on the class (w/ ID3_FrameID param)
   (thanks John Adcock for descriptions, Daryl Pawluk for spotting misorder)
-* Frame compression is determined frame by frame, so deprecated 
-  ID3_Tag::SetCompression() for ID3_Frame::SetCompression().  
+* Frame compression is determined frame by frame, so deprecated
+  ID3_Tag::SetCompression() for ID3_Frame::SetCompression().
   ID3_Tag::SetCompression() is now a no-op (updated C interface accordingly)
 * New method ID3_Frame::Contains(ID3_FieldID) for determining if a frame
   contains a particular field
@@ -190,7 +190,7 @@ Old News:
 2000-04-24 Version 3.7.3
 
 * C/C++ interface changes:
-  - Moved V1_LEN* constants into an enumeration so that they can be used as 
+  - Moved V1_LEN* constants into an enumeration so that they can be used as
     array size initializers in C.  Renamed the constants for consistency
     (LEN_V1 -> ID3_V1_LEN, LEN_V1_TITLE -> ID3_V1_LEN_TITLE, etc.)
   - Renamed ID3_TagType's enums to be more consistent with rest of library's
@@ -198,9 +198,9 @@ Old News:
   - ID3_Err enumeration now defines ID3E_NoError
 * C++ interface changes:
   - ID3_Frame now has a copy constructor
-  - ID3_Tag::AddNewFrame deprecated for AttachFrame (no other difference in 
+  - ID3_Tag::AddNewFrame deprecated for AttachFrame (no other difference in
     behavior)
-  - ID3_Tag::Link(char *, bool, bool) deprecated for 
+  - ID3_Tag::Link(char *, bool, bool) deprecated for
     ID3_Tag::Link(char *, luint). Now accepts ID3_TagTypes to determine which
     tags to parse. i.e, mytag.Link("myfile.mp3", ID3TT_ID3V2 | ID3TT_LYRICS);
   - ID3_Tag::operator<<, ID3_Tag::AddFrame: relevant parameters now const
@@ -209,13 +209,13 @@ Old News:
   - Added functions ID3Tag_UpdateByTagType, ID3Frame_New, ID3Frame_NewID,
     ID3Frame_Delete
 * Implementation changes:
-  - AddFrame, AddFrames now add copies of the frames passed in.  
+  - AddFrame, AddFrames now add copies of the frames passed in.
   - AttachFrame adds the actual frame passed to it.
   - The tag takes responsibility for managing its frames' memory in all cases.
 * Miscellaneous changes:
   - Moved most enum and struct declarations to include/id3/globals.h so they
     are accessible to C interface
-  - id3com.dsp file is 'fixed', but the project still doesn't compile w/o 
+  - id3com.dsp file is 'fixed', but the project still doesn't compile w/o
     errors
   - Most doxygen comments moved from tag.h to respective files
   - Fixed a bug in id3lib.spec which caused rpm binaries to be compiled without
@@ -235,10 +235,10 @@ Old News:
 
 2000-04-19 Version 3.7.1
 
-* Interface changed: functions in version.{h,cpp} replaced with constants 
+* Interface changed: functions in version.{h,cpp} replaced with constants
   defined in globals.h
 * Added a spec file for creating rpm's
-* C interface now defined in include/id3.h, replaces include/src/dll.h; 
+* C interface now defined in include/id3.h, replaces include/src/dll.h;
 * Lots of file movement.  src/id3/* to src/; src/examples to examples;
 * Examples now compiled as installable binaries, rather than 'checks'
 * Removed unnecessary files: externals.h, types.h, version.{h,cpp}, dll.h
@@ -250,13 +250,13 @@ Old News:
 * New versioning: 3.7.x is unstable series leading up to 3.8.x stable
 * Many bug fixes
 * Better windows compatibility, with new windows project files
-* Improved documentation, using the Doxygen documentation system 
+* Improved documentation, using the Doxygen documentation system
   (http://www.stack.nl/~dimitri/doxygen/)
 * Extended API, improved implementation
 * More supported frames
 * Now parses and rerenders unrecognized frame types
 * Better version handling in configuration files, similar to the glib library
-  (http://www.gtk.org) 
+  (http://www.gtk.org)
 
 1999-12-02 Version 3.6.2
 
@@ -269,7 +269,7 @@ Old News:
   for easier windows compilation.
 * Improved portability: made changes in several files to improve compilation
   on windows.  (thanks to elrod for the fixes)
-* Random cleanup: some spelling errors fixed, some minor file administration, 
+* Random cleanup: some spelling errors fixed, some minor file administration,
   etc.
 
 1999-11-30 Version 3.6.0
@@ -279,7 +279,7 @@ Old News:
   strings.
 * Better documentation: transcribed the the "Documentation for ID3Lib 3.05"
   document (written by Dirk Mahoney, 22 Nov 1998) into the actual source, using
-  javadoc-like tags so as to create documentation with the application doc++. 
+  javadoc-like tags so as to create documentation with the application doc++.
   Using this program (and ones like it) allows for creating the documentation
   in many different formats, including html, texinfo, man, latex, and the like.
 * Added functionality: Added additional functions for simplified access to
@@ -312,7 +312,7 @@ Old News:
   of id3lib needs to "#include <id3/tag.h>" rather than "#include <id3_tag.h>".
   This was done to create more structure and to avoid clutter in the include
   directory.
-* The versioning strategy has been updated to be more in line with the 
+* The versioning strategy has been updated to be more in line with the
   "libtool" way.  However, in order to be more compatible with how versions
   progressed previously, I've taken the approach that many other libraries have
   taken: I've "massaged" the version:revision:age numbers so that the resulting

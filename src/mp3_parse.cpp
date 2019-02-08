@@ -44,21 +44,19 @@ uint32 fto_nearest_i(float f)
     return i;
 }
 
-uint16 calcCRC(char *pFrame, size_t audiodatasize)
+uint16 calcCRC(const char *pFrame, size_t audiodatasize)
 {
-  size_t icounter;
-  int tmpchar, crcmask, tmpi;
   uint16 crc = 0xffff;
 
-  for (icounter = 2;  icounter < audiodatasize;  ++icounter)
+  for (size_t icounter = 2;  icounter < audiodatasize;  ++icounter)
   {
     if (icounter != 4  &&  icounter != 5) //skip the 2 chars of the crc itself
     {
-      crcmask = 1 << 8;
-      tmpchar = pFrame[icounter];
+      int crcmask = 1 << 8;
+      int tmpchar = pFrame[icounter];
       while (crcmask >>= 1)
       {
-        tmpi = crc & 0x8000;
+        int tmpi = crc & 0x8000;
         crc <<= 1;
         if (!tmpi ^ !(tmpchar & crcmask))
           crc ^= 0x8005;
@@ -71,8 +69,7 @@ uint16 calcCRC(char *pFrame, size_t audiodatasize)
 
 void Mp3Info::Clean()
 {
-  if (_mp3_header_output != NULL)
-    delete _mp3_header_output;
+  delete _mp3_header_output;
   _mp3_header_output = NULL;
 }
 
@@ -211,7 +208,6 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
   ID3_Reader::pos_type beg = reader.getCur() ;
   ID3_Reader::pos_type end = beg + HEADERSIZE ;
   reader.setCur(beg);
-  int bitrate_index;
 
   _mp3_header_output->layer = MPEGLAYER_FALSE;
   _mp3_header_output->version = MPEGVERSION_FALSE;
@@ -238,7 +234,7 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
 
   _tmpheader = reinterpret_cast<_mp3_header_internal *>(buf);
 
-  bitrate_index = 0;
+  int bitrate_index = 0;
   switch (_tmpheader->id)
   {
     case 3:
@@ -272,15 +268,13 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
     case 1:
       _mp3_header_output->layer = MPEGLAYER_III;
       break;
-    case 0:
-      this->Clean();
-      return false; //wouldn't know how to handle it
+    //case 0:
     default:
       this->Clean();
-      return false; //how can two unsigned bits be something else??
+      return false; //wouldn't know how to handle it
   };
 
-  // mpegversion, layer and bitrate are all valid
+  // mpeg version, layer and bitrate are all valid
   _mp3_header_output->bitrate = _mp3_bitrates[bitrate_index][3-_tmpheader->layer][_tmpheader->bitrate_index];
   if (_mp3_header_output->bitrate == MP3BITRATE_FALSE)
   {
@@ -363,17 +357,17 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
   }
 
 //http://www.mp3-tech.org/programmer/frame_header.html
-  if (_mp3_header_output->bitrate != MP3BITRATE_NONE && _mp3_header_output->frequency > 0)
+  if (_mp3_header_output->bitrate != MP3BITRATE_NONE && _mp3_header_output->frequency != MP3FREQUENCIES_FALSE)
   {
     if (_mp3_header_output->layer == MPEGLAYER_I)
-      _mp3_header_output->framesize = fto_nearest_i((float)((48 * (float)_mp3_header_output->bitrate) / _mp3_header_output->frequency)) + (_tmpheader->padding_bit ? 4 : 0);
+      _mp3_header_output->framesize = fto_nearest_i((48.0f * _mp3_header_output->bitrate) / _mp3_header_output->frequency) + (_tmpheader->padding_bit ? 4 : 0);
     else
-      _mp3_header_output->framesize = fto_nearest_i((float)((144 * (float)_mp3_header_output->bitrate) / _mp3_header_output->frequency)) + (_tmpheader->padding_bit ? 1 : 0);
+      _mp3_header_output->framesize = fto_nearest_i((144.0f * _mp3_header_output->bitrate) / _mp3_header_output->frequency) + (_tmpheader->padding_bit ? 1 : 0);
   }
   else
     _mp3_header_output->framesize = 0; //unable to determine
 
-  const size_t CRCSIZE = 2;
+  static const size_t CRCSIZE = 2;
   size_t sideinfo_len;
 
   if (_mp3_header_output->version == MPEGVERSION_1) /* MPEG 1 */
@@ -389,8 +383,6 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
   if (_mp3_header_output->crc == MP3CRC_OK)
   {
     char audiodata[38 + 1]; //+1 to hold the 0 char
-    uint16 crc16;
-    uint16 crcstored;
 
     _mp3_header_output->crc = MP3CRC_MISMATCH; //as a starting point, we assume the worst
 
@@ -399,13 +391,13 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
     reader.readChars(audiodata, sideinfo_len);
     audiodata[sideinfo_len] = '\0';
 
-    crc16 = calcCRC(audiodata, sideinfo_len);
+    uint16 crc16 = calcCRC(audiodata, sideinfo_len);
 
     beg = end;
     end = beg + CRCSIZE;
 
     reader.setCur(beg);
-    crcstored = (uint16)io::readBENumber(reader, CRCSIZE);
+    uint16 crcstored = (uint16)io::readBENumber(reader, CRCSIZE);
 
     // a mismatch doesn't mean the file is unusable
     // it has just some bits in the wrong place
@@ -415,8 +407,8 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
   if (_mp3_header_output->framesize > 0 && mp3size >= _mp3_header_output->framesize) // this means bitrate is not none too
   {
     _mp3_header_output->frames = fto_nearest_i((float)mp3size / _mp3_header_output->framesize);
-    // bitrate becomes byterate (per second) if divided by 8
-    _mp3_header_output->time = fto_nearest_i( (float)mp3size / (_mp3_header_output->bitrate / 8) );
+    // bit rate becomes byte rate (per second) if divided by 8
+    _mp3_header_output->time = fto_nearest_i( mp3size / (_mp3_header_output->bitrate / 8.0f) );
   }
   else
   {
@@ -424,8 +416,6 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
     _mp3_header_output->time = 0;
   }
   //if we got to here it's okay
-  _mp3_header_output->datasize = reader.getEnd() - reader.getBeg();
+  _mp3_header_output->datasize = static_cast<uint32>(reader.getEnd() - reader.getBeg());
   return true;
 }
-
-

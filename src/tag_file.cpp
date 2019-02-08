@@ -26,15 +26,15 @@
 // http://download.sourceforge.net/id3lib/
 
 #include <stdio.h>  //for BUFSIZ and functions remove & rename
-#include "writers.h"
-#include "io_strings.h"
+#include "id3/writers.h"
+#include "id3/io_strings.h"
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 
 using namespace dami;
 
-#if !defined HAVE_MKSTEMP
-#  include <stdio.h>
-#endif
+//#if !defined HAVE_MKSTEMP
+//#  include <stdio.h>
+//#endif
 
 #if defined HAVE_UNISTD_H
 #  include <unistd.h>
@@ -44,24 +44,25 @@ using namespace dami;
 #  include <sys/stat.h>
 #endif
 
-#if defined WIN32 && (!defined(WINCE))
+#if defined _WIN32 && (!defined(WINCE))
 #  include <windows.h>
 static int truncate(const char *path, size_t length)
 {
   int result = -1;
   HANDLE fh;
 
-  fh = ::CreateFile(path,
-                    GENERIC_WRITE | GENERIC_READ,
-                    0,
-                    NULL,
-                    OPEN_EXISTING,
-                    FILE_ATTRIBUTE_NORMAL,
-                    NULL);
+  fh = ::CreateFileA(
+           path,
+           GENERIC_WRITE | GENERIC_READ,
+           0,
+           NULL,
+           OPEN_EXISTING,
+           FILE_ATTRIBUTE_NORMAL,
+           NULL);
 
   if(INVALID_HANDLE_VALUE != fh)
   {
-    SetFilePointer(fh, length, NULL, FILE_BEGIN);
+    SetFilePointer(fh, static_cast<LONG>(length), NULL, FILE_BEGIN);
     SetEndOfFile(fh);
     CloseHandle(fh);
     result = 0;
@@ -150,7 +151,7 @@ size_t ID3_TagImpl::Link(ID3_Reader &reader, flags_t tag_types)
 {
   _tags_to_parse.set(tag_types);
 
-  _file_name = "";
+  _file_name.clear();
   _changed = true;
 
   this->ParseReader(reader);
@@ -158,7 +159,7 @@ size_t ID3_TagImpl::Link(ID3_Reader &reader, flags_t tag_types)
   return this->GetPrependedBytes();
 }
 
-size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
+size_t RenderV1ToFile(const ID3_TagImpl& tag, fstream& file)
 {
   if (!file)
   {
@@ -246,8 +247,8 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
       //ID3_THROW_DESC(ID3E_NoFile, "filename too long");
     }
     char sTempFile[ID3_PATH_LENGTH];
-    strcpy(sTempFile, filename.c_str());
-    strcat(sTempFile, sTmpSuffix.c_str());
+    strcpy_s(sTempFile, ID3_PATH_LENGTH, filename.c_str());
+    strcat_s(sTempFile, ID3_PATH_LENGTH, sTmpSuffix.c_str());
 
 #if ((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
     // This section is for Windows folk && gcc 3.x folk
@@ -262,12 +263,12 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 
     tmpOut.write(tagData, tagSize);
     file.seekg(tag.GetPrependedBytes(), ios::beg);
-    char *tmpBuffer[BUFSIZ];
     while (!file.eof())
     {
-      file.read((char *)tmpBuffer, BUFSIZ);
-      size_t nBytes = file.gcount();
-      tmpOut.write((char *)tmpBuffer, nBytes);
+      char tmpBuffer[BUFSIZ];
+      file.read(tmpBuffer, BUFSIZ);
+      size_t nBytes = static_cast<size_t>(file.gcount());
+      tmpOut.write(tmpBuffer, nBytes);
     }
 
 #else //((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
@@ -443,10 +444,10 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
 #if (defined(__GNUC__) && __GNUC__ == 2)
       size_t nBytesToRead = (size_t)dami::min((unsigned int)(nBytesRemaining - nBytesCopied), (unsigned int)BUFSIZ);
 #else
-      size_t nBytesToRead = min((unsigned int)(nBytesRemaining - nBytesCopied), (unsigned int)BUFSIZ);
+      size_t nBytesToRead = min((nBytesRemaining - nBytesCopied), (size_t)BUFSIZ);
 #endif
       file.read((char *)aucBuffer, nBytesToRead);
-      size_t nBytesRead = file.gcount();
+      size_t nBytesRead = static_cast<size_t>(file.gcount());
 
       if (nBytesRead != nBytesToRead)
       {
@@ -456,7 +457,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
       }
       if (nBytesRead > 0)
       {
-        long offset = nBytesRead + this->GetPrependedBytes();
+        long offset = static_cast<long>(nBytesRead + this->GetPrependedBytes());
         file.seekp(-offset, ios::cur);
         file.write((char *)aucBuffer, nBytesRead);
         file.seekg(this->GetPrependedBytes(), ios::cur);
@@ -509,7 +510,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
   _appended_bytes  = (ulTags & ID3TT_APPENDED)  ? 0 : _appended_bytes;
   _file_size = data_size + _prepended_bytes + _appended_bytes;
 
-  _changed = _file_tags.remove(ulTags) || _changed;
+  _changed |= _file_tags.remove(ulTags);
 
   return ulTags;
 }

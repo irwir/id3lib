@@ -19,27 +19,27 @@ dnl #undef ID3_DISABLE_CHECKS
 dnl END ACCONFIG
 dnl ACCONFIG BOTTOM
 dnl #if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) && defined (__cplusplus)
-dnl 
+dnl
 dnl #define DEBUG
-dnl 
+dnl
 dnl #include <libcw/sys.h>
 dnl #include <libcw/debug.h>
-dnl 
+dnl
 dnl #define ID3D_INIT_DOUT()    Debug( libcw_do.on() )
 dnl #define ID3D_INIT_WARNING() Debug( dc::warning.on() )
 dnl #define ID3D_INIT_NOTICE()  Debug( dc::notice.on() )
 dnl #define ID3D_NOTICE(x)      Dout( dc::notice, x )
 dnl #define ID3D_WARNING(x)     Dout( dc::warning, x )
-dnl 
+dnl
 dnl #else
-dnl 
+dnl
 dnl #  define ID3D_INIT_DOUT()
 dnl #  define ID3D_INIT_WARNING()
 dnl #  define ID3D_INIT_NOTICE()
 dnl #  define ID3D_NOTICE(x)
 dnl #  define ID3D_WARNING(x)
-dnl 
+dnl
 dnl #endif /* defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) */
-dnl    
+dnl
 dnl END ACCONFIG
 

@@ -24,7 +24,7 @@ Version 3.05a of ID3Lib has some known limitations...
     now parsed and re-rendered, but the file and tag alter frame flags are not
     yet observed
 
-* No support for the read-only frame flag.  It is currently ignored---such 
+* No support for the read-only frame flag.  It is currently ignored---such
   frames can be altered at will.
 
 * No support as yet for the verification of frames before rendering.
@@ -38,5 +38,5 @@ Version 3.05a of ID3Lib has some known limitations...
 * ID3Lib currently has no direct support for things like the language and
   currency fields.  It is up to the application to generate the data for these
   fields manually.  Soon, ID3Lib will have these things assigned to IDs so that
-  the applications programmer will not have to remember the ISO tables for the 
+  the applications programmer will not have to remember the ISO tables for the
   actual strings.

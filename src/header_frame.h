@@ -30,7 +30,7 @@
 #define _ID3LIB_HEADER_FRAME_H_
 
 #include "header.h"
-#include "field.h"
+#include "id3/field.h"
 
 struct ID3_FrameDef;
 
@@ -49,7 +49,7 @@ public:
   };
 
   ID3_FrameHeader() : _frame_def(NULL), _dyn_frame_def(false) { ; }
-  virtual ~ID3_FrameHeader() { this->Clear(); }
+  ~ID3_FrameHeader() { ID3_FrameHeader::Clear(); }
 
   /* */ size_t        Size() const;
   /* */ bool          Parse(ID3_Reader&);
@@ -59,11 +59,12 @@ public:
   const char*         GetTextID() const;
   const ID3_FrameDef* GetFrameDef() const;
   /* */ bool          Clear();
+  ID3_FrameHeader(const ID3_FrameHeader&);
   ID3_FrameHeader&    operator=(const ID3_FrameHeader&);
 
-  bool SetCompression(bool b) { return this->SetFlags(COMPRESSION, b); }
-  bool SetEncryption(bool b)  { return this->SetFlags(ENCRYPTION, b); }
-  bool SetGrouping(bool b)    { return this->SetFlags(GROUPING, b); }
+  bool SetCompression(bool b) { return SetFlags(COMPRESSION, b); }
+  bool SetEncryption(bool b)  { return SetFlags(ENCRYPTION, b); }
+  bool SetGrouping(bool b)    { return SetFlags(GROUPING, b); }
 
   bool GetCompression() const { return _flags.test(COMPRESSION); }
   bool GetEncryption() const  { return _flags.test(ENCRYPTION); }
@@ -84,7 +85,6 @@ protected:
 private:
   ID3_FrameDef*       _frame_def;
   bool                _dyn_frame_def;
-}
-;
+};
 
 #endif /* _ID3LIB_HEADER_FRAME_ */

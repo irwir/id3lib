@@ -2,11 +2,11 @@
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -110,7 +110,7 @@ AC_DIVERT_POP()dnl
 
 dnl declare --enable-* args and collect ac_help strings
 AC_ARG_ENABLE(ansi,  [  --enable-ansi           turn on strict ansi [default=no]], , enable_ansi=no)
-dnl 
+dnl
 AC_SUBST(ID3LIB_DEBUG_FLAGS)
 
 dnl Checks for programs
@@ -136,7 +136,7 @@ AC_CHECK_HEADERS(zlib.h wchar.h sys/param.h unistd.h )
 dnl check wheter iconv is the part of libc.
 AC_CHECK_HEADERS( iconv.h, has_iconv=1,  has_iconv=0)
 
-dnl if we have iconv library, we have to decide if it 
+dnl if we have iconv library, we have to decide if it
 dnl is present in libc
 
 ICONV_LIB=
@@ -266,7 +266,7 @@ dnl std namespace.  Must be used AFTER configuring ALL compilers.
 dnl LF_HONOR_STD
 
 dnl ACCONFIG TEMPLATE
-dnl 
+dnl
 dnl /* config.h defines these preprocesser symbols to be used by id3lib for
 dnl  * determining internal versioning information.  The intent is that these
 dnl  * macros will be made available in the library via constants, functions,
