@@ -49,11 +49,12 @@ public:
   };
 
   ID3_Header()
-    : _spec (ID3V2_UNKNOWN),
+    : _info(NULL),
       _data_size (0),
+      _spec(ID3V2_UNKNOWN),
       _changed (false)
   {
-    this->Clear();
+    ID3_Header::Clear();
     _changed = false;
   }
   virtual ~ID3_Header() { ; }
@@ -64,7 +65,7 @@ public:
   /*   */ bool       SetDataSize(size_t size)
   {
     bool changed = size != _data_size;
-    _changed = _changed || changed;
+    _changed |= changed;
     _data_size = size;
     return changed;
   }
@@ -72,39 +73,40 @@ public:
 
   virtual bool       Clear()
   {
-    bool changed = this->SetDataSize(0);
-    if (this->GetSpec() == ID3V2_UNKNOWN)
+    bool changed = SetDataSize(0);
+    if (GetSpec() == ID3V2_UNKNOWN)
     {
-      this->SetSpec(ID3V2_LATEST);
+      SetSpec(ID3V2_LATEST);
       changed = true;
     }
-    changed = _flags.clear() || changed;
-    _changed = changed || _changed;
+    changed |= _flags.clear();
+    _changed |= changed;
     return changed;
   }
+
   virtual size_t     Size() const = 0;
 
   virtual ID3_Err    Render(ID3_Writer&) const = 0;
   virtual bool       Parse(ID3_Reader&) = 0;
 
+  ID3_Header(const ID3_Header&) = delete;
   ID3_Header &operator=( const ID3_Header &rhs)
   {
     if (this != &rhs)
     {
-      this->SetSpec(rhs.GetSpec());
-      this->SetDataSize(rhs.GetSpec());
-      this->_flags = rhs._flags;
+      SetSpec(rhs.GetSpec());
+      SetDataSize(rhs.GetSpec());
+      _flags = rhs._flags;
     }
     return *this;
   }
 
 protected:
-  ID3_V2Spec      _spec;             // which version of the spec
-  size_t          _data_size;        // how big is the data?
   ID3_Flags       _flags;            // header flags
-  Info*     _info;             // header info w.r.t. id3v2 spec
+  Info*           _info;             // header info w.r.t. id3v2 spec
+  size_t          _data_size;        // how big is the data?
+  ID3_V2Spec      _spec;             // which version of the spec
   bool            _changed;          // has the header changed since parsing
-}
-;
+};
 
 #endif /* _ID3LIB_HEADER_H */

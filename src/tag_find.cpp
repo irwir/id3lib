@@ -74,15 +74,15 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   {
     // We want to cycle through the list to find the matching frame.  We
     // should begin from the cursor, search each successive frame, wrapping
-    // if necessary.  The enclosing loop and the assignment statments below
+    // if necessary.  The enclosing loop and the assignment statements below
     // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
     const_iterator
-      begin  = (0 == iCount ? _cursor       : _frames.begin()),
-      end    = (0 == iCount ? _frames.end() : _cursor);
+      beg  = (0 == iCount ? _cursor       : _frames.begin()),
+      en   = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (const_iterator cur = begin; cur != end; ++cur)
+    for (const_iterator cur = beg; cur != en; ++cur)
     {
       if ((*cur != NULL) && ((*cur)->GetID() == id))
       {
@@ -97,7 +97,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const String& data) const
 {
   ID3_Frame *frame = NULL;
   ID3D_NOTICE( "Find: looking for comment with data = " << data.c_str() );
@@ -114,7 +114,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
     ID3D_NOTICE( "Find: iCount = " << iCount );
     // We want to cycle through the list to find the matching frame.  We
     // should begin from the cursor, search each successive frame, wrapping
-    // if necessary.  The enclosing loop and the assignment statments below
+    // if necessary.  The enclosing loop and the assignment statements below
     // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
@@ -128,7 +128,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
       if ((*cur != NULL) && ((*cur)->GetID() == id) &&
           (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = (*cur)->GetField(fldID);
+        const ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;
@@ -152,7 +152,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const WString& data) const
 {
   ID3_Frame *frame = NULL;
 
@@ -166,7 +166,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) co
   {
     // We want to cycle through the list to find the matching frame.  We
     // should begin from the cursor, search each successive frame, wrapping
-    // if necessary.  The enclosing loop and the assignment statments below
+    // if necessary.  The enclosing loop and the assignment statements below
     // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
@@ -179,7 +179,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) co
       if ((*cur != NULL) && ((*cur)->GetID() == id) &&
           (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = (*cur)->GetField(fldID);
+        const ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;
@@ -214,15 +214,15 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, uint32 data) con
   {
     // We want to cycle through the list to find the matching frame.  We
     // should begin from the cursor, search each successive frame, wrapping
-    // if necessary.  The enclosing loop and the assignment statments below
+    // if necessary.  The enclosing loop and the assignment statements below
     // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
     const_iterator
-      begin  = (0 == iCount ? _cursor       : _frames.begin()),
-      end    = (0 == iCount ? _frames.end() : _cursor);
+      beg  = (0 == iCount ? _cursor       : _frames.begin()),
+      en   = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (const_iterator cur = begin; cur != end; ++cur)
+    for (const_iterator cur = beg; cur != en; ++cur)
     {
       if ((*cur != NULL) && ((*cur)->GetID() == id) &&
           ((*cur)->GetField(fldID)->Get() == data))

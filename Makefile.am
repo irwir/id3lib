@@ -1,10 +1,10 @@
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -24,7 +24,7 @@ EXTRA_DIST =                    \
 if ID3_NEEDZLIB
 zlib_subdir = zlib
 else
-zlib_subdir = 
+zlib_subdir =
 endif
 
 SUBDIRS =  . m4 $(zlib_subdir) doc include id3com src examples
@@ -32,10 +32,10 @@ DIST_SUBDIRS = . m4 zlib doc include id3com src examples prj libprj
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
-config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in 
+config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in 
+id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 docsdistdir = $(PACKAGE)-doc-$(VERSION)

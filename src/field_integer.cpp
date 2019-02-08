@@ -27,7 +27,7 @@
 
 #include "field_impl.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
-#include "io_helpers.h"
+#include "id3/io_helpers.h"
 
 using namespace dami;
 
@@ -77,12 +77,9 @@ uint32 ID3_FieldImpl::Get() const
 
 uint32 ID3_FieldImpl::GetInteger() const
 {
-  uint32 val = 0;
-  if (this->GetType() == ID3FTY_INTEGER)
-  {
-    val = _integer;
-  }
-  return val;
+  if (GetType() == ID3FTY_INTEGER)
+    return _integer;
+  return 0;
 }
 
 bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)

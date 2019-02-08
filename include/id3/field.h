@@ -30,7 +30,7 @@
 #define _ID3LIB_FIELD_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -69,7 +69,7 @@ public:
   virtual size_t        Add(const char*) = 0;
 
   virtual dami::String  GetText() const = 0;
-  virtual size_t        SetText(dami::String) = 0;
+  virtual size_t        SetText(const dami::String&) = 0;
 
   // Unicode string field functions
   virtual ID3_Field&    operator= (const unicode_t* s) = 0;
@@ -88,7 +88,7 @@ public:
   virtual void          ToFile(const char *sInfo) const = 0;
   virtual dami::BString GetBinary() const = 0;
 
-  // miscelaneous functions
+  // miscellaneous functions
   virtual ID3_Field&    operator=( const ID3_Field & ) = 0;
   virtual bool          InScope(ID3_V2Spec spec) const = 0;
 
@@ -119,15 +119,15 @@ class ID3_CPP_EXPORT ID3_FrameInfo
 public:
   ID3_FrameInfo() {};
   ~ID3_FrameInfo() {};
-  char *ShortName(ID3_FrameID frameid);
-  char *LongName(ID3_FrameID frameid);
-  const char *Description(ID3_FrameID frameid);
-  int MaxFrameID();
-  int NumFields(ID3_FrameID frameid);
-  ID3_FieldID FieldID(ID3_FrameID frameid, int fieldnum);
-  ID3_FieldType FieldType(ID3_FrameID frameid, int fieldnum);
-  size_t FieldSize(ID3_FrameID frameid, int fieldnum);
-  flags_t FieldFlags(ID3_FrameID frameid, int fieldnum);
+  static char *ShortName(ID3_FrameID frameid);
+  static char *LongName(ID3_FrameID frameid);
+  static const char *Description(ID3_FrameID frameid);
+  static int MaxFrameID() { return ID3FID_LASTFRAMEID - 1; }
+  static int NumFields(ID3_FrameID frameid);
+  static ID3_FieldID FieldID(ID3_FrameID frameid, int fieldnum);
+  static ID3_FieldType FieldType(ID3_FrameID frameid, int fieldnum);
+  static size_t FieldSize(ID3_FrameID frameid, int fieldnum);
+  static flags_t FieldFlags(ID3_FrameID frameid, int fieldnum);
 };
 
 #endif /* _ID3LIB_FIELD_H_ */

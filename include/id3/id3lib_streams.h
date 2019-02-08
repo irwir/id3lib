@@ -26,7 +26,7 @@
 #define STREAMS_H_DEFINE
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif

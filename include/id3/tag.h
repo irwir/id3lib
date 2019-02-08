@@ -30,7 +30,7 @@
 #define _ID3LIB_TAG_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -126,17 +126,17 @@ public:
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
 
-  static size_t IsV2Tag(const uchar*);
-  static size_t IsV2Tag(ID3_Reader&);
+  static uint32 IsV2Tag(const uchar*);
+  static uint32 IsV2Tag(ID3_Reader&);
 
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f);
   size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
-  void       SetCompression(bool);
+  void       SetCompression(bool) {};
   void       AddFrames(const ID3_Frame *, size_t);
-  bool       HasLyrics() const;
-  bool       HasV2Tag()  const;
-  bool       HasV1Tag()  const;
+  bool       HasLyrics() const { return this->HasTagType(ID3TT_LYRICS); }
+  bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
+  bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }
   size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
   //ID3_Frame* operator[](size_t) const;
   //ID3_Frame* GetFrameNum(size_t) const;

@@ -30,7 +30,7 @@
 #endif
 
 //#include <string.h>
-#include "tag.h"
+#include "id3/tag.h"
 #include "frame_impl.h"
 #include "field_impl.h"
 #include "frame_def.h"
@@ -124,7 +124,7 @@ bool ID3_FrameImpl::SetID(ID3_FrameID id)
   bool changed = (this->GetID() != id);
   if (changed)
   {
-    this->_SetID(id);
+    _SetID(id);
     _changed = true;
   }
   return changed;
@@ -132,9 +132,8 @@ bool ID3_FrameImpl::SetID(ID3_FrameID id)
 
 bool ID3_FrameImpl::_SetID(ID3_FrameID id)
 {
-  bool changed = this->_ClearFields();
-  changed = _hdr.SetFrameID(id) || changed;
-  this->_InitFields();
+  bool changed = _ClearFields() | _hdr.SetFrameID(id);
+  _InitFields();
   return changed;
 }
 
@@ -165,9 +164,9 @@ ID3_Field* ID3_FrameImpl::GetField(ID3_FieldID fieldName) const
   return field;
 }
 
-size_t ID3_FrameImpl::NumFields() const
+uint32 ID3_FrameImpl::NumFields() const
 {
-  return _fields.size();
+  return static_cast<uint32>(_fields.size());
 }
 
 size_t ID3_FrameImpl::Size()
@@ -248,7 +247,7 @@ ID3_FrameImpl::operator=( const ID3_Frame &rFrame )
 
 const char* ID3_FrameImpl::GetDescription(ID3_FrameID id)
 {
-  ID3_FrameDef* myFrameDef = ID3_FindFrameDef(id);
+  const ID3_FrameDef* myFrameDef = ID3_FindFrameDef(id);
   if (myFrameDef != NULL)
   {
     return myFrameDef->sDescription;

@@ -20,9 +20,9 @@ Requires:       zlib
 
 %description
 This package provides a software library for manipulating ID3v1 and ID3v2 tags.
-It provides a convenient interface for software developers to include 
-standards-compliant ID3v1/2 tagging capabilities in their applications.  
-Features include identification of valid tags, automatic size conversions, 
+It provides a convenient interface for software developers to include
+standards-compliant ID3v1/2 tagging capabilities in their applications.
+Features include identification of valid tags, automatic size conversions,
 (re)synchronisation of tag frames, seamless tag (de)compression, and optional
 padding facilities. Additionally, it can tell mp3 header info, like bitrate etc.
 
@@ -51,7 +51,7 @@ Group:		Applications/File
 Requires:       %{name}
 
 %description	examples
-This package contains simple example applications that make use of id3lib, a 
+This package contains simple example applications that make use of id3lib, a
 software library for ID3v1 and ID3v2 tag manipulation.
 
 %prep
@@ -77,7 +77,7 @@ make prefix=$RPM_BUILD_ROOT%{prefix} install
 %else
 
 make docs
- 
+
 # strip down the doc and examples directories so we can copy w/impunity
 for i in doc/ examples/; do \
   find $i                   \

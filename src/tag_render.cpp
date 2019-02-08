@@ -27,11 +27,9 @@
 
 #include <memory.h>
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
-#include "helpers.h"
-#include "writers.h"
-#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
-#include "io_helpers.h"
-#include "io_strings.h"
+#include "id3/helpers.h"
+#include "id3/writers.h"
+#include "id3/io_strings.h"
 
 #if defined HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -130,7 +128,7 @@ ID3_Err id3::v2::render(ID3_Writer& writer, const ID3_TagImpl& tag)
   }
 
   // zero the remainder of the buffer so that our padding bytes are zero
-  luint nPadding = tag.PaddingSize(frmSize);
+  size_t nPadding = tag.PaddingSize(frmSize);
   ID3D_NOTICE( "id3::v2::render(): padding size = " << nPadding );
 
   hdr.SetDataSize(frmSize + tag.GetExtendedBytes() + nPadding);
@@ -193,18 +191,16 @@ size_t ID3_TagImpl::Size() const
 
 size_t ID3_TagImpl::PaddingSize(size_t curSize) const
 {
-  luint newSize = 0;
-
   // if padding is switched off
   if (! _is_padded)
-  {
     return 0;
-  }
+
+  size_t newSize = 0;
 
   // if the old tag was large enough to hold the new tag, then we will simply
   // pad out the difference - that way the new tag can be written without
   // shuffling the rest of the song file around
-  if ((this->GetPrependedBytes()-ID3_TagHeader::SIZE > 0) &&
+  if ((this->GetPrependedBytes() > ID3_TagHeader::SIZE) &&
       (this->GetPrependedBytes()-ID3_TagHeader::SIZE >= curSize) &&
       (this->GetPrependedBytes()-ID3_TagHeader::SIZE - curSize) < ID3_PADMAX)
   {
@@ -212,7 +208,7 @@ size_t ID3_TagImpl::PaddingSize(size_t curSize) const
   }
   else
   {
-    luint tempSize = curSize + ID3_GetDataSize(*this) +
+    size_t tempSize = curSize + ID3_GetDataSize(*this) +
                      this->GetAppendedBytes() + ID3_TagHeader::SIZE;
 
     // this method of automatic padding rounds the COMPLETE FILE up to the

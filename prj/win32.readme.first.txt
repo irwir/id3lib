@@ -32,7 +32,7 @@ A) ***Your project wants to link id3lib static, and has mfc linked static:
 3) make your project dependend on id3lib, and make id3lib dependend on zlib
 4) Add /D ID3LIB_LINKOPTION=1 to your project options (settings, C/C++ tab)
 5) Add the following include dirs to your program:
-   /I <path_to_id3lib>\\include /I <path_to_id3lib>\\include\\id3  
+   /I <path_to_id3lib>\\include /I <path_to_id3lib>\\include\\id3
 6) (add your code which uses id3lib)
 7) Add ole32.lib to link to your project if it is not allready there.
 8) Try to compile, and see if you need any of the following:
@@ -64,7 +64,7 @@ C)***Your project wants to link id3lib dynamic: (instructions below for vc)
 3) make your project dependend on id3lib, and make id3lib dependend on zlib
 4) Add /D ID3LIB_LINKOPTION=3 to your project options (settings, C/C++ tab) (*note this is a different option than above)
 5) Add the following include dirs to your program:
-   /I <path_to_id3lib>\\include /I <path_to_id3lib>\\include\\id3  
+   /I <path_to_id3lib>\\include /I <path_to_id3lib>\\include\\id3
 6) (add your code which uses id3lib)
 7) Compile.
 8) dump id3lib.dll in your programs project dir.

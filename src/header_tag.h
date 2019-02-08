@@ -52,7 +52,7 @@ public:
   };
 
   ID3_TagHeader() : ID3_Header() { ; }
-  virtual ~ID3_TagHeader() { ; }
+  ~ID3_TagHeader() { ; }
   ID3_TagHeader(const ID3_TagHeader& rhs) : ID3_Header() { *this = rhs; }
 
   bool   SetSpec(ID3_V2Spec);
@@ -98,14 +98,14 @@ public:
   // ff = flags byte
   // ss = size bytes (less than $80)
   static const char* const ID;
-  enum
+  enum : uint32
   {
     ID_SIZE        = 3,
     MAJOR_OFFSET   = 3,
     MINOR_OFFSET   = 4,
     FLAGS_OFFSET   = 5,
     SIZE_OFFSET    = 6,
-    SIZE           = 10 // does not include extented headers
+    SIZE           = 10 // does not include extended headers
   };
 
 };

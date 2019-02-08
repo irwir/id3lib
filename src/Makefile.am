@@ -1,10 +1,10 @@
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -14,7 +14,7 @@ LT_VERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 if ID3_NEEDZLIB
 zlib_include = -I$(top_srcdir)/zlib/include
 else
-zlib_include = 
+zlib_include =
 endif
 
 INCLUDES = \
@@ -31,7 +31,7 @@ noinst_HEADERS =                \
   header_tag.h                  \
   mp3_header.h                  \
   tag_impl.h                    \
-  spec.h                        
+  spec.h
 
 id3lib_sources =                \
   c_wrapper.cpp                 \
@@ -66,9 +66,9 @@ id3lib_sources =                \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
   utils.cpp                     \
-  writers.cpp                   
+  writers.cpp
 
-lib_LTLIBRARIES   = libid3.la 
+lib_LTLIBRARIES   = libid3.la
 
 libid3_la_SOURCES = $(id3lib_sources)
 

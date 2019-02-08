@@ -1,6 +1,6 @@
 /* uncompr.c -- decompress a memory buffer
  * Copyright (C) 1995-2002 Jean-loup Gailly.
- * For conditions of distribution and use, see copyright notice in zlib.h 
+ * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /* @(#) $Id: uncompr.c,v 1.4 2002/06/28 12:02:48 t1mpy Exp $ */

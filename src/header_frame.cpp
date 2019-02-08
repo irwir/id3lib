@@ -26,22 +26,21 @@
 // http://download.sourceforge.net/id3lib/
 
 
-#include <memory.h>
 #include "header_frame.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 #include "frame_def.h"
 #include "field_def.h"
 #include "field_impl.h"
-#include "io_helpers.h"
+#include "id3/io_helpers.h"
 
 using namespace dami;
 
 void ID3_FrameHeader::SetUnknownFrame(const char* id)
 {
   Clear();
-  _frame_def = LEAKTESTNEW(ID3_FrameDef);
-  if (NULL == _frame_def)
-  {
+  try {
+    _frame_def = LEAKTESTNEW(ID3_FrameDef);
+  } catch (...) {
     // log this;
     return;
   }
@@ -52,13 +51,13 @@ void ID3_FrameHeader::SetUnknownFrame(const char* id)
   _frame_def->sDescription = NULL;
   if (strlen(id) <= 3)
   {
-    strcpy(_frame_def->sShortTextID, id);
-    strcpy(_frame_def->sLongTextID, "");
+    strcpy_s(_frame_def->sShortTextID, _countof(_frame_def->sShortTextID), id);
+    *_frame_def->sLongTextID = '\0';
   }
   else
   {
-    strcpy(_frame_def->sLongTextID, id);
-    strcpy(_frame_def->sShortTextID, "");
+    strcpy_s(_frame_def->sLongTextID, _countof(_frame_def->sLongTextID), id);
+    *_frame_def->sShortTextID = '\0';
   }
   _dyn_frame_def = true;
 }
@@ -123,7 +122,7 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
   this->SetDataSize(dataSize);
 
-  uint32 flags = io::readBENumber(reader, _info->frame_bytes_flags);
+  flags_t flags = (flags_t)io::readBENumber(reader, _info->frame_bytes_flags);
   _flags.add(flags);
 
   ID3D_NOTICE( "ID3_FrameHeader::Parse: flags = " << flags );
@@ -135,8 +134,6 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
 
 ID3_Err ID3_FrameHeader::Render(ID3_Writer& writer) const
 {
-  size_t size = 0;
-
   if (NULL == _frame_def)
   {
     // TODO: log this
@@ -164,19 +161,19 @@ ID3_Err ID3_FrameHeader::Render(ID3_Writer& writer) const
 
 const char* ID3_FrameHeader::GetTextID() const
 {
-  char *textID = NULL;
-  if (_info && _frame_def)
-  {
-    if (_info->frame_bytes_id == strlen(_frame_def->sShortTextID))
-    {
-      textID = _frame_def->sShortTextID;
-    }
-    else
-    {
-      textID = _frame_def->sLongTextID;
-    }
-  }
-  return (const char*)textID;
+  if (!_info || !_frame_def)
+    return NULL;
+
+  if (_info->frame_bytes_id == strlen(_frame_def->sShortTextID))
+    return _frame_def->sShortTextID;
+
+  return _frame_def->sLongTextID;
+}
+
+ID3_FrameHeader::ID3_FrameHeader(const ID3_FrameHeader& hdr)
+{
+  if (this != &hdr)
+    *this = hdr;
 }
 
 ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
@@ -192,7 +189,7 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
     else
     {
       _frame_def = LEAKTESTNEW(ID3_FrameDef);
-      if (NULL == _frame_def)
+//      if (NULL == _frame_def)
       {
         // TODO: throw something here...
       }
@@ -200,8 +197,8 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
       _frame_def->bTagDiscard = hdr._frame_def->bTagDiscard;
       _frame_def->bFileDiscard = hdr._frame_def->bFileDiscard;
       _frame_def->aeFieldDefs = hdr._frame_def->aeFieldDefs;
-      strcpy(_frame_def->sShortTextID, hdr._frame_def->sShortTextID);
-      strcpy(_frame_def->sLongTextID, hdr._frame_def->sLongTextID);
+      strcpy_s(_frame_def->sShortTextID, sizeof _frame_def->sShortTextID, hdr._frame_def->sShortTextID);
+      strcpy_s(_frame_def->sLongTextID, sizeof _frame_def->sLongTextID, hdr._frame_def->sLongTextID);
       _dyn_frame_def = true;
     }
   }
@@ -217,11 +214,6 @@ ID3_FrameID ID3_FrameHeader::GetFrameID() const
   }
 
   return eID;
-}
-
-const ID3_FrameDef *ID3_FrameHeader::GetFrameDef() const
-{
-  return _frame_def;
 }
 
 bool ID3_FrameHeader::Clear()
