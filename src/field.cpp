@@ -1254,7 +1254,7 @@ static ID3_FieldDef ID3FD_Volume1[] =
 // USER       ID3FID_TERMSOFUSE        Terms of use
 // USLT  ULT  ID3FID_UNSYNCEDLYRICS    Unsynchronized lyric/text transcription
 // WCOM  WCM  ID3FID_WWWCOMMERCIALINFO Commercial information
-// WCOP  WCM  ID3FID_WWWCOPYRIGHT      Copyright/Legal infromation
+// WCOP  WCM  ID3FID_WWWCOPYRIGHT      Copyright/Legal information
 // WOAF  WCP  ID3FID_WWWAUDIOFILE      Official audio file webpage
 // WOAR  WAF  ID3FID_WWWARTIST         Official artist/performer webpage
 // WOAS  WAR  ID3FID_WWWAUDIOSOURCE    Official audio source webpage
@@ -1278,11 +1278,11 @@ static ID3_FieldDef ID3FD_Volume1[] =
 // RVRB  REV  ID3FID_REVERB            Reverb
 // SYTC  STC  ID3FID_SYNCEDTEMPO       Synchronized tempo codes
 //       CRM  ID3FID_METACRYPTO        Encrypted meta frame
-ID3_Frame* convertEQUA(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertEQUA(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertIPLS(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertIPLS(const ID3_Frame* oldframe, ID3_V2Spec tospec)
 {
   if (tospec == ID3V2_4_0)
   {
@@ -1293,27 +1293,27 @@ ID3_Frame* convertIPLS(ID3_Frame* oldframe, ID3_V2Spec tospec)
   }
   else return NULL;
 }
-ID3_Frame* convertRVAD(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertRVAD(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertTDAT(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertTDAT(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertTIME(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertTIME(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertTORY(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertTORY(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertTRDA(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertTRDA(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
-ID3_Frame* convertTYER(ID3_Frame* oldframe, ID3_V2Spec tospec)
+ID3_Frame* convertTYER(const ID3_Frame* /*oldframe*/, ID3_V2Spec /*tospec*/)
 {
   return NULL;
 }
@@ -1406,7 +1406,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_TERMSOFUSE,         ""   , "USER", ID3V2_3_0     , ID3V2_LATEST, NULL,        false, false, ID3FD_TermsOfUse,     "Terms of use"},
   {ID3FID_UNSYNCEDLYRICS,     "ULT", "USLT", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_GeneralText,    "Unsynchronized lyric/text transcription"},
   {ID3FID_WWWCOMMERCIALINFO,  "WCM", "WCOM", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Commercial information"},
-  {ID3FID_WWWCOPYRIGHT,       "WCP", "WCOP", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Copyright/Legal infromation"},
+  {ID3FID_WWWCOPYRIGHT,       "WCP", "WCOP", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Copyright/Legal information"},
   {ID3FID_WWWAUDIOFILE,       "WAF", "WOAF", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Official audio file webpage"},
   {ID3FID_WWWARTIST,          "WAR", "WOAR", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Official artist/performer webpage"},
   {ID3FID_WWWAUDIOSOURCE,     "WAS", "WOAS", ID3V2_EARLIEST, ID3V2_LATEST, NULL,        false, false, ID3FD_URL,            "Official audio source webpage"},
@@ -1708,21 +1708,14 @@ ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
 ID3_FrameID
 ID3_FindFrameID(const char *id)
 {
-  ID3_FrameID fid = ID3FID_NOFRAME;
-
+  size_t idlen = strlen(id);
   for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
-  {
-    if (((strcmp(ID3_FrameDefs[cur].sShortTextID, id) == 0) &&
-         strlen(id) == 3) ||
-        ((strcmp(ID3_FrameDefs[cur].sLongTextID,  id) == 0) &&
-         strlen(id) == 4))
-    {
-      fid = ID3_FrameDefs[cur].eID;
-      break;
-    }
-  }
+    if ((idlen == 3 && strcmp(ID3_FrameDefs[cur].sShortTextID, id) == 0)
+     ||
+        (idlen == 4 && strcmp(ID3_FrameDefs[cur].sLongTextID, id) == 0))
+      return ID3_FrameDefs[cur].eID;
 
-  return fid;
+  return ID3FID_NOFRAME;
 }
 
 ID3_Err ID3_FieldImpl::Render(ID3_Writer& writer) const
@@ -1820,7 +1813,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  **   {
  **     cout << "Short ID: " << myFrameInfo.ShortName(ID3_FrameID(cur)) <<
  **     " Long ID: " << myFrameInfo.LongName(ID3_FrameID(cur)) <<
- **     " Desription: " << myFrameInfo.Description(ID3_FrameID(cur)) << endl;
+ **     " Description: " << myFrameInfo.Description(ID3_FrameID(cur)) << endl;
  **   }
  ** }
  ** \endcode
@@ -1865,24 +1858,21 @@ char *ID3_FrameInfo::ShortName(ID3_FrameID frameid)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID)
     return ID3_FrameDefs[frameid-1].sShortTextID;
-  else
-    return NULL;
+  return NULL;
 }
 
 char *ID3_FrameInfo::LongName(ID3_FrameID frameid)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID)
     return ID3_FrameDefs[frameid-1].sLongTextID;
-  else
-    return NULL;
+  return NULL;
 }
 
 const char *ID3_FrameInfo::Description(ID3_FrameID frameid)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID)
     return ID3_FrameDefs[frameid-1].sDescription;
-  else
-    return NULL;
+  return NULL;
 }
 
 int ID3_FrameInfo::MaxFrameID()
@@ -1895,10 +1885,10 @@ int ID3_FrameInfo::NumFields(ID3_FrameID frameid)
   int fieldnum=0;
 
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID)
-	while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id != ID3FN_NOFIELD)
-	{
-		fieldnum++;
-	}
+    while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id != ID3FN_NOFIELD)
+    {
+      ++fieldnum;
+    }
 
   return fieldnum;
 }
@@ -1907,7 +1897,7 @@ ID3_FieldID ID3_FrameInfo::FieldID(ID3_FrameID frameid, int fieldnum)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID &&
      fieldnum < NumFields(frameid))
-  	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id);
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id);
 
   return ID3FN_NOFIELD;
 }
@@ -1916,7 +1906,7 @@ ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameid, int fieldnum)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID &&
      fieldnum < NumFields(frameid))
-  	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
 
   return ID3FTY_NONE;
 }
@@ -1925,7 +1915,7 @@ size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameid, int fieldnum)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID &&
      fieldnum < NumFields(frameid))
-  	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
 
   return 0;
 }
@@ -1934,7 +1924,7 @@ flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameid, int fieldnum)
 {
   if(frameid > ID3FID_NOFRAME && frameid < ID3FID_LASTFRAMEID &&
      fieldnum < NumFields(frameid))
-  	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
 
   return ID3FF_NONE;
 }

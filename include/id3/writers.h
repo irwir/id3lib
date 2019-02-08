@@ -50,7 +50,7 @@ class ID3_CPP_EXPORT ID3_OStreamWriter : public ID3_Writer
  protected:
   ostream& getWriter() const { return _stream; }
  public:
-  ID3_OStreamWriter(ostream& writer) : _stream(writer), _beg(_stream.tellp()) { ; }
+  ID3_OStreamWriter(ostream& writer) : _stream(writer), _beg(static_cast<size_t>(_stream.tellp())) { ; }
   virtual ~ID3_OStreamWriter() { ; }
 
   virtual void close() { ; }
@@ -76,8 +76,8 @@ class ID3_CPP_EXPORT ID3_OStreamWriter : public ID3_Writer
     return len;
   }
 
-  virtual pos_type getBeg() { return _beg; }
-  virtual pos_type getCur() { return _stream.tellp(); }
+  virtual pos_type getBeg() { return static_cast<pos_type>(_beg); }
+  virtual pos_type getCur() { return static_cast<pos_type>(_stream.tellp()); }
 };
 
 class ID3_CPP_EXPORT ID3_OFStreamWriter : public ID3_OStreamWriter
@@ -100,7 +100,7 @@ class ID3_CPP_EXPORT ID3_IOStreamWriter : public ID3_Writer
  protected:
   iostream& getWriter() const { return _stream; }
  public:
-  ID3_IOStreamWriter(iostream& writer) : _stream(writer), _beg(_stream.tellp()) { ; }
+  ID3_IOStreamWriter(iostream& writer) : _stream(writer), _beg(static_cast<size_t>(_stream.tellp())) { ; }
   virtual ~ID3_IOStreamWriter() { ; }
 
   virtual void close() { ; }
@@ -126,8 +126,8 @@ class ID3_CPP_EXPORT ID3_IOStreamWriter : public ID3_Writer
     return len;
   }
 
-  virtual pos_type getBeg() { return _beg; }
-  virtual pos_type getCur() { return _stream.tellp(); }
+  virtual pos_type getBeg() { return static_cast<pos_type>(_beg); }
+  virtual pos_type getCur() { return static_cast<pos_type>(_stream.tellp()); }
 };
 
 class ID3_CPP_EXPORT ID3_FStreamWriter : public ID3_IOStreamWriter
@@ -191,7 +191,7 @@ class ID3_CPP_EXPORT ID3_MemoryWriter : public ID3_Writer
 
   virtual pos_type getBeg()
   {
-    return _beg - _beg;
+    return (pos_type)0;
   }
 
   virtual pos_type getEnd()

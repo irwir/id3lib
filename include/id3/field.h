@@ -69,7 +69,7 @@ public:
   virtual size_t        Add(const char*) = 0;
 
   virtual dami::String  GetText() const = 0;
-  virtual size_t        SetText(dami::String) = 0;
+  virtual size_t        SetText(const dami::String&) = 0;
 
   // Unicode string field functions
   virtual ID3_Field&    operator= (const unicode_t* s) = 0;
@@ -88,7 +88,7 @@ public:
   virtual void          ToFile(const char *sInfo) const = 0;
   virtual dami::BString GetBinary() const = 0;
 
-  // miscelaneous functions
+  // miscellaneous functions
   virtual ID3_Field&    operator=( const ID3_Field & ) = 0;
   virtual bool          InScope(ID3_V2Spec spec) const = 0;
 

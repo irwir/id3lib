@@ -126,8 +126,8 @@ public:
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
 
-  static size_t IsV2Tag(const uchar*);
-  static size_t IsV2Tag(ID3_Reader&);
+  static uint32 IsV2Tag(const uchar*);
+  static uint32 IsV2Tag(ID3_Reader&);
 
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f);

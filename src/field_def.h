@@ -29,8 +29,6 @@
 #ifndef _ID3LIB_FIELD_DEF_H_
 #define _ID3LIB_FIELD_DEF_H_
 
-#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
-
 struct ID3_FieldDef
 {
   ID3_FieldID   _id;

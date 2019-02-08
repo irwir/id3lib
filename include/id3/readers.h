@@ -52,7 +52,7 @@ class ID3_CPP_EXPORT ID3_IStreamReader : public ID3_Reader
   virtual ~ID3_IStreamReader() { ; }
   virtual void close() { ; }
 
-  virtual int_type peekChar() { return _stream.peek(); }
+  virtual int_type peekChar() { return static_cast<int_type>(_stream.peek()); }
 
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
@@ -64,11 +64,11 @@ class ID3_CPP_EXPORT ID3_IStreamReader : public ID3_Reader
   virtual size_type readChars(char_type buf[], size_type len)
   {
     _stream.read((char *)buf, len);
-    return _stream.gcount();
+    return static_cast<size_type>(_stream.gcount());
   }
 
   virtual pos_type getBeg() { return 0; }
-  virtual pos_type getCur() { return _stream.tellg(); }
+  virtual pos_type getCur() { return static_cast<pos_type>(_stream.tellg()); }
   virtual pos_type getEnd()
   {
     pos_type cur = this->getCur();
@@ -149,7 +149,7 @@ class ID3_CPP_EXPORT ID3_MemoryReader : public ID3_Reader
 
   virtual pos_type getBeg()
   {
-    return _beg - _beg;
+    return (pos_type)0;
   }
 
   virtual pos_type getEnd()

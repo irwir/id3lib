@@ -38,12 +38,12 @@ String io::readString(ID3_Reader& reader)
   String str;
   while (!reader.atEnd())
   {
-    ID3_Reader::char_type ch = reader.readChar();
+    ID3_Reader::int_type ch = reader.readChar();
     if (ch == '\0')
     {
       break;
     }
-    str += static_cast<char>(ch);
+    str += static_cast<String::value_type>(ch);
   }
   return str;
 }
@@ -112,13 +112,13 @@ namespace
       return false;
     }
     io::ExitTrigger et(reader);
-    ch1 = reader.readChar();
+    ch1 = (ID3_Reader::char_type)reader.readChar();
     if (reader.atEnd())
     {
       return false;
     }
     et.release();
-    ch2 = reader.readChar();
+    ch2 = (ID3_Reader::char_type)reader.readChar();
     return true;
   }
 }
@@ -134,8 +134,8 @@ String io::readUnicodeString(ID3_Reader& reader)
   int bom = isBOM(ch1, ch2);
   if (!bom)
   {
-    unicode += static_cast<char>(ch1);
-    unicode += static_cast<char>(ch2);
+    unicode += static_cast<String::value_type>(ch1);
+    unicode += static_cast<String::value_type>(ch2);
   }
   while (!reader.atEnd())
   {
@@ -145,13 +145,13 @@ String io::readUnicodeString(ID3_Reader& reader)
     }
     if (bom == -1)
     {
-      unicode += static_cast<char>(ch2);
-      unicode += static_cast<char>(ch1);
+      unicode += static_cast<String::value_type>(ch2);
+      unicode += static_cast<String::value_type>(ch1);
     }
     else
     {
-      unicode += static_cast<char>(ch1);
-      unicode += static_cast<char>(ch2);
+      unicode += static_cast<String::value_type>(ch1);
+      unicode += static_cast<String::value_type>(ch2);
     }
   }
   return unicode;
@@ -169,8 +169,8 @@ String io::readUnicodeText(ID3_Reader& reader, size_t len)
   int bom = isBOM(ch1, ch2);
   if (!bom)
   {
-    unicode += ch1;
-    unicode += ch2;
+    unicode += static_cast<String::value_type>(ch1);
+    unicode += static_cast<String::value_type>(ch2);
     unicode += readText(reader, len); //awooga why difference with readUnicodeString routine
   }
   else if (bom == 1)
@@ -185,8 +185,8 @@ String io::readUnicodeText(ID3_Reader& reader, size_t len)
       {
         break;
       }
-      unicode += ch2;
-      unicode += ch1;
+      unicode += static_cast<String::value_type>(ch2);
+      unicode += static_cast<String::value_type>(ch1);
     }
   }
   return unicode;
@@ -224,7 +224,7 @@ uint32 io::readLENumber(ID3_Reader& reader, size_t len)
     {
       break;
     }
-    val += (static_cast<uint32>(0xFF & reader.readChar()) << (i * 8));
+    val += (static_cast<size_t>(0xFF & reader.readChar()) << (i * 8));
   }
   return val;
 }
@@ -236,7 +236,7 @@ uint32 io::readBENumber(ID3_Reader& reader, size_t len)
   for (ID3_Reader::size_type i = 0; i < len && !reader.atEnd(); ++i)
   {
     val *= 256; // 2^8
-    val += static_cast<uint32>(0xFF & reader.readChar());
+    val += static_cast<size_t>(0xFF & reader.readChar());
   }
   return val;
 }
@@ -250,14 +250,14 @@ String io::readTrailingSpaces(ID3_Reader& reader, size_t len)
   spaces.reserve(len);
   while (!wr.atEnd())
   {
-    ID3_Reader::char_type ch = wr.readChar();
+    char ch = (char)wr.readChar();
     if (ch == '\0' || ch == ' ')
     {
       spaces += ch;
     }
     else
     {
-      str += spaces + (char) ch;
+      str += spaces + ch;
       spaces.erase();
     }
   }
@@ -267,10 +267,10 @@ String io::readTrailingSpaces(ID3_Reader& reader, size_t len)
 uint32 io::readUInt28(ID3_Reader& reader)
 {
   uint32 val = 0;
-  const unsigned short BITSUSED = 7;
-  const uint32 MAXVAL = MASK(BITSUSED * sizeof(uint32));
+  static const unsigned short BITSUSED = 7;
+  static const uint32 MAXVAL = MASK(BITSUSED * sizeof(uint32));
   // For each byte of the first 4 bytes in the string...
-  for (size_t i = 0; i < sizeof(uint32); ++i)
+  for (int i = 0; i < sizeof(uint32); ++i)
   {
     if (reader.atEnd())
     {
@@ -284,7 +284,7 @@ uint32 io::readUInt28(ID3_Reader& reader)
   return min(val, MAXVAL);
 }
 
-size_t io::writeBENumber(ID3_Writer& writer, uint32 val, size_t len)
+size_t io::writeBENumber(ID3_Writer& writer, size_t val, size_t len)
 {
   ID3_Writer::char_type bytes[sizeof(uint32)];
   ID3_Writer::size_type size = min<ID3_Reader::size_type>(len, sizeof(uint32));
@@ -292,11 +292,11 @@ size_t io::writeBENumber(ID3_Writer& writer, uint32 val, size_t len)
   return writer.writeChars(bytes, size);
 }
 
-size_t io::writeTrailingSpaces(ID3_Writer& writer, String buf, size_t len)
+size_t io::writeTrailingSpaces(ID3_Writer& writer, const String& buf, size_t len)
 {
   ID3_Writer::pos_type beg = writer.getCur();
   ID3_Writer::size_type strLen = buf.size();
-  ID3_Writer::size_type size = min((unsigned int)len, (unsigned int)strLen);
+  ID3_Writer::size_type size = min(len, strLen);
   writer.writeChars(buf.data(), size);
   for (; size < len; ++size)
   {
@@ -305,11 +305,11 @@ size_t io::writeTrailingSpaces(ID3_Writer& writer, String buf, size_t len)
   return writer.getCur() - beg;
 }
 
-size_t io::writeUInt28(ID3_Writer& writer, uint32 val)
+size_t io::writeUInt28(ID3_Writer& writer, size_t val)
 {
   uchar data[sizeof(uint32)];
   const unsigned short BITSUSED = 7;
-  const uint32 MAXVAL = MASK(BITSUSED * sizeof(uint32));
+  const size_t MAXVAL = MASK(BITSUSED * sizeof(uint32));
   val = min(val, MAXVAL);
   // This loop renders the value to the character buffer in reverse order, as
   // it is easy to extract the last 7 bits of an integer.  This is why the
@@ -329,21 +329,21 @@ size_t io::writeUInt28(ID3_Writer& writer, uint32 val)
   return writer.writeChars(data, sizeof(uint32));
 }
 
-size_t io::writeString(ID3_Writer& writer, String data)
+size_t io::writeString(ID3_Writer& writer, const String& data)
 {
   size_t size = writeText(writer, data);
   writer.writeChar('\0');
   return size + 1;
 }
 
-size_t io::writeText(ID3_Writer& writer, String data)
+size_t io::writeText(ID3_Writer& writer, const String& data)
 {
   ID3_Writer::pos_type beg = writer.getCur();
   writer.writeChars(data.data(), data.size());
   return writer.getCur() - beg;
 }
 
-size_t io::writeUnicodeString(ID3_Writer& writer, String data, bool bom)
+size_t io::writeUnicodeString(ID3_Writer& writer, const String& data, bool bom)
 {
   size_t size = writeUnicodeText(writer, data, bom);
   unicode_t null = NULL_UNICODE;
@@ -351,7 +351,7 @@ size_t io::writeUnicodeString(ID3_Writer& writer, String data, bool bom)
   return size + 2;
 }
 
-size_t io::writeUnicodeText(ID3_Writer& writer, String data, bool bom)
+size_t io::writeUnicodeText(ID3_Writer& writer, const String& data, bool bom)
 {
   ID3_Writer::pos_type beg = writer.getCur();
   size_t size = (data.size() / 2) * 2;
@@ -367,7 +367,7 @@ size_t io::writeUnicodeText(ID3_Writer& writer, String data, bool bom)
   }
   for (size_t i = 0; i < size; i += 2)
   {
-    unicode_t ch = (data[i] << 8) | data[i+1];
+    unicode_t ch = (unicode_t(data[i]) << 8) | data[i+1];
     writer.writeChars((const unsigned char*) &ch, 2);
   }
   return writer.getCur() - beg;

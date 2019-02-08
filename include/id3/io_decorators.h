@@ -42,6 +42,7 @@
 #include "readers.h"
 #include "io_helpers.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
+#include "zlib/include/zconf.h" //for uLong declaration
 
 namespace dami
 {
@@ -59,7 +60,7 @@ namespace dami
       pos_type _beg, _end;
 
       bool inWindow(pos_type cur)
-      { return this->getBeg() <= cur && cur < this->getEnd(); }
+      { return getBeg() <= cur && cur < getEnd(); }
 
      public:
       explicit WindowedReader(ID3_Reader& reader)
@@ -67,18 +68,18 @@ namespace dami
 
       WindowedReader(ID3_Reader& reader, size_type size)
         : _reader(reader), _beg(reader.getBeg()), _end(reader.getEnd())
-      { this->setWindow(this->getCur(), size); }
+      { setWindow(WindowedReader::getCur(), size); }
 
       WindowedReader(ID3_Reader& reader, pos_type beg, size_type size)
         : _reader(reader), _beg(reader.getBeg()), _end(reader.getEnd())
-      { this->setWindow(beg, size); }
+      { setWindow(beg, size); }
 
       void setWindow(pos_type beg, size_type size);
 
       pos_type setBeg(pos_type);
       pos_type setCur(pos_type cur)
       {
-        return _reader.setCur(mid(this->getBeg(), cur, this->getEnd()));
+        return _reader.setCur(mid(getBeg(), cur, getEnd()));
       }
       pos_type setEnd(pos_type);
 
@@ -86,7 +87,7 @@ namespace dami
       pos_type getBeg() { return _beg; }
       pos_type getEnd() { return _end; }
 
-      bool inWindow() { return this->inWindow(this->getCur()); }
+      bool inWindow() { return inWindow(getCur()); }
 
       int_type readChar();
       int_type peekChar();
@@ -94,7 +95,7 @@ namespace dami
       size_type readChars(char_type buf[], size_type len);
       size_type readChars(char buf[], size_type len)
       {
-        return this->readChars((char_type*) buf, len);
+        return readChars((char_type*) buf, len);
       }
 
       void close() { ; }
@@ -120,7 +121,7 @@ namespace dami
       size_type readChars(char_type buf[], size_type len);
       size_type readChars(char buf[], size_type len)
       {
-        return this->readChars((char_type*) buf, len);
+        return readChars((char_type*) buf, len);
       }
 
       void close() { ; }
@@ -156,8 +157,8 @@ namespace dami
     {
       char_type* _uncompressed;
      public:
-      CompressedReader(ID3_Reader& reader, size_type newSize);
-      virtual ~CompressedReader();
+      CompressedReader(ID3_Reader& reader, uLong newSize);
+      ~CompressedReader();
     };
 
     class ID3_CPP_EXPORT UnsyncedWriter : public ID3_Writer
@@ -185,7 +186,7 @@ namespace dami
       size_type writeChars(const char_type[], size_type len);
       size_type writeChars(const char buf[], size_type len)
       {
-        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+        return writeChars(reinterpret_cast<const char_type *>(buf), len);
       }
 
       void close() { ; }
@@ -207,7 +208,7 @@ namespace dami
       explicit CompressedWriter(ID3_Writer& writer)
         : _writer(writer), _data(), _origSize(0)
       { ; }
-      virtual ~CompressedWriter() { this->flush(); }
+      virtual ~CompressedWriter() { CompressedWriter::flush(); }
 
       size_type getOrigSize() const { return _origSize; }
 
@@ -216,7 +217,7 @@ namespace dami
       size_type writeChars(const char_type buf[], size_type len);
       size_type writeChars(const char buf[], size_type len)
       {
-        return this->writeChars(reinterpret_cast<const char_type*>(buf), len);
+        return writeChars(reinterpret_cast<const char_type*>(buf), len);
       }
 
       pos_type getCur() { return _data.size(); }
@@ -226,4 +227,3 @@ namespace dami
 };
 
 #endif /* _ID3LIB_READER_DECORATORS_H_ */
-

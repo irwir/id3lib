@@ -79,13 +79,13 @@ namespace dami
     ID3_C_EXPORT String      readTrailingSpaces(ID3_Reader&, size_t);
     ID3_C_EXPORT uint32      readUInt28(ID3_Reader&);
 
-    ID3_C_EXPORT size_t      writeString(ID3_Writer&, String);
-    ID3_C_EXPORT size_t      writeText(ID3_Writer&, String);
-    ID3_C_EXPORT size_t      writeUnicodeString(ID3_Writer&, String, bool = true);
-    ID3_C_EXPORT size_t      writeUnicodeText(ID3_Writer&, String, bool = true);
-    ID3_C_EXPORT size_t      writeBENumber(ID3_Writer&, uint32 val, size_t);
-    ID3_C_EXPORT size_t      writeTrailingSpaces(ID3_Writer&, String, size_t);
-    ID3_C_EXPORT size_t      writeUInt28(ID3_Writer&, uint32);
+    ID3_C_EXPORT size_t      writeString(ID3_Writer&, const String&);
+    ID3_C_EXPORT size_t      writeText(ID3_Writer&, const String&);
+    ID3_C_EXPORT size_t      writeUnicodeString(ID3_Writer&, const String&, bool = true);
+    ID3_C_EXPORT size_t      writeUnicodeText(ID3_Writer&, const String&, bool = true);
+    ID3_C_EXPORT size_t      writeBENumber(ID3_Writer&, size_t val, size_t);
+    ID3_C_EXPORT size_t      writeTrailingSpaces(ID3_Writer&, const String&, size_t);
+    ID3_C_EXPORT size_t      writeUInt28(ID3_Writer&, size_t);
   };
 };
 

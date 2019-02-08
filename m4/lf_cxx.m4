@@ -41,7 +41,7 @@ AC_DEFUN(LF_CONFIGURE_CXX,[
 #    data type
 # 2. Defines CXX_HAS_BUGGY_FOR_LOOPS if the compiler has buggy
 #    scoping for the for-loop
-# Seperately we provide some config.h.bot code to be added to acconfig.h
+# Separately we provide some config.h.bot code to be added to acconfig.h
 # that implements work-arounds for these problems.
 # -----------------------------------------------------------------------
 

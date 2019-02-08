@@ -33,22 +33,21 @@
 #include <ctype.h>
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 #include "helpers.h"
-#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 
 using namespace dami;
 
 namespace
 {
-  uint32 readSeconds(ID3_Reader& reader, size_t len)
+  size_t readSeconds(ID3_Reader& reader, size_t len)
   {
     io::ExitTrigger et(reader);
     io::WindowedReader wr(reader, len);
-    ID3_Reader::pos_type beg = wr.getCur();
-    uint32 seconds = 0;
-    uint32 cur = 0;
+    /*ID3_Reader::pos_type beg =*/ wr.getCur();
+    size_t seconds = 0;
+    size_t cur = 0;
     while (!wr.atEnd())
     {
-      ID3_Reader::char_type ch = wr.readChar();
+      ID3_Reader::char_type ch = (ID3_Reader::char_type)wr.readChar();
       if (':' == ch)
       {
         seconds += 60 * cur;
@@ -67,7 +66,7 @@ namespace
     return seconds + cur;
   }
 
-  ID3_Frame* readTextFrame(ID3_Reader& reader, ID3_FrameID id, const String desc = "")
+  ID3_Frame* readTextFrame(ID3_Reader& reader, ID3_FrameID id, const String& desc = "")
   {
     uint32 size = io::readLENumber(reader, 2);
     ID3D_NOTICE( "readTextFrame: size = " << size );
@@ -90,7 +89,7 @@ namespace
     }
 
     ID3_Frame* frame = LEAKTESTNEW( ID3_Frame(id));
-    if (frame)
+//    if (frame)
     {
       if (frame->Contains(ID3FN_TEXT))
       {
@@ -115,7 +114,6 @@ namespace
 
 bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
 {
-  size_t i;
   io::ExitTrigger et(rdr);
   ID3_Reader::pos_type end = rdr.getCur();
   if (end < rdr.getBeg() + 48)
@@ -157,10 +155,10 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   io::WindowedReader dataWindow(rdr);
   dataWindow.setEnd(rdr.getCur());
 
-  uint32 offsets[5];
+  size_t offsets[5];
 
   io::WindowedReader offsetWindow(rdr, 20);
-  for (i = 0; i < 5; ++i)
+  for (int i = 0; i < 5; ++i)
   {
     offsets[i] = io::readLENumber(rdr, sizeof(uint32));
   }
@@ -180,7 +178,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     // by exactly 256 bytes.
     size_t possibleSizes[] = { 8132, 8004, 7936 };
 
-    for (i = 0; i < sizeof(possibleSizes)/sizeof(size_t); ++i)
+    for (size_t i = 0; i < sizeof(possibleSizes)/sizeof(size_t); ++i)
     {
       dataWindow.setCur(dataWindow.getEnd());
 
@@ -220,7 +218,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   sectionSizes[4] = metadataSize;
 
   size_t lastOffset = 0;
-  for (i = 0; i < 5; i++)
+  for (size_t i = 0; i < 5; i++)
   {
     size_t thisOffset = offsets[i];
     //ASSERT(thisOffset > lastOffset);
@@ -247,7 +245,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
 
   // Now calculate the adjusted offsets
   offsets[0] = dataWindow.getBeg();
-  for (i = 0; i < 4; ++i)
+  for (size_t i = 0; i < 4; ++i)
   {
     offsets[i+1] = offsets[i] + sectionSizes[i];
   }
@@ -292,13 +290,13 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     {
       BString imgData = io::readAllBinary(imgWindow);
       ID3_Frame* frame = LEAKTESTNEW( ID3_Frame(ID3FID_PICTURE));
-      if (frame)
+//      if (frame)
       {
         String mimetype("image/");
         mimetype += imgExt;
         frame->GetField(ID3FN_MIMETYPE)->Set(mimetype.c_str());
         frame->GetField(ID3FN_IMAGEFORMAT)->Set("");
-        frame->GetField(ID3FN_PICTURETYPE)->Set(static_cast<unsigned int>(0));
+        frame->GetField(ID3FN_PICTURETYPE)->Set(static_cast<uint32>(0));
         frame->GetField(ID3FN_DESCRIPTION)->Set("");
         frame->GetField(ID3FN_DATA)->Set(reinterpret_cast<const uchar*>(imgData.data()), imgData.size());
         tag.AttachFrame(frame);
@@ -333,8 +331,8 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   if (trkNum > 0)
   {
     String trkStr = toString(trkNum);
-    ID3_Frame* frame = LEAKTESTNEW( ID3_Frame(ID3FID_TRACKNUM));
-    if (frame)
+    ID3_Frame* frame = LEAKTESTNEW( ID3_Frame(ID3FID_TRACKNUM) );
+//    if (frame)
     {
       frame->GetField(ID3FN_TEXT)->Set(trkStr.c_str());
       tag.AttachFrame(frame);

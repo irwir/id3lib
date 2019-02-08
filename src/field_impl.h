@@ -66,8 +66,8 @@ public:
 
   dami::String  GetText() const;
   dami::String  GetTextItem(size_t) const;
-  size_t        SetText(dami::String);
-  size_t        AddText(dami::String);
+  size_t        SetText(const dami::String&);
+  size_t        AddText(const dami::String&);
 
   // Unicode string field functions
   ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
@@ -89,10 +89,10 @@ public:
   void          FromFile(const char*);
   void          ToFile(const char *sInfo) const;
 
-  size_t        SetBinary(dami::BString);
+  size_t        SetBinary(const dami::BString&);
   dami::BString GetBinary() const;
 
-  // miscelaneous functions
+  // miscellaneous functions
   ID3_Field&    operator=( const ID3_Field & );
   bool          InScope(ID3_V2Spec spec) const
   { return _spec_begin <= spec && spec <= _spec_end; }
@@ -113,13 +113,13 @@ public:
   bool          HasChanged() const;
 
 private:
-  size_t        SetText_i(dami::String);
-  size_t        AddText_i(dami::String);
+  size_t        SetText_i(const dami::String&);
+  size_t        AddText_i(const dami::String&);
 
 private:
   // To prevent public instantiation, the constructor is made private
   ID3_FieldImpl();
-  ID3_FieldImpl(const ID3_FieldDef&);
+  explicit ID3_FieldImpl(const ID3_FieldDef&);
 
   const ID3_FieldID   _id;          // the ID of this field
   const ID3_FieldType _type;        // what type is this field or should be
@@ -130,7 +130,7 @@ private:
   mutable bool        _changed;     // field changed since last parse/render?
 
   dami::BString       _binary;      // for binary strings
-  dami::String        _text;        // for ascii strings
+  dami::String        _text;        // for ASCII strings
   uint32              _integer;     // for numbers
 
   size_t              _fixed_size;  // for fixed length fields (0 if not)

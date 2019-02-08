@@ -46,7 +46,7 @@
 
 #include <limits.h>
 
-/* define our datatypes */
+/* define our data types */
 
 /* Define 8-bit types */
 #if UCHAR_MAX == 0xff

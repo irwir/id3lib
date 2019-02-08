@@ -303,16 +303,12 @@ STDMETHODIMP CID3Tag::put_Artist(BSTR newVal)
 STDMETHODIMP CID3Tag::get_Album(BSTR *pVal)
 {
 	USES_CONVERSION;
-	char* RetStr = NULL;
 	try
 	{
 		*pVal = NULL;
-		RetStr = ID3_GetAlbum(m_ID3Tag);
+		char* RetStr = ID3_GetAlbum(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete[] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -338,16 +334,12 @@ STDMETHODIMP CID3Tag::put_Album(BSTR newVal)
 STDMETHODIMP CID3Tag::get_Title(BSTR *pVal)
 {
 	USES_CONVERSION;
-	char* RetStr = NULL;
 	try
 	{
 		*pVal = NULL;
-		RetStr = ID3_GetTitle(m_ID3Tag);
+		char* RetStr = ID3_GetTitle(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete [] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -376,13 +368,9 @@ STDMETHODIMP CID3Tag::get_Comment(BSTR *pVal)
 	try
 	{
 		*pVal = NULL;
-		char* RetStr = NULL;
-		RetStr = ID3_GetComment(m_ID3Tag);
+		char* RetStr = ID3_GetComment(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete[] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -438,13 +426,9 @@ STDMETHODIMP CID3Tag::get_Year(BSTR *pVal)
 	try
 	{
 		*pVal = 0;
-		char* RetStr = NULL;
-		RetStr = ID3_GetYear(m_ID3Tag);
+		char* RetStr = ID3_GetYear(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete [] RetStr;
 		return S_OK;
 	}
 	catch (...)

@@ -34,17 +34,17 @@ using namespace dami;
 /** \fn ID3_Field& ID3_Field::operator=(const unicode_t*)
  ** \brief Shortcut for the Set operator.
  ** Performs similarly as operator=(const char*), taking a unicode_t
- ** string as a parameter rather than an ascii string.
+ ** string as a parameter rather than an ASCII string.
  ** \sa Set(const unicode_t*)
  ** \param string The string to assign to the field
  **/
 
-/** \brief Copies the supplied unicode string to the field.
+/** \brief Copies the supplied Unicode string to the field.
  **
  ** Performs similarly as the ASCII Set() method, taking a unicode_t string
- ** as a parameter rather than an ascii string.
+ ** as a parameter rather than an ASCII string.
  **
- ** \param string The unicode string to set this field to.
+ ** \param string The Unicode string to set this field to.
  ** \sa Add(const unicode_t*)
  **/
 size_t ID3_FieldImpl::Set(const unicode_t* data)
@@ -76,7 +76,7 @@ size_t ID3_FieldImpl::Add(const unicode_t* data)
  ** optional third parameter indicates which of the fields to retrieve.
  **
  ** Performs similarly as the ASCII Get(char *, size_t, size_t) method, taking
- ** a unicode_t string as a parameter rather than an ascii string.  The
+ ** a unicode_t string as a parameter rather than an ASCII string.  The
  ** maxChars parameter still represents the maximum number of characters, not
  ** bytes.
  **
@@ -111,30 +111,29 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
 
 const unicode_t* ID3_FieldImpl::GetRawUnicodeText() const
 {
-  const unicode_t* text = NULL;
   if (this->GetType() == ID3FTY_TEXTSTRING &&
       ID3TE_IS_DOUBLE_BYTE_ENC(this->GetEncoding()))
   {
-    text = (unicode_t *)_text.data();
+    return (unicode_t *)_text.data();
   }
-  return text;
+  return NULL;
 }
 
 const unicode_t* ID3_FieldImpl::GetRawUnicodeTextItem(size_t index) const
 {
-  const unicode_t* text = NULL;
   if (this->GetType() == ID3FTY_TEXTSTRING &&
       ID3TE_IS_DOUBLE_BYTE_ENC(this->GetEncoding()) &&
       index < this->GetNumTextItems())
   {
     String unicode = _text + '\0' + '\0';
-    text = (unicode_t *) unicode.data();
+    const unicode_t *text = (unicode_t *)unicode.data();
     for (size_t i = 0; i < index; ++i)
     {
       text += ucslen(text) + 1;
     }
+    return (unicode_t *)_text.data() + (text - (unicode_t *)unicode.data());
   }
-  return text;
+  return NULL;
 }
 
 size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, size_t itemNum) const
@@ -148,7 +147,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, size_t itemNum) c
     const unicode_t* text = this->GetRawUnicodeTextItem(itemNum);
     if (NULL != text)
     {
-      size_t length = min(maxLength, ucslen(text));
+      length = min(maxLength, ucslen(text));
       ::memcpy(buffer, text, length * 2);
       if (length < maxLength)
       {
@@ -159,6 +158,3 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, size_t itemNum) c
 
   return length;
 }
-
-
-

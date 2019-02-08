@@ -97,7 +97,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const String& data) const
 {
   ID3_Frame *frame = NULL;
   ID3D_NOTICE( "Find: looking for comment with data = " << data.c_str() );
@@ -128,7 +128,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
       if ((*cur != NULL) && ((*cur)->GetID() == id) &&
           (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = (*cur)->GetField(fldID);
+        const ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;
@@ -152,7 +152,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const WString& data) const
 {
   ID3_Frame *frame = NULL;
 
@@ -179,7 +179,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) co
       if ((*cur != NULL) && ((*cur)->GetID() == id) &&
           (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = (*cur)->GetField(fldID);
+        const ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;

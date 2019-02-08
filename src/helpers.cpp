@@ -99,11 +99,11 @@ size_t id3::v2::removeFrames(ID3_TagImpl& tag, ID3_FrameID id)
 
 String id3::v2::getFrameText(const ID3_TagImpl& tag, ID3_FrameID id)
 {
-  ID3_Frame* frame = tag.Find(id);
+  const ID3_Frame* frame = tag.Find(id);
   return getString(frame, ID3FN_TEXT);
 }
 
-ID3_Frame* id3::v2::setFrameText(ID3_TagImpl& tag, ID3_FrameID id, String text)
+ID3_Frame* id3::v2::setFrameText(ID3_TagImpl& tag, ID3_FrameID id, const String& text)
 {
   ID3_Frame* frame = tag.Find(id);
   if (!frame)
@@ -120,21 +120,27 @@ ID3_Frame* id3::v2::setFrameText(ID3_TagImpl& tag, ID3_FrameID id, String text)
 
 ID3_Frame* id3::v2::hasArtist(const ID3_TagImpl& tag)
 {
-  ID3_Frame* fp = NULL;
-  (fp = tag.Find(ID3FID_LEADARTIST)) ||
-  (fp = tag.Find(ID3FID_BAND))       ||
-  (fp = tag.Find(ID3FID_CONDUCTOR))  ||
-  (fp = tag.Find(ID3FID_COMPOSER));
+  ID3_Frame* fp = tag.Find(ID3FID_LEADARTIST);
+  if (!fp)
+  {
+    fp = tag.Find(ID3FID_BAND);
+    if (!fp)
+    {
+      fp = tag.Find(ID3FID_CONDUCTOR);
+      if (!fp)
+        fp = tag.Find(ID3FID_COMPOSER);
+    }
+  }
   return fp;
 }
 
 String id3::v2::getArtist(const ID3_TagImpl& tag)
 {
-  ID3_Frame* frame = hasArtist(tag);
+  const ID3_Frame* frame = hasArtist(tag);
   return getString(frame, ID3FN_TEXT);
 }
 
-ID3_Frame* id3::v2::setArtist(ID3_TagImpl& tag, String text)
+ID3_Frame* id3::v2::setArtist(ID3_TagImpl& tag, const String& text)
 {
   removeArtists(tag);
   return setFrameText(tag, ID3FID_LEADARTIST, text);
@@ -160,7 +166,7 @@ size_t id3::v2::removeArtists(ID3_TagImpl& tag)
 ID3_Frame* id3::v2::hasAlbum(const ID3_TagImpl& tag)
 {
   ID3_Frame* frame = tag.Find(ID3FID_ALBUM);
-  return(frame);
+  return frame;
 }
 
 String id3::v2::getAlbum(const ID3_TagImpl& tag)
@@ -168,7 +174,7 @@ String id3::v2::getAlbum(const ID3_TagImpl& tag)
   return getFrameText(tag, ID3FID_ALBUM);
 }
 
-ID3_Frame* id3::v2::setAlbum(ID3_TagImpl& tag, String text)
+ID3_Frame* id3::v2::setAlbum(ID3_TagImpl& tag, const String& text)
 {
   return setFrameText(tag, ID3FID_ALBUM, text);
 }
@@ -183,7 +189,7 @@ size_t id3::v2::removeAlbums(ID3_TagImpl& tag)
 ID3_Frame* id3::v2::hasTitle(const ID3_TagImpl& tag)
 {
   ID3_Frame* frame = tag.Find(ID3FID_TITLE);
-  return(frame);
+  return frame;
 }
 
 String id3::v2::getTitle(const ID3_TagImpl& tag)
@@ -191,7 +197,7 @@ String id3::v2::getTitle(const ID3_TagImpl& tag)
   return getFrameText(tag, ID3FID_TITLE);
 }
 
-ID3_Frame* id3::v2::setTitle(ID3_TagImpl& tag, String text)
+ID3_Frame* id3::v2::setTitle(ID3_TagImpl& tag, const String& text)
 {
   return setFrameText(tag, ID3FID_TITLE, text);
 }
@@ -206,7 +212,7 @@ size_t id3::v2::removeTitles(ID3_TagImpl& tag)
 ID3_Frame* id3::v2::hasYear(const ID3_TagImpl& tag)
 {
   ID3_Frame* frame = tag.Find(ID3FID_YEAR);
-  return(frame);
+  return frame;
 }
 
 String id3::v2::getYear(const ID3_TagImpl& tag)
@@ -214,7 +220,7 @@ String id3::v2::getYear(const ID3_TagImpl& tag)
   return getFrameText(tag, ID3FID_YEAR);
 }
 
-ID3_Frame* id3::v2::setYear(ID3_TagImpl& tag, String text)
+ID3_Frame* id3::v2::setYear(ID3_TagImpl& tag, const String& text)
 {
   return setFrameText(tag, ID3FID_YEAR, text);
 }
@@ -228,36 +234,34 @@ size_t id3::v2::removeYears(ID3_TagImpl& tag)
 
 ID3_Frame* id3::v2::hasV1Comment(const ID3_TagImpl& tag)
 {
-  ID3_Frame* frame = NULL;
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC)) ||
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""                 )) ||
-  (frame = tag.Find(ID3FID_COMMENT));
-  return(frame);
+  ID3_Frame *frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC);
+  if (!frame)
+  {
+    frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, "");
+    if (!frame)
+      return hasComment(tag);
+  }
+  return frame;
 }
 
 ID3_Frame* id3::v2::hasComment(const ID3_TagImpl& tag)
 {
-  ID3_Frame* frame = tag.Find(ID3FID_COMMENT);
-  return(frame);
+  return tag.Find(ID3FID_COMMENT);
 }
 
 String id3::v2::getV1Comment(const ID3_TagImpl& tag)
 {
-  ID3_Frame* frame;
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC)) ||
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""                 )) ||
-  (frame = tag.Find(ID3FID_COMMENT));
-  return getString(frame, ID3FN_TEXT);
+  return getString(hasV1Comment(tag), ID3FN_TEXT);
 }
 
-String id3::v2::getComment(const ID3_TagImpl& tag, String desc)
+String id3::v2::getComment(const ID3_TagImpl& tag, const String& desc)
 {
   ID3_Frame* frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, desc.c_str());
   return getString(frame, ID3FN_TEXT);
 }
 
-ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
-                               String lang)
+ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, const String& text, const String& desc,
+                               const String& lang)
 {
   ID3D_NOTICE( "id3::v2::setComment: trying to find frame with description = " << desc );
   ID3_Frame* frame = NULL;
@@ -265,7 +269,7 @@ ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
   for (ID3_TagImpl::iterator iter = tag.begin(); iter != tag.end(); ++iter)
   {
     frame = *iter;
-    if (frame == NULL)
+    if (!frame)
     {
       continue;
     }
@@ -280,22 +284,23 @@ ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
     }
     frame = NULL;
   }
-  if (frame == NULL)
+  if (!frame)
   {
     ID3D_NOTICE( "id3::v2::setComment: creating new comment frame" );
     frame = LEAKTESTNEW( ID3_Frame(ID3FID_COMMENT));
-    if(!tag.AttachFrame(frame)) return NULL;
+    if(!tag.AttachFrame(frame))
+      return NULL;
   }
-  if (!frame)
-  {
-    ID3D_WARNING( "id3::v2::setComment: ack! no frame" );
-  }
-  else
-  {
-    frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
-    frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
-    frame->GetField(ID3FN_TEXT)->Set(text.c_str());
-  }
+//  if (!frame)
+//  {
+//    ID3D_WARNING( "id3::v2::setComment: ack! no frame" );
+//  }
+//  else
+//  {
+  frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
+  frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
+  frame->GetField(ID3FN_TEXT)->Set(text.c_str());
+//  }
 
   return frame;
 }
@@ -307,23 +312,18 @@ size_t id3::v2::removeAllComments(ID3_TagImpl& tag)
 }
 
 // Remove all comments from the tag with the given description
-size_t id3::v2::removeComments(ID3_TagImpl& tag, String desc)
+size_t id3::v2::removeComments(ID3_TagImpl& tag, const String& desc)
 {
   size_t numRemoved = 0;
 
   for (ID3_TagImpl::iterator iter = tag.begin(); iter != tag.end(); ++iter)
   {
     ID3_Frame* frame = *iter;
-    if (frame == NULL)
-    {
-      continue;
-    }
-    if (frame->GetID() == ID3FID_COMMENT)
+    if (frame != NULL && frame->GetID() == ID3FID_COMMENT)
     {
       // See if the description we have matches the description of the
       // current comment.  If so, remove the comment
-      String tmpDesc = getString(frame, ID3FN_DESCRIPTION);
-      if (tmpDesc == desc)
+      if (getString(frame, ID3FN_DESCRIPTION) == desc)
       {
         frame = tag.RemoveFrame(frame);
         delete frame;
@@ -340,7 +340,7 @@ size_t id3::v2::removeComments(ID3_TagImpl& tag, String desc)
 ID3_Frame* id3::v2::hasTrack(const ID3_TagImpl& tag)
 {
   ID3_Frame* frame = tag.Find(ID3FID_TRACKNUM);
-  return(frame);
+  return frame;
 }
 
 String id3::v2::getTrack(const ID3_TagImpl& tag)
@@ -378,7 +378,7 @@ size_t id3::v2::removeTracks(ID3_TagImpl& tag)
 ID3_Frame* id3::v2::hasGenre(const ID3_TagImpl& tag)
 {
   ID3_Frame* frame = tag.Find(ID3FID_CONTENTTYPE);
-  return(frame);
+  return frame;
 }
 
 String id3::v2::getGenre(const ID3_TagImpl& tag)
@@ -395,7 +395,7 @@ size_t id3::v2::getGenreNum(const ID3_TagImpl& tag)
   // If the genre string begins with "(ddd)", where "ddd" is a number, then
   // "ddd" is the genre number---get it
   size_t i = 0;
-  if (i < size && size && sGenre[i] == '(')
+  if (i < size && sGenre[i] == '(')
   {
     ++i;
     while (i < size && isdigit(sGenre[i]))
@@ -414,8 +414,7 @@ size_t id3::v2::getGenreNum(const ID3_TagImpl& tag)
 
 ID3_Frame* id3::v2::setGenre(ID3_TagImpl& tag, size_t genre)
 {
-  String sGenre = "(";
-  sGenre += toString(genre) + ")";
+  String sGenre = "(" + toString(genre) + ")";
   return setFrameText(tag, ID3FID_CONTENTTYPE, sGenre);
 }
 
@@ -428,8 +427,7 @@ size_t id3::v2::removeGenres(ID3_TagImpl& tag)
 
 ID3_Frame* id3::v2::hasLyrics(const ID3_TagImpl& tag)
 {
-  ID3_Frame* frame = tag.Find(ID3FID_UNSYNCEDLYRICS);
-  return(frame);
+  return tag.Find(ID3FID_UNSYNCEDLYRICS);
 }
 
 String id3::v2::getLyrics(const ID3_TagImpl& tag)
@@ -437,32 +435,27 @@ String id3::v2::getLyrics(const ID3_TagImpl& tag)
   return getFrameText(tag, ID3FID_UNSYNCEDLYRICS);
 }
 
-ID3_Frame* id3::v2::setLyrics(ID3_TagImpl& tag, String text, String desc,
-                              String lang)
+ID3_Frame* id3::v2::setLyrics(ID3_TagImpl& tag, const String& text, const String& desc,
+                              const String& lang)
 {
   ID3_Frame* frame = NULL;
   // See if there is already a comment with this description
   for (ID3_TagImpl::iterator iter = tag.begin(); iter != tag.end(); ++iter)
   {
     frame = *iter;
-    if (frame == NULL)
+    if (frame != NULL)
     {
-      continue;
-    }
-    if (frame->GetID() == ID3FID_COMMENT)
-    {
-      String tmpDesc = getString(frame, ID3FN_DESCRIPTION);
-      if (tmpDesc == desc)
-      {
+      if (frame->GetID() == ID3FID_COMMENT && getString(frame, ID3FN_DESCRIPTION) == desc)
         break;
-      }
+
+      frame = NULL;
     }
-    frame = NULL;
   }
   if (frame == NULL)
   {
     frame = LEAKTESTNEW( ID3_Frame(ID3FID_UNSYNCEDLYRICS));
-    if(!tag.AttachFrame(frame)) return NULL;
+    if(!tag.AttachFrame(frame))
+      return NULL;
   }
   frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
   frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
@@ -481,7 +474,7 @@ String id3::v2::getLyricist(const ID3_TagImpl& tag)
   return getFrameText(tag, ID3FID_LYRICIST);
 }
 
-ID3_Frame* id3::v2::setLyricist(ID3_TagImpl& tag, String text)
+ID3_Frame* id3::v2::setLyricist(ID3_TagImpl& tag, const String& text)
 {
   return setFrameText(tag, ID3FID_LYRICIST, text);
 }
@@ -493,28 +486,24 @@ size_t id3::v2::removeLyricists(ID3_TagImpl& tag)
 
 ////////////////////////////////////////////////////////////
 
-ID3_Frame* id3::v2::hasSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
+ID3_Frame* id3::v2::hasSyncLyrics(const ID3_TagImpl& tag, const String& lang, const String& desc)
 {
-  ID3_Frame* frame=NULL;
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc));
-  return(frame);
+  ID3_Frame* frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+
+  return frame ? frame : tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
 }
 
-ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
-                                  ID3_TimeStampFormat format, String desc,
-                                  String lang, ID3_ContentType type)
+ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, const BString& data,
+                                  ID3_TimeStampFormat format, const String& desc,
+                                  const String& lang, ID3_ContentType type)
 {
-  ID3_Frame* frame = NULL;
-
   // check if a SYLT frame of this language or descriptor already exists
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc));
-
+  ID3_Frame* frame = hasSyncLyrics(tag, lang, desc);
   if (!frame)
   {
-    frame = LEAKTESTNEW( ID3_Frame(ID3FID_SYNCEDLYRICS));
-    if(!tag.AttachFrame(frame)) return NULL;
+    frame = LEAKTESTNEW(ID3_Frame(ID3FID_SYNCEDLYRICS));
+    if (!tag.AttachFrame(frame))
+      return NULL;
   }
   frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
   frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
@@ -525,16 +514,17 @@ ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
   return frame;
 }
 
-BString id3::v2::getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
+BString id3::v2::getSyncLyrics(const ID3_TagImpl& tag, const String& lang, const String& desc)
 {
   // check if a SYLT frame of this language or descriptor exists
-  ID3_Frame* frame = NULL;
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc)) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS));
-
+  ID3_Frame* frame = hasSyncLyrics(tag, lang, desc);
+  if (!frame)
+  {
+    frame = tag.Find(ID3FID_SYNCEDLYRICS);
+    if (!frame)
+      return BString();
+  }
   // get the lyrics size
-  ID3_Field* fld = frame->GetField(ID3FN_DATA);
+  const ID3_Field* fld = frame->GetField(ID3FN_DATA);
   return BString(reinterpret_cast<const BString::value_type *>(fld->GetRawBinary()), fld->Size());
 }
-

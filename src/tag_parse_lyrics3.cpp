@@ -29,7 +29,6 @@
 #include <memory.h>
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 #include "helpers.h"
-#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 #include "io_strings.h"
 
 using namespace dami;
@@ -72,18 +71,18 @@ namespace
     return its;
   }
 
-  uint32 readTimeStamp(ID3_Reader& reader)
+  size_t readTimeStamp(ID3_Reader& reader)
   {
     reader.skipChars(1);
-    size_t sec = readIntegerString(reader, 2) * 60;
+    size_t sec = readIntegerString(reader, 2) * 60u;
     reader.skipChars(1);
     sec += readIntegerString(reader, 2);
     reader.skipChars(1);
     ID3D_NOTICE( "readTimeStamp(): timestamp = " << sec );
-    return sec * 1000;
+    return sec * 1000u;
   }
 
-  bool findText(ID3_Reader& reader, String text)
+  bool findText(ID3_Reader& reader, const String& text)
   {
     if (text.empty())
     {
@@ -93,7 +92,7 @@ namespace
     size_t index = 0;
     while (!reader.atEnd())
     {
-      ID3_Reader::char_type ch = reader.readChar();
+      ID3_Reader::char_type ch = (ID3_Reader::char_type)reader.readChar();
       if (ch == text[index])
       {
         index++;
@@ -138,7 +137,7 @@ namespace
       }
       while (!reader.atEnd() && !isTimeStamp(reader))
       {
-        ID3_Reader::char_type ch = reader.readChar();
+        ID3_Reader::char_type ch = (ID3_Reader::char_type)reader.readChar();
         if (0x0A == ch && (reader.atEnd() || isTimeStamp(reader)))
         {
           lf = true;
@@ -230,7 +229,7 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   }
 
   reader.setCur(end - (6 + 9 + 128));
-  uint32 lyrSize = 0;
+  size_t lyrSize = 0;
 
   ID3_Reader::pos_type beg = reader.getCur();
   lyrSize = readIntegerString(reader, 6);
@@ -268,11 +267,9 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 
   bool has_time_stamps = false;
 
-  ID3_Frame* lyr_frame = NULL;
-
   while (!wr.atEnd())
   {
-    uint32 fldSize;
+    size_t fldSize;
 
     String fldName = io::readText(wr, 3);
     ID3D_NOTICE( "lyr3::v2::parse: fldName = " << fldName );
@@ -331,12 +328,13 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
     // the LYRICS field
     else if (fldName == "LYR")
     {
+//      ID3_Frame* lyr_frame = NULL;
       // if already found an INF field, use it as description
       String desc =  "Converted from Lyrics3 v2.00";
       //tag.setLyrics(fldData);
       if (!has_time_stamps)
       {
-        lyr_frame = id3::v2::setLyrics(tag, fldData, desc, "XXX");
+/*        lyr_frame =*/ id3::v2::setLyrics(tag, fldData, desc, "XXX");
       }
       else
       {
@@ -347,7 +345,7 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
         io::BStringWriter sw(sylt);
         lyrics3ToSylt(sr, sw);
 
-        lyr_frame = id3::v2::setSyncLyrics(tag, sylt, ID3TSF_MS, desc,
+/*        lyr_frame =*/ id3::v2::setSyncLyrics(tag, sylt, ID3TSF_MS, desc,
                                            "XXX", ID3CT_LYRICS);
         ID3D_NOTICE( "lyr3::v2::parse: determined synced lyrics" );
       }

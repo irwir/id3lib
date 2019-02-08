@@ -44,9 +44,9 @@
 class ID3_CPP_EXPORT ID3_Reader
 {
  public:
-  typedef uint32 size_type;
+  typedef size_t size_type;
   typedef uint8  char_type;
-  typedef uint32 pos_type;
+  typedef size_t pos_type;
   typedef  int32 off_type;
   typedef  int16 int_type;
   static const int_type END_OF_READER;
@@ -70,7 +70,7 @@ class ID3_CPP_EXPORT ID3_Reader
 
   /**
    ** Read a single character and advance the internal position.  Note that the
-   ** interal position may advance more than one byte for a single character
+   ** internal position may advance more than one byte for a single character
    ** read.  Returns END_OF_READER if there isn't a character to read.
    **/
   virtual int_type readChar()
@@ -120,9 +120,9 @@ class ID3_CPP_EXPORT ID3_Reader
   virtual size_type remainingBytes()
   {
     pos_type end = this->getEnd(), cur = this->getCur();
-    if (end == pos_type(-1))
+    if (end == (pos_type)-1)
     {
-      return size_type(-1);
+      return (size_type)-1;
     }
 
     if (end >= cur)

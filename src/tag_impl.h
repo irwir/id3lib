@@ -87,13 +87,13 @@ public:
   typedef Frames::iterator       iterator;
   typedef Frames::const_iterator const_iterator;
 public:
-  ID3_TagImpl(const char *name = NULL, flags_t = (flags_t) ID3TT_ALL);
-  ID3_TagImpl(const ID3_Tag &tag);
+  explicit ID3_TagImpl(const char *name = NULL, flags_t = (flags_t) ID3TT_ALL);
+  explicit ID3_TagImpl(const ID3_Tag &tag);
   virtual ~ID3_TagImpl();
 
   void       Clear();
   bool       HasChanged() const;
-  void       SetChanged(bool b) { _changed = b; }
+  void       SetChanged(bool b) const { _changed = b; }
   size_t     Size() const;
 
   bool       SetUnsync(bool);
@@ -111,7 +111,7 @@ public:
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
   bool       AttachFrame(ID3_Frame*);
-  bool       IsValidFrame(ID3_Frame&, bool);
+  bool       IsValidFrame(ID3_Frame*, bool);
   void       checkFrames();
   ID3_Frame* RemoveFrame(const ID3_Frame *);
 
@@ -127,8 +127,8 @@ public:
 
   ID3_Frame* Find(ID3_FrameID id) const;
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::String) const;
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::WString) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const dami::String&) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const dami::WString&) const;
 
   size_t     NumFrames() const { return _frames.size(); }
   ID3_TagImpl&   operator=( const ID3_Tag & );
@@ -137,7 +137,7 @@ public:
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
 
-  static size_t IsV2Tag(ID3_Reader&);
+  static uint32 IsV2Tag(ID3_Reader&);
   ID3_Err    GetLastError();
   void       SetLastError(ID3_Err err) { _last_error = err; }
 
@@ -151,8 +151,8 @@ public:
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
-  void       SetCompression(bool) { ; }
-  void       AddFrames(const ID3_Frame *, size_t);
+  void       SetCompression(bool) {}
+//  void       AddFrames(const ID3_Frame *, size_t);
   bool       HasLyrics() const { return this->HasTagType(ID3TT_LYRICS); }
   bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
   bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }

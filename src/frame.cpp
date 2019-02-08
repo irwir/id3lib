@@ -149,7 +149,7 @@ ID3_Field* ID3_Frame::GetField(ID3_FieldID fieldName) const
   return _impl->GetField(fieldName);
 }
 
-size_t ID3_Frame::NumFields() const
+uint32 ID3_Frame::NumFields() const
 {
   return _impl->NumFields();
 }
@@ -266,7 +266,7 @@ namespace
     ID3_FrameImpl::iterator _cur;
     ID3_FrameImpl::iterator _end;
   public:
-    IteratorImpl(ID3_FrameImpl& frame)
+    explicit IteratorImpl(ID3_FrameImpl& frame)
       : _cur(frame.begin()), _end(frame.end())
     {
     }
@@ -289,7 +289,7 @@ namespace
     ID3_FrameImpl::const_iterator _cur;
     ID3_FrameImpl::const_iterator _end;
   public:
-    ConstIteratorImpl(ID3_FrameImpl& frame)
+    explicit ConstIteratorImpl(ID3_FrameImpl& frame)
       : _cur(frame.begin()), _end(frame.end())
     {
     }

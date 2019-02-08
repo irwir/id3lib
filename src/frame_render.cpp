@@ -29,9 +29,6 @@
 #include <config.h>
 #endif
 
-
-
-//#include <string.h>
 #include <memory.h>
 #include <zlib.h>
 
@@ -39,7 +36,6 @@
 #include "frame_impl.h"
 #include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 #include "io_strings.h"
-#include "io_helpers.h"
 
 using namespace dami;
 
@@ -47,7 +43,6 @@ namespace
 {
   ID3_Err renderFields(ID3_Writer& writer, const ID3_FrameImpl& frame)
   {
-    ID3_Err err;
     ID3_TextEnc enc = ID3TE_ISO8859_1;
     for (ID3_FrameImpl::const_iterator fi = frame.begin(); fi != frame.end(); ++fi)
     {
@@ -63,7 +58,7 @@ namespace
         {
           fld->SetEncoding(enc);
         }
-        err = fld->Render(writer);
+        ID3_Err err = fld->Render(writer);
         if (err != ID3E_NoError)
           return err;
       }
@@ -82,8 +77,6 @@ ID3_Err ID3_FrameImpl::Render(ID3_Writer& writer) const
   }
 
   ID3_FrameHeader hdr;
-
-  const size_t hdr_size = hdr.Size();
 
   // 1.  Write out the field data to the buffer, with the assumption that
   //     we won't be decompressing, since this is the usual behavior

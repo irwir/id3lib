@@ -149,7 +149,7 @@ String ID3_FieldImpl::GetTextItem(size_t index) const
 
 namespace
 {
-  String getFixed(String data, size_t size)
+  String getFixed(const String& data, size_t size)
   {
     String text(data, 0, size);
     if (text.size() < size)
@@ -161,7 +161,7 @@ namespace
 }
 
 
-size_t ID3_FieldImpl::SetText_i(String data)
+size_t ID3_FieldImpl::SetText_i(const String& data)
 {
   this->Clear();
   if (_fixed_size > 0)
@@ -175,7 +175,7 @@ size_t ID3_FieldImpl::SetText_i(String data)
   ID3D_NOTICE( "SetText_i: text = \"" << _text << "\"" );
   _changed = true;
 
-  if (_text.size() == 0)
+  if (_text.empty())
   {
     _num_items = 0;
   }
@@ -187,7 +187,7 @@ size_t ID3_FieldImpl::SetText_i(String data)
   return _text.size();
 }
 
-size_t ID3_FieldImpl::SetText(String data)
+size_t ID3_FieldImpl::SetText(const dami::String& data)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -211,7 +211,7 @@ size_t ID3_FieldImpl::SetText(String data)
  **
  ** \param string The string to add to the field
  **/
-size_t ID3_FieldImpl::AddText_i(String data)
+size_t ID3_FieldImpl::AddText_i(const String& data)
 {
   size_t len = 0;  // how much of str we copied into this field (max is strLen)
   ID3D_NOTICE ("ID3_FieldImpl::AddText_i: Adding \"" << data << "\"" );
@@ -238,7 +238,7 @@ size_t ID3_FieldImpl::AddText_i(String data)
   return len;
 }
 
-size_t ID3_FieldImpl::AddText(String data)
+size_t ID3_FieldImpl::AddText(const dami::String& data)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -306,7 +306,7 @@ namespace
     return io::readUnicodeString(reader);
   }
 
-  size_t writeEncodedText(ID3_Writer& writer, String data, ID3_TextEnc enc)
+  size_t writeEncodedText(ID3_Writer& writer, const String& data, ID3_TextEnc enc)
   { //doesn't include NULL char
     if (ID3TE_IS_SINGLE_BYTE_ENC(enc))
       return io::writeText(writer, data);
@@ -316,7 +316,7 @@ namespace
       return io::writeUnicodeText(writer, data, true);
   }
 
-  size_t writeEncodedString(ID3_Writer& writer, String data, ID3_TextEnc enc)
+  size_t writeEncodedString(ID3_Writer& writer, const String& data, ID3_TextEnc enc)
   { //includes NULL char
     if (ID3TE_IS_SINGLE_BYTE_ENC(enc))
       return io::writeString(writer, data);
@@ -344,7 +344,7 @@ bool ID3_FieldImpl::ParseText(ID3_Reader& reader)
     this->SetText(text);
     ID3D_NOTICE( "ID3_Field::ParseText(): fixed size string = " << text );
   }
-// following is commented because this is allready covered in the 'else' case
+// following is commented because this is already covered in the 'else' case
 // and *any* text (starting with identifier 'T') can contain lists, not just the defined ones
 //  else if (_flags & ID3FF_LIST)
 //  {

@@ -86,7 +86,8 @@ uchar ID3_V2SpecToVer(ID3_V2Spec spec)
 
 uchar ID3_V2SpecToRev(ID3_V2Spec spec)
 {
-  uchar rev = 0;
+  return static_cast<uchar>(spec == ID3V2_2_1);
+/*  uchar rev = 0;
   switch (spec)
   {
     case ID3V2_4_0:
@@ -104,6 +105,6 @@ uchar ID3_V2SpecToRev(ID3_V2Spec spec)
     default:
       break;
   }
-  return rev;
+  return rev;*/
 }
 

@@ -44,9 +44,9 @@
 class ID3_CPP_EXPORT ID3_Writer
 {
  public:
-  typedef uint32 size_type;
+  typedef size_t size_type;
   typedef uint8  char_type;
-  typedef uint32 pos_type;
+  typedef size_t pos_type;
   typedef  int32 off_type;
   typedef  int16 int_type;
   static const int_type END_OF_WRITER;
@@ -75,7 +75,7 @@ class ID3_CPP_EXPORT ID3_Writer
   virtual size_type getMaxSize() { return this->getEnd() - this->getBeg(); }
 
   /** Write a single character and advance the internal position.  Note that
-   ** the interal position may advance more than one byte for a single
+   ** the internal position may advance more than one byte for a single
    ** character write.  Returns END_OF_WRITER if there isn't a character to
    ** write.
    **/

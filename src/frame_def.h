@@ -29,8 +29,6 @@
 #ifndef _ID3LIB_FRAME_DEF_H_
 #define _ID3LIB_FRAME_DEF_H_
 
-#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
-
 struct ID3_FieldDef;
 class ID3_Frame;
 
@@ -42,7 +40,7 @@ struct ID3_FrameDef
   char          sLongTextID[4 + 1];
   ID3_V2Spec    eFirstAppearance;
   ID3_V2Spec    eLastAppearance;
-  ID3_Frame*     (*convert)(ID3_Frame* frame, ID3_V2Spec tospec);
+  ID3_Frame*     (*convert)(const ID3_Frame* frame, ID3_V2Spec tospec);
 //  ID3_FrameID   eReplacedBy;
   bool          bTagDiscard;
   bool          bFileDiscard;

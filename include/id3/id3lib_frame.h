@@ -78,7 +78,7 @@ public:
 
   ID3_Field*  GetField(ID3_FieldID name) const;
 
-  size_t      NumFields() const;
+  uint32      NumFields() const;
 
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);

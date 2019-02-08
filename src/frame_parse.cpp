@@ -38,16 +38,14 @@ namespace
 {
   bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
   {
-    int iLoop;
-    int iFields;
     io::ExitTrigger et(rdr);
     ID3_TextEnc enc = ID3TE_ISO8859_1;  // set the default encoding
     ID3_V2Spec spec = frame.GetSpec();
-    size_t linked_fixed_size = 0; // set the default linkedsize
+    size_t linked_fixed_size = 0; // set the default linked size
     // parse the frame's fields
-    iFields = frame.NumFields();
+    uint32 iFields = frame.NumFields();
     ID3D_NOTICE( "parseFields(): num_fields = " << iFields );
-    iLoop = 0;
+    uint32 iLoop = 0;
     for (ID3_FrameImpl::iterator fi = frame.begin(); fi != frame.end(); ++fi)
     {
       ID3_Field* fp = *fi;
@@ -56,7 +54,7 @@ namespace
       if (rdr.atEnd())
       {
         // there's no remaining data to parse!
-        ID3D_WARNING( "parseFields(): out of data at postion " << rdr.getCur() );
+        ID3D_WARNING( "parseFields(): out of data at position " << rdr.getCur() );
         if (iLoop == iFields)
         {
           //if we are at the last field, (the 'data' field) it's apparently
@@ -115,21 +113,15 @@ namespace
           {
             case ID3FN_BITSSIZE:
             {
-              uint32 _tmp_byte_size_ = fp->Get();
+              size_t _tmp_byte_size_ = fp->Get();
               linked_fixed_size = 0;
 
-              for (; _tmp_byte_size_ > 0;) //round to whole bytes: 1 bit will become 1 byte, 7 bits will become 1 byte, 9 bits become 2 bytes, etc
+              while (_tmp_byte_size_ > 0) //round to whole bytes: 1 bit will become 1 byte, 7 bits will become 1 byte, 9 bits become 2 bytes, etc
               {
-                if (_tmp_byte_size_ < 8 && _tmp_byte_size_ != 0)
-                {
-                  ++linked_fixed_size;
+                ++linked_fixed_size;
+                if (_tmp_byte_size_ < 8)
                   break;
-                }
-                else if (_tmp_byte_size_ >= 8)
-                {
-                  ++linked_fixed_size;
-                  _tmp_byte_size_ -= 8;
-                }
+                _tmp_byte_size_ -= 8;
               }
               ID3D_NOTICE( "parseFields(): found linked_fixed_size = " << linked_fixed_size );
               break;
@@ -183,7 +175,7 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getCur() = " << wr.getCur() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getEnd() = " << wr.getEnd() );
 
-  unsigned long origSize = 0;
+  uint32 origSize = 0;
   if (_hdr.GetCompression())
   {
     origSize = io::readBENumber(reader, sizeof(uint32));
@@ -192,14 +184,14 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
 
   if (_hdr.GetEncryption())
   {
-    char ch = wr.readChar();
+    uchar ch = (uchar)wr.readChar();
     this->SetEncryptionID(ch);
     ID3D_NOTICE( "ID3_FrameImpl::Parse(): frame is encrypted, encryption_id = " << (int) ch );
   }
 
   if (_hdr.GetGrouping())
   {
-    char ch = wr.readChar();
+    uchar ch = (uchar)wr.readChar();
     this->SetGroupingID(ch);
     ID3D_NOTICE( "ID3_FrameImpl::Parse(): frame is encrypted, grouping_id = " << (int) ch );
   }
@@ -208,16 +200,16 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   this->_ClearFields();
   this->_InitFields();
 
-  bool success = false;
+//  bool success = false;
   // expand out the data if it's compressed
   if (!_hdr.GetCompression())
   {
-    success = parseFields(wr, *this);
+/*    success =*/ parseFields(wr, *this);
   }
   else
   {
-    io::CompressedReader csr(wr, origSize);
-    success = parseFields(csr, *this);
+    io::CompressedReader csr(wr, static_cast<uLong>(origSize));
+/*    success =*/ parseFields(csr, *this);
   }
   et.setExitPos(wr.getCur());
 

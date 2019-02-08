@@ -51,7 +51,7 @@
  * we prefix variable declarations so they can
  * properly get exported in windows dlls.
  */
-#ifdef WIN32
+#ifdef _WIN32
 #  define LINKOPTION_STATIC         1 //both for use and creation of static lib
 #  define LINKOPTION_CREATE_DYNAMIC 2 //should only be used by prj/id3lib.dsp
 #  define LINKOPTION_USE_DYNAMIC    3 //if your project links id3lib dynamic
@@ -88,7 +88,7 @@
 #      else
 #        define ID3_C_EXPORT extern _declspec(dllimport)
 #      endif
-#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi, 
+#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and Delphi, 
 #      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
 #    endif
 #  endif
@@ -101,12 +101,12 @@
 #  else
 #    define LEAKTESTNEW(type) new type
 #  endif
-#else /* !WIN32 */
+#else /* !_WIN32 */
 #  define ID3_C_EXPORT
 #  define ID3_CPP_EXPORT
 #  define CCONV
 #  define LEAKTESTNEW(type) new type
-#endif /* !WIN32 */
+#endif /* !_WIN32 */
 
 #define ID3_C_VAR extern
 
@@ -160,7 +160,7 @@ typedef uint16                flags_t;
 #endif
 
 /** \enum ID3_TextEnc
- ** Enumeration of the types of text encodings: ascii or unicode
+ ** Enumeration of the types of text encodings: ASCII or Unicode
  **/
 ID3_ENUM(ID3_TextEnc)
 {
@@ -199,9 +199,9 @@ ID3_ENUM(ID3_V2Spec)
 
 /** The various types of tags that id3lib can handle
  **/
-ID3_ENUM(ID3_TagType)
+ID3_ENUM(ID3_TagType) : uint16
 {
-  ID3TT_NONE       =      0,   /**< Represents an empty or non-existant tag */
+  ID3TT_NONE       =      0,   /**< Represents an empty or non-existent tag */
   ID3TT_ID3V1      = 1 << 0,   /**< Represents an id3v1 or id3v1.1 tag */
   ID3TT_ID3V2      = 1 << 1,   /**< Represents an id3v2 tag */
   ID3TT_LYRICS3    = 1 << 2,   /**< Represents a Lyrics3 tag */
@@ -212,7 +212,7 @@ ID3_ENUM(ID3_TagType)
   /** Represents both id3 tags: id3v1 and id3v2 */
   ID3TT_ID3        = ID3TT_ID3V1 | ID3TT_ID3V2,
   /** Represents all possible types of tags */
-  ID3TT_ALL        = ~ID3TT_NONE,
+  ID3TT_ALL        = static_cast<ID3_TagType>(~ID3TT_NONE),
   /** Represents all tag types that can be prepended to a file */
   ID3TT_PREPENDED  = ID3TT_ID3V2,
   /** Represents all tag types that can be appended to a file */
@@ -222,10 +222,10 @@ ID3_ENUM(ID3_TagType)
 /**
  ** Enumeration of the different types of fields in a frame.
  **/
-ID3_ENUM(ID3_FieldID)
+ID3_ENUM(ID3_FieldID) : uint32
 {
   ID3FN_NOFIELD = 0,       /**< No field */
-  ID3FN_TEXTENC,           /**< Text encoding (unicode or ASCII) */
+  ID3FN_TEXTENC,           /**< Text encoding (Unicode or ASCII) */
   ID3FN_TEXT,              /**< Text field */
   ID3FN_URL,               /**< A URL */
   ID3FN_DATA,              /**< Data field */
@@ -243,8 +243,8 @@ ID3_ENUM(ID3_FieldID)
   ID3FN_VOLUMEADJ,         /**< Volume adjustment field */
   ID3FN_NUMBITS,           /**< Number of bits field */
   ID3FN_NUMBER,            /**< General Number, can be anything, as long it's an integer <= 32 bits  */
-  ID3FN_VOLCHGRIGHT,       /**< Volume chage on the right channel */
-  ID3FN_VOLCHGLEFT,        /**< Volume chage on the left channel */
+  ID3FN_VOLCHGRIGHT,       /**< Volume change on the right channel */
+  ID3FN_VOLCHGLEFT,        /**< Volume change on the left channel */
   ID3FN_PEAKVOLRIGHT,      /**< Peak volume on the right channel */
   ID3FN_PEAKVOLLEFT,       /**< Peak volume on the left channel */
   ID3FN_TIMESTAMPFORMAT,   /**< SYLT Timestamp Format */
@@ -274,7 +274,7 @@ ID3_ENUM(ID3_FieldID)
 /**
  ** Enumeration of the different types of frames recognized by id3lib
  **/
-ID3_ENUM(ID3_FrameID)
+ID3_ENUM(ID3_FrameID) : int
 {
   /* ???? */ ID3FID_NOFRAME = 0,       /**< No known frame */
   /* AENC */ ID3FID_AUDIOCRYPTO,       /**< Audio encryption */
@@ -361,7 +361,7 @@ ID3_ENUM(ID3_FrameID)
   /* USER */ ID3FID_TERMSOFUSE,        /**< Terms of use */
   /* USLT */ ID3FID_UNSYNCEDLYRICS,    /**< Unsynchronized lyric/text transcription */
   /* WCOM */ ID3FID_WWWCOMMERCIALINFO, /**< Commercial information */
-  /* WCOP */ ID3FID_WWWCOPYRIGHT,      /**< Copyright/Legal infromation */
+  /* WCOP */ ID3FID_WWWCOPYRIGHT,      /**< Copyright/Legal information */
   /* WOAF */ ID3FID_WWWAUDIOFILE,      /**< Official audio file webpage */
   /* WOAR */ ID3FID_WWWARTIST,         /**< Official artist/performer webpage */
   /* WOAS */ ID3FID_WWWAUDIOSOURCE,    /**< Official audio source webpage */
@@ -390,7 +390,7 @@ ID3_ENUM(ID3_FieldFlags)
 {
   ID3FF_NONE          =      0,
   ID3FF_CSTR          = 1 << 0,  /*null (according to encoding) terminated*/
-  ID3FF_LIST          = 1 << 1,  /*null (according to encoding) seperates listitems*/
+  ID3FF_LIST          = 1 << 1,  /*null (according to encoding) separates listitems*/
   ID3FF_ENCODABLE     = 1 << 2,  /*possible to encode in valid encodings, 
                                   *if not set then string is encoded by ID3TE_ISO8859_1 */
   ID3FF_HASLINKEDSIZE = 1 << 3   /*used together with _linked_field. 
@@ -433,13 +433,14 @@ ID3_ENUM(ID3_Err)
 //  ID3E_FieldNotFound,           /**< Requested field not found */
 //  ID3E_TagAlreadyAttached,      /**< Tag is already attached to a file */
 //  ID3E_InvalidTagVersion,       /**< Invalid tag version */
-  ID3E_zlibError                /**< Error in compression/uncompression */
+  ID3E_zlibError = 15,          /**< Error in compression/uncompression */
+  ID3E_LastError                // Prevents undefined behaviour when casting values < 17
 // We use these errors in a hack in RenderV2ToFile; for this, it is important to keep
 // the errors which can be returned from createFile(), openWritableFile and ID3E_NoFile and ID3E_ReadOnly
 // below the minimum tag size ( which is 10 bytes for the header, + 7 bytes for a minimal (2.2) frame
 };
 
-ID3_ENUM(ID3_ContentType)
+ID3_ENUM(ID3_ContentType) : uint32
 {
   ID3CT_OTHER = 0,
   ID3CT_LYRICS,
@@ -450,7 +451,7 @@ ID3_ENUM(ID3_ContentType)
   ID3CT_TRIVIA
 };
 
-ID3_ENUM(ID3_PictureType)
+ID3_ENUM(ID3_PictureType) : uint32
 {
   ID3PT_OTHER = 0,
   ID3PT_PNG32ICON = 1,     // 32x32 pixels 'file icon' (PNG only)
@@ -458,7 +459,7 @@ ID3_ENUM(ID3_PictureType)
   ID3PT_COVERFRONT = 3,    // Cover (front)
   ID3PT_COVERBACK = 4,     // Cover (back)
   ID3PT_LEAFLETPAGE = 5,   // Leaflet page
-  ID3PT_MEDIA = 6,         // Media (e.g. lable side of CD)
+  ID3PT_MEDIA = 6,         // Media (e.g. label side of CD)
   ID3PT_LEADARTIST = 7,    // Lead artist/lead performer/soloist
   ID3PT_ARTIST = 8,        // Artist/performer
   ID3PT_CONDUCTOR = 9,     // Conductor
@@ -475,7 +476,7 @@ ID3_ENUM(ID3_PictureType)
   ID3PT_PUBLISHERLOGO = 20 // Publisher/Studio logotype
 };
 
-ID3_ENUM(ID3_TimeStampFormat)
+ID3_ENUM(ID3_TimeStampFormat) : uint32
 {
   ID3TSF_FRAME  = 1,
   ID3TSF_MS
@@ -552,7 +553,7 @@ static const char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
   "Native American",   //64
   "Cabaret",           //65
   "New Wave",          //66
-  "Psychadelic",       //67
+  "Psychedelic",       //67
   "Rave",              //68
   "Showtunes",         //69
   "Trailer",           //70
@@ -565,7 +566,7 @@ static const char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
   "Musical",           //77
   "Rock & Roll",       //78
   "Hard Rock",         //79
-// following are winamp extentions
+// following are winamp extensions
   "Folk",                  //80
   "Folk-Rock",             //81
   "National Folk",         //82
@@ -636,7 +637,7 @@ static const char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
   "Synthpop"               //147
 };
 
-#define ID3_V1GENRE2DESCRIPTION(x) (x < ID3_NR_OF_V1_GENRES && x >= 0) ? ID3_v1_genre_description[x] : NULL
+#define ID3_V1GENRE2DESCRIPTION(x) (((x) < ID3_NR_OF_V1_GENRES && (x) >= 0) ? ID3_v1_genre_description[(x)] : NULL)
 
 ID3_ENUM(MP3_BitRates)
 {
@@ -768,7 +769,7 @@ ID3_STRUCT(Mp3_Headerinfo)
 /*
  * The following is borrowed from glib.h (http://www.gtk.org)
  */
-#ifdef WIN32
+#ifdef _WIN32
 
 /* On native Win32, directory separator is the backslash, and search path
  * separator is the semicolon.
@@ -778,7 +779,7 @@ ID3_STRUCT(Mp3_Headerinfo)
 #  define ID3_SEARCHPATH_SEPARATOR ';'
 #  define ID3_SEARCHPATH_SEPARATOR_S ";"
 
-#else  /* !WIN32 */
+#else  /* !_WIN32 */
 
 #  ifndef _EMX_
 /* Unix */
@@ -798,7 +799,7 @@ ID3_STRUCT(Mp3_Headerinfo)
 
 #  endif
 
-#endif /* !WIN32 */
+#endif /* !_WIN32 */
 
 #ifndef NULL
 #  define NULL ((void*) 0)
