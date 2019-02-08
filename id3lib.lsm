@@ -1,5 +1,5 @@
 Begin4
-Title:          id3lib 
+Title:          id3lib
 Version:        3.7.12
 Entered-date:   2000-08-27
 Description:    C/C++/COM development library for handling meta-information in
@@ -7,7 +7,7 @@ Description:    C/C++/COM development library for handling meta-information in
 Keywords:       id3,id3v1,id3v2,mp3,musicmatch,lyrics3
 Author:         dirk@id3.org (Dirk Mahoney)
 Maintained-by:  scott@id3.org (Scott Haug)
-Primary-site:   
+Primary-site:
 Home-page:      http://id3lib.sourceforge.net
 Original-site:  http://www.id3lib.org
 Platforms:      Linux and other Unices, Windows, Mac

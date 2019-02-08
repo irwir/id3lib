@@ -44,7 +44,7 @@ extern "C"
   typedef struct { char _dummy; } ID3FrameInfo;
 
   /* tag wrappers */
-  ID3_C_EXPORT ID3Tag*              CCONV ID3Tag_New                  (void);
+  ID3_C_EXPORT ID3Tag*              CCONV ID3Tag_New                  ();
   ID3_C_EXPORT void                 CCONV ID3Tag_Delete               (ID3Tag *tag);
   ID3_C_EXPORT void                 CCONV ID3Tag_Clear                (ID3Tag *tag);
   ID3_C_EXPORT bool                 CCONV ID3Tag_HasChanged           (const ID3Tag *tag);
@@ -76,7 +76,7 @@ extern "C"
   ID3_C_EXPORT const ID3Frame*      CCONV ID3TagConstIterator_GetNext (ID3TagConstIterator*);
 
   /* frame wrappers */
-  ID3_C_EXPORT ID3Frame*            CCONV ID3Frame_New                (void);
+  ID3_C_EXPORT ID3Frame*            CCONV ID3Frame_New                ();
   ID3_C_EXPORT ID3Frame*            CCONV ID3Frame_NewID              (ID3_FrameID id);
   ID3_C_EXPORT void                 CCONV ID3Frame_Delete             (ID3Frame *frame);
   ID3_C_EXPORT void                 CCONV ID3Frame_Clear              (ID3Frame *frame);
@@ -109,7 +109,7 @@ extern "C"
   ID3_C_EXPORT char*                CCONV ID3FrameInfo_ShortName      (ID3_FrameID frameid);
   ID3_C_EXPORT char*                CCONV ID3FrameInfo_LongName       (ID3_FrameID frameid);
   ID3_C_EXPORT const char*          CCONV ID3FrameInfo_Description    (ID3_FrameID frameid);
-  ID3_C_EXPORT int                  CCONV ID3FrameInfo_MaxFrameID     (void);
+  ID3_C_EXPORT int                  CCONV ID3FrameInfo_MaxFrameID     ();
   ID3_C_EXPORT int                  CCONV ID3FrameInfo_NumFields      (ID3_FrameID frameid);
   ID3_C_EXPORT ID3_FieldID          CCONV ID3FrameInfo_FieldID        (ID3_FrameID frameid, int fieldnum);
   ID3_C_EXPORT ID3_FieldType        CCONV ID3FrameInfo_FieldType      (ID3_FrameID frameid, int fieldnum);

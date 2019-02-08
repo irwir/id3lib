@@ -30,7 +30,7 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
@@ -70,7 +70,7 @@ IID3ComFrame* CID3Frame::CreateObject(IID3ComTag* TagParent, ID3_Frame* Frame)
 
 STDMETHODIMP CID3Frame::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IID3ComFrame
 	};

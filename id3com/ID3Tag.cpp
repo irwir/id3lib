@@ -30,7 +30,7 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
@@ -64,7 +64,7 @@ CID3Tag::~CID3Tag()
 
 STDMETHODIMP CID3Tag::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IID3ComTag
 	};
@@ -80,7 +80,7 @@ STDMETHODIMP CID3Tag::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CID3Tag::Link(BSTR *FileName)
 {
 	USES_CONVERSION;
-	
+
 	if(FileName == NULL)
 	{
 		return E_INVALIDARG;
@@ -184,10 +184,10 @@ STDMETHODIMP CID3Tag::get_Item(long FrameNum, IID3ComFrame** pVal)
 		*pVal = NULL;
         ID3_Frame* pFrame = NULL;
         ID3_Tag::Iterator* it = m_ID3Tag->CreateIterator();
-        pFrame = it->GetNext();    
+        pFrame = it->GetNext();
         while(FrameNum)
         {
-            pFrame = it->GetNext();    
+            pFrame = it->GetNext();
             --FrameNum;
         }
         delete it;
@@ -303,16 +303,12 @@ STDMETHODIMP CID3Tag::put_Artist(BSTR newVal)
 STDMETHODIMP CID3Tag::get_Album(BSTR *pVal)
 {
 	USES_CONVERSION;
-	char* RetStr = NULL;
 	try
 	{
 		*pVal = NULL;
-		RetStr = ID3_GetAlbum(m_ID3Tag);
+		char* RetStr = ID3_GetAlbum(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete[] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -338,16 +334,12 @@ STDMETHODIMP CID3Tag::put_Album(BSTR newVal)
 STDMETHODIMP CID3Tag::get_Title(BSTR *pVal)
 {
 	USES_CONVERSION;
-	char* RetStr = NULL;
 	try
 	{
 		*pVal = NULL;
-		RetStr = ID3_GetTitle(m_ID3Tag);
+		char* RetStr = ID3_GetTitle(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete [] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -376,13 +368,9 @@ STDMETHODIMP CID3Tag::get_Comment(BSTR *pVal)
 	try
 	{
 		*pVal = NULL;
-		char* RetStr = NULL;
-		RetStr = ID3_GetComment(m_ID3Tag);
+		char* RetStr = ID3_GetComment(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete[] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -438,13 +426,9 @@ STDMETHODIMP CID3Tag::get_Year(BSTR *pVal)
 	try
 	{
 		*pVal = 0;
-		char* RetStr = NULL;
-		RetStr = ID3_GetYear(m_ID3Tag);
+		char* RetStr = ID3_GetYear(m_ID3Tag);
 		*pVal = SysAllocString(A2W(RetStr));
-		if(RetStr != NULL)
-		{
-			delete [] RetStr;
-		}
+		delete [] RetStr;
 		return S_OK;
 	}
 	catch (...)
@@ -548,7 +532,7 @@ STDMETHODIMP CID3Tag::get_HasV1Tag(VARIANT_BOOL *pVal)
 		if (m_ID3Tag->HasTagType(ID3TT_ID3V1))
 		{
 			*pVal = VARIANT_TRUE;
-		}	
+		}
 		else
 		{
 			*pVal = VARIANT_FALSE;
@@ -569,7 +553,7 @@ STDMETHODIMP CID3Tag::get_HasV2Tag(VARIANT_BOOL *pVal)
 		if (m_ID3Tag->HasTagType(ID3TT_ID3V2))
 		{
 			*pVal = VARIANT_TRUE;
-		}	
+		}
 		else
 		{
 			*pVal = VARIANT_FALSE;
@@ -589,7 +573,7 @@ STDMETHODIMP CID3Tag::get_HasLyrics(VARIANT_BOOL *pVal)
 		if (m_ID3Tag->HasTagType(ID3TT_LYRICS))
 		{
 			*pVal = VARIANT_TRUE;
-		}	
+		}
 		else
 		{
 			*pVal = VARIANT_FALSE;
@@ -874,10 +858,10 @@ STDMETHODIMP CID3Tag::RemoveFrameByNum(long FrameNum)
 	{
         ID3_Frame* pFrame = NULL;
         ID3_Tag::Iterator* it = m_ID3Tag->CreateIterator();
-        pFrame = it->GetNext();    
+        pFrame = it->GetNext();
         while(FrameNum)
         {
-            pFrame = it->GetNext();    
+            pFrame = it->GetNext();
             --FrameNum;
         }
         delete it;
@@ -885,7 +869,7 @@ STDMETHODIMP CID3Tag::RemoveFrameByNum(long FrameNum)
 		if(pFrame)
 		{
 			/* pTag is an ID3_Tag */
-			delete m_ID3Tag->RemoveFrame(pFrame);			
+			delete m_ID3Tag->RemoveFrame(pFrame);
 		}
 		else
         {

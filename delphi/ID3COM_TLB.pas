@@ -17,7 +17,7 @@ unit ID3COM_TLB;
 // ************************************************************************ //
 // Type Lib: C:\WINDOWS\DESKTOP\IDV3\ID3COM\RELEASE\ID3COM.DLL
 // IID\LCID: {AEBA98B0-C36C-11D3-841B-0008C782A257}\0
-// Helpfile: 
+// Helpfile:
 // HelpString: ID3COM 1.0 Type Library
 // Version:    1.0
 // ************************************************************************ //
@@ -180,8 +180,8 @@ type
 // *********************************************************************//
   PWideString1 = ^WideString; {*}
 
-  eID3FrameTypes = __MIDL___MIDL_itf_id3com_0000_0002; 
-  eID3FieldTypes = __MIDL___MIDL_itf_id3com_0000_0001; 
+  eID3FrameTypes = __MIDL___MIDL_itf_id3com_0000_0002;
+  eID3FieldTypes = __MIDL___MIDL_itf_id3com_0000_0001;
 
 // *********************************************************************//
 // Interface: IID3ComTag
@@ -219,7 +219,7 @@ type
     function Get_HasV1Tag: WordBool; safecall;
     function Get_HasV2Tag: WordBool; safecall;
     function Get_HasLyrics: WordBool; safecall;
-    function FindFrameString(FrameID: eID3FrameTypes; FieldType: eID3FieldTypes; 
+    function FindFrameString(FrameID: eID3FrameTypes; FieldType: eID3FieldTypes;
                              const FindString: WideString; CreateNewIfNotFound: WordBool): IID3ComFrame; safecall;
     function Get_PlayCount(const EMailAddress: WideString): Integer; safecall;
     procedure Set_PlayCount(const EMailAddress: WideString; pVal: Integer); safecall;
@@ -283,7 +283,7 @@ type
     property HasV1Tag: WordBool readonly dispid 19;
     property HasV2Tag: WordBool readonly dispid 20;
     property HasLyrics: WordBool readonly dispid 21;
-    function FindFrameString(FrameID: eID3FrameTypes; FieldType: eID3FieldTypes; 
+    function FindFrameString(FrameID: eID3FrameTypes; FieldType: eID3FieldTypes;
                              const FindString: WideString; CreateNewIfNotFound: WordBool): IID3ComFrame; dispid 22;
     property PlayCount[const EMailAddress: WideString]: Integer dispid 23;
     property Popularity[const EMailAddress: WideString]: Smallint dispid 24;

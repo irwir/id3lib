@@ -30,7 +30,7 @@
 #define _ID3LIB_FRAME_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -78,7 +78,7 @@ public:
 
   ID3_Field*  GetField(ID3_FieldID name) const;
 
-  size_t      NumFields() const;
+  uint32      NumFields() const;
 
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);

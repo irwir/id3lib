@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-%vars = 
+%vars =
   (
    "__pFrameList"            => "__frames",
    "__pBinaryList"           => "__binaries",

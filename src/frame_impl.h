@@ -30,7 +30,7 @@
 #define _ID3LIB_FRAME_IMPL_H_
 
 #if defined(__BORLANDC__)
-// due to a bug in borland it sometimes still wants mfc compatibility even when you disable it
+// due to a bug in Borland it sometimes still wants MFC compatibility even when you disable it
 #  if defined(_MSC_VER)
 #    undef _MSC_VER
 #  endif
@@ -56,9 +56,9 @@ public:
   typedef Fields::iterator iterator;
   typedef Fields::const_iterator const_iterator;
 public:
-  ID3_FrameImpl(ID3_FrameID id = ID3FID_NOFRAME);
-  ID3_FrameImpl(const ID3_FrameHeader&);
-  ID3_FrameImpl(const ID3_Frame&);
+  explicit ID3_FrameImpl(ID3_FrameID id = ID3FID_NOFRAME);
+  explicit ID3_FrameImpl(const ID3_FrameHeader&);
+  explicit ID3_FrameImpl(const ID3_Frame&);
 
   /// Destructor.
   virtual ~ID3_FrameImpl();
@@ -70,7 +70,7 @@ public:
 
   ID3_Field*  GetField(ID3_FieldID name) const;
 
-  size_t      NumFields() const;
+  uint32      NumFields() const;
 
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
@@ -132,8 +132,8 @@ protected:
   bool        _SetID(ID3_FrameID);
   bool        _ClearFields();
   void        _InitFields();
-  void        _InitFieldBits();
-  void        _UpdateFieldDeps();
+//  void        _InitFieldBits();
+//  void        _UpdateFieldDeps();
 
 private:
   mutable bool        _changed;    // frame changed since last parse/render?
@@ -142,7 +142,6 @@ private:
   ID3_FrameHeader _hdr;            //
   uchar       _encryption_id;      // encryption id
   uchar       _grouping_id;        // grouping id
-}
-;
+};
 
 #endif /* _ID3LIB_FRAME_IMPL_H_ */

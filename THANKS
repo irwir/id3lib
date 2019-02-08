@@ -12,19 +12,19 @@ current project maintainer if anyone has been missed.
 * Tobias Hoppe (choppe@cs.uni-magdeburg.de) for providing a better way to
   get the framesize.
 * Philipp Thomas (pthomas@suse.de) for help with compiling id3lib for gcc 3.2,
-  and make it better compliant with libstdc++ 
+  and make it better compliant with libstdc++
 * John George (johngeorge_k@asianetindia.com) for donating a number of routines
   in misc_support.cpp.
 * Frog Prince (thefrogprince@hotmail.com) for helping with compatibility issues
   for VB and Delphi
 * Simon Ferrett (simon@musicmatch.com) made the id3lib.org domain point to our
   project page. He also kindly created an email alias.
-* Kamran (kamran@musicmatch.com) fixed several bugs in MusicMatch's internal 
-  version of ID3Lib which were merged into the current public version of 
+* Kamran (kamran@musicmatch.com) fixed several bugs in MusicMatch's internal
+  version of ID3Lib which were merged into the current public version of
   id3lib.
-* Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
+* Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a
   variety of bugs.
-* John Adcock (johnadcock@hotmail.com) provided the COM wrapper and lib 
+* John Adcock (johnadcock@hotmail.com) provided the COM wrapper and lib
   projects for id3lib, the VB test app for id3com.dll, as well as several
   bugfixes and improvements.
 * Myers W. Carpenter (myers@fil.org) has submitted a patch for improving the
@@ -33,20 +33,20 @@ current project maintainer if anyone has been missed.
   as to the design and implementation of id3lib.
 * Mark B. Elrod (elrod@liquidmetal.com) has provided several patches for better
   win32 functionality.
-* Scott Moser (smoser@brickies.net) provided the php translation of the 
+* Scott Moser (smoser@brickies.net) provided the php translation of the
   original ID3Lib manual
 * Robert Moon (rob@emusic.com) provided tremendous help getting the C interface
   up to speed, as well as providing bugfixes for the Windows projects.
 * Lothar Egger (lothar.egger@chello.at) also assisted in fixing the Windows
   projects, as well as providing assistance for testing the dlls under Windows
 * Severino Delaurenti (id3lib@castlems.com) added functionality for parsing
-  Lyrics3 v1.0 and v2.0 tags, as well as improving synchronized lyric frame 
+  Lyrics3 v1.0 and v2.0 tags, as well as improving synchronized lyric frame
   (SYLT) dramatically.
-* Michael Little (mike@netlinear.com) provided the delphi code for use with 
+* Michael Little (mike@netlinear.com) provided the delphi code for use with
   id3com.
 * Peter Luijer (videoripper@hotmail.com) provided much useful documentation
   on the MusicMatch tagging format.
-* Steven Frank (stevenf@users.sourceforge.net) provided invaluable help in 
+* Steven Frank (stevenf@users.sourceforge.net) provided invaluable help in
   tracking down runtime bugs for the Macintosh port.
 * The following individuals have assisted by providing bug reports and (often)
   suggestions for fixes:
@@ -94,7 +94,7 @@ Dirk Mahoney included the following at the end of his documentation on ID3Lib
   * Lachlan Pitts - for general implementation ideas and his brief but helpful
     work on the up-coming genre tree.
   * Jukka Poikolainen - for prompting to implement error handling via the C++
-    exception handling mechanism instead of the old 2.xx-style of using an 
+    exception handling mechanism instead of the old 2.xx-style of using an
     error handling function.
   * Carson Puchol - for his help with some minor Linux compilation hassles.
   * Andreas Sigfridsson - for his initial code for the unsync/resync support
@@ -104,14 +104,14 @@ Dirk Mahoney included the following at the end of his documentation on ID3Lib
   * Ilana Rudnik - for bug finding and suggestions.
   * Chuck Zenkus - for his support of ID3v2 and ID3Lib by providing us with a
     mirror in the United States and for his bug finding and suggestions.
-  * And last but by no means least, all the others who support ID3Lib by 
+  * And last but by no means least, all the others who support ID3Lib by
     subscribing to the mailing list and to the contributors to the discussions
     and debates in the ID3v2 discussion group.
 
-  Without the help of all these people, ID3Lib would not be as good as it is, 
+  Without the help of all these people, ID3Lib would not be as good as it is,
   and I dare say might not even exist if they all weren't around to provide
   motivation to continue to write the thing!
-  
+
   - Dirk Mahoney
   22 November 1998
   Brisbane, Australia

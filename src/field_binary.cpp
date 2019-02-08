@@ -30,9 +30,9 @@
 #include <memory.h>
 
 #include "field_impl.h"
-#include "reader.h"
-#include "writer.h"
-#include "io_helpers.h"
+#include "id3/reader.h"
+#include "id3/writer.h"
+#include "id3/io_helpers.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
 using namespace dami;
@@ -48,12 +48,12 @@ size_t ID3_FieldImpl::Set(const uchar* data, size_t len)
   return size;
 }
 
-/** Copies the supplied unicode string to the field.
+/** Copies the supplied Unicode string to the field.
  **
  ** Again, like the string types, the binary Set() function copies the data
  ** so you may dispose of the source data after a call to this method.
  **/
-size_t ID3_FieldImpl::SetBinary(BString data) //< data to assign to this field.
+size_t ID3_FieldImpl::SetBinary(const BString& data) //< data to assign to this field.
 {
   size_t size = 0;
   if (this->GetType() == ID3FTY_BINARY)
@@ -142,22 +142,20 @@ void ID3_FieldImpl::FromFile(const char *info //< Source filename
     return;
   }
 
-  FILE* temp_file = ::fopen(info, "rb");
-  if (temp_file != NULL)
+  FILE* temp_file;
+  if (!::fopen_s(&temp_file, info, "rb"))
   {
     ::fseek(temp_file, 0, SEEK_END);
     size_t fileSize = ::ftell(temp_file);
     ::fseek(temp_file, 0, SEEK_SET);
 
     uchar* buffer = LEAKTESTNEW(uchar[fileSize]);
-    if (buffer != NULL)
-    {
-      ::fread(buffer, 1, fileSize, temp_file);
 
-      this->Set(buffer, fileSize);
+    ::fread(buffer, 1, fileSize, temp_file);
 
-      delete [] buffer;
-    }
+    this->Set(buffer, fileSize);
+
+    delete [] buffer;
 
     ::fclose(temp_file);
   }
@@ -181,15 +179,13 @@ void ID3_FieldImpl::ToFile(const char *info //< Destination filename
   size_t size = this->Size();
   if (size > 0)
   {
-    FILE* temp_file = ::fopen(info, "wb");
-    if (temp_file != NULL)
+    FILE* temp_file;
+    if (!::fopen_s(&temp_file, info, "wb"))
     {
       ::fwrite(_binary.data(), 1, size, temp_file);
       ::fclose(temp_file);
     }
   }
-
-  return ;
 }
 
 
@@ -205,4 +201,3 @@ void ID3_FieldImpl::RenderBinary(ID3_Writer& writer) const
 {
   writer.writeChars(this->GetRawBinary(), this->Size());
 }
-

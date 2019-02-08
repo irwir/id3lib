@@ -7,7 +7,7 @@
 # You should run this using 'name -f makefile.win32' from the
 # id3lib root directory (for instance, c:\projects\id3lib-3.8.0\).
 #
-# If you want a debug version of the lib, add DEBUG=1 to 
+# If you want a debug version of the lib, add DEBUG=1 to
 # the nmake command line.
 #
 # The library will be produced as 'id3lib.lib' for the release

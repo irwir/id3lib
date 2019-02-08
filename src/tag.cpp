@@ -26,7 +26,7 @@
 // http://download.sourceforge.net/id3lib/
 
 //#include "readers.h"
-#include "writers.h"
+#include "id3/writers.h"
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 
 using namespace dami;
@@ -216,7 +216,7 @@ using namespace dami;
  ** code example best illustrates these differences.
  **
  ** \code
- **   // for ascii strings
+ **   // for ASCII strings
  **   char str1[1024];
  **   const char* p1 = "My String";
  **   const char* p2 = "My Other String";
@@ -287,7 +287,7 @@ using namespace dami;
  **
  ** When using the ID3_Tag::Link() method, you automatically gain access to any
  ** ID3v1/1.1, ID3v2, Lyrics3 v2.0, and MusicMatch tags present in the file.
- ** The class will automaticaly parse and convert any of these foreign tag
+ ** The class will automatically parse and convert any of these foreign tag
  ** formats into ID3v2 tags.  Also, id3lib will correctly parse any correctly
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
@@ -401,13 +401,13 @@ size_t ID3_Tag::Size() const
   return _impl->Size();
 }
 
-/** Turns unsynchronization on or off, dependant on the value of the boolean
+/** Turns unsynchronization on or off, dependent on the value of the boolean
  ** parameter.
  **
  ** If you call this method with 'false' as the parameter, the
  ** binary tag will not be unsync'ed, regardless of whether the tag should
  ** be.  This option is useful when the file is only going to be used by
- ** ID3v2-compliant software.  See the ID3v2 standard document for futher
+ ** ID3v2-compliant software.  See the ID3v2 standard document for further
  ** details on unsync.
  **
  ** Be default, tags are created without unsync.
@@ -424,7 +424,7 @@ bool ID3_Tag::SetUnsync(bool b)
 }
 
 
-/** Turns extended header rendering on or off, dependant on the value of the
+/** Turns extended header rendering on or off, dependent on the value of the
  ** boolean parameter.
  **
  ** This option is currently ignored as id3lib doesn't yet create extended
@@ -442,11 +442,11 @@ bool ID3_Tag::SetExtendedHeader(bool ext)
   return _impl->SetExtended(ext);
 }
 
-/** Turns padding on or off, dependant on the value of the boolean
+/** Turns padding on or off, dependent on the value of the boolean
  ** parameter.
  **
  ** When using ID3v2 tags in association with files, id3lib can optionally
- ** add padding to the tags to ensure minmal file write times when updating
+ ** add padding to the tags to ensure minimal file write times when updating
  ** the tag in the future.
  **
  ** When the padding option is switched on, id3lib automatically creates
@@ -624,7 +624,7 @@ size_t ID3_Tag::Parse(const uchar* buffer, size_t bytes)
  **/
 size_t ID3_Tag::Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer)
 {
-  size_t size = ID3_Tag::IsV2Tag(header);
+  uint32 size = ID3_Tag::IsV2Tag(header);
   if (0 == size)
   {
     return 0;
@@ -667,7 +667,7 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer
  **/
 size_t ID3_Tag::Render(uchar* buffer, ID3_TagType tt) const
 {
-  ID3_MemoryWriter mw(buffer, -1);
+  ID3_MemoryWriter mw(buffer, (size_t)-1);
   return this->Render(mw, tt);
 }
 
@@ -676,13 +676,13 @@ size_t ID3_Tag::Render(ID3_Writer& writer, ID3_TagType tt) const
   ID3_Writer::pos_type beg = writer.getCur();
   if (ID3TT_ID3V2 & tt)
   {
-    ID3_Err err = id3::v2::render(writer, *this);
+    ID3_Err err = id3::v2::render(writer, (ID3_TagImpl)(*this));
     if (err != ID3E_NoError)
       _impl->SetLastError(err);
   }
   else if (ID3TT_ID3V1 & tt)
   {
-    id3::v1::render(writer, *this);
+    id3::v1::render(writer, (ID3_TagImpl)(*this));
   }
   return writer.getCur() - beg;
 }
@@ -821,7 +821,7 @@ const char* ID3_Tag::GetFileName() const
    **
    ** This method will then return the first frame that has a matching frame
    ** ID, and which has a field with the same name as that which you supplied
-   ** in the second parameter, whose calue matches that which you supplied as
+   ** in the second parameter, whose value matches that which you supplied as
    ** the third parameter.  For example:
    **
    ** \code
@@ -851,7 +851,7 @@ const char* ID3_Tag::GetFileName() const
    ** \endcode
    **
    ** This returns the first COMMENT frame that uses Unicode as its text
-   ** encdoing.
+   ** encoding.
    **
    ** @name   Find
    ** @param  id The ID of the frame that is to be located
@@ -869,14 +869,14 @@ ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
   return _impl->Find(id, fld, data);
 }
 
-/// Finds frame with given frame id, fld id, and ascii data
+/// Finds frame with given frame id, fld id, and ASCII data
 ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char* data) const
 {
   String str(data);
   return _impl->Find(id, fld, str);
 }
 
-/// Finds frame with given frame id, fld id, and unicode data
+/// Finds frame with given frame id, fld id, and Unicode data
 ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t* data) const
 {
   WString str = toWString(data, ucslen(data));
@@ -902,8 +902,8 @@ size_t ID3_Tag::NumFrames() const
  ** method.  Indexing is 0-based (that is, the first frame is number 0, and the
  ** last frame in a tag that holds n frames is n-1).
  **
- ** If you wish to have a more comlex searching facility, then at least for
- ** now you will have to devise it yourself and implement it useing these
+ ** If you wish to have a more complex searching facility, then at least for
+ ** now you will have to devise it yourself and implement it using these
  ** methods.
  **
  ** @param nIndex The index of the frame that is to be retrieved
@@ -980,13 +980,13 @@ bool ID3_Tag::SetSpec(ID3_V2Spec spec)
  ** If so, return the total number of bytes (including the header) to
  ** read so we get all of the tag
  **/
-size_t ID3_Tag::IsV2Tag(const uchar* const data)
+uint32 ID3_Tag::IsV2Tag(const uchar* const data)
 {
   ID3_MemoryReader mr(data, ID3_TagHeader::SIZE);
   return ID3_TagImpl::IsV2Tag(mr);
 }
 
-size_t ID3_Tag::IsV2Tag(ID3_Reader& reader)
+uint32 ID3_Tag::IsV2Tag(ID3_Reader& reader)
 {
   return ID3_TagImpl::IsV2Tag(reader);
 }
@@ -1000,7 +1000,7 @@ void ID3_Tag::AddNewFrame(ID3_Frame* f)
 /** Copies an array of frames to the tag.
  **
  ** This method copies each frame in an array to the tag.  As in
- ** AddFrame, the tag adds a copy of the frame, and it assumes responsiblity
+ ** AddFrame, the tag adds a copy of the frame, and it assumes responsibility
  ** for freeing the frames' memory when the tag goes out of scope.
  **
  ** \code
@@ -1015,10 +1015,8 @@ void ID3_Tag::AddNewFrame(ID3_Frame* f)
  **/
 void ID3_Tag::AddFrames(const ID3_Frame *frames, size_t numFrames)
 {
-  for (int i = numFrames - 1; i >= 0; i--)
-  {
-    this->AddFrame(frames[i]);
-  }
+  for (size_t i = numFrames; i > 0;)
+    AddFrame(frames[--i]);
 }
 
 size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
@@ -1026,7 +1024,7 @@ size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
   return _impl->Link(fileInfo, parseID3v1, parseLyrics3);
 }
 
-void ID3_Tag::SetCompression(bool b)
+void ID3_Tag::SetCompression(bool)
 {
   ;
 }
@@ -1081,14 +1079,14 @@ ID3_Tag& ID3_Tag::operator<<(const ID3_Frame* frame)
 
 int32 ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
 {
-  size_t size = ID3_Tag::IsV2Tag(data);
+  uint32 size = ID3_Tag::IsV2Tag(data);
 
   if (!size)
   {
     return -1;
   }
 
-  return size - ID3_TagHeader::SIZE;
+  return static_cast<int32>(size - ID3_TagHeader::SIZE);
 }
 
 
@@ -1099,7 +1097,7 @@ namespace
     ID3_TagImpl::iterator _cur;
     ID3_TagImpl::iterator _end;
   public:
-    IteratorImpl(ID3_TagImpl& tag)
+    explicit IteratorImpl(ID3_TagImpl& tag)
       : _cur(tag.begin()), _end(tag.end())
     {
     }
@@ -1122,7 +1120,7 @@ namespace
     ID3_TagImpl::const_iterator _cur;
     ID3_TagImpl::const_iterator _end;
   public:
-    ConstIteratorImpl(ID3_TagImpl& tag)
+   explicit  ConstIteratorImpl(ID3_TagImpl& tag)
       : _cur(tag.begin()), _end(tag.end())
     {
     }

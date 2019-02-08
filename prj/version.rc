@@ -1,4 +1,4 @@
-// -*- C++ -*- 
+// -*- C++ -*-
 // $Id: version.rc,v 1.2 2002/08/08 14:43:00 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags

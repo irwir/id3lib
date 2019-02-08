@@ -20,7 +20,7 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 // 01 Nov 2002   John Adcock           Changed fields to reflect changes to id3lib
 //
@@ -31,10 +31,10 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
-	
-	typedef 
+
+	typedef
 	[
-		uuid(181CFC77-C770-11d3-841C-0008C782A257), 		
+		uuid(181CFC77-C770-11d3-841C-0008C782A257),
 		helpstring("ID3 Field Types")
 	]
 	enum
@@ -87,9 +87,9 @@ import "ocidl.idl";
 	} eID3FieldTypes;
 
 
-	typedef 
+	typedef
 	[
-		uuid(385B5F8C-1F3C-11d3-83C6-0008C782A257), 		
+		uuid(385B5F8C-1F3C-11d3-83C6-0008C782A257),
 		helpstring("ID3 Frame Types")
 	]
 	enum

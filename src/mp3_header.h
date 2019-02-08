@@ -28,7 +28,7 @@
 #ifndef _MP3_HEADER_H_
 #define _MP3_HEADER_H_
 
-#include "io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
+#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 
 class Mp3Info
 {

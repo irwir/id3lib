@@ -30,7 +30,7 @@
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
+// 05 Jan 2000   John Adcock           Original Release
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
@@ -70,7 +70,7 @@ IID3ComField* CID3Field::CreateObject(IID3ComFrame* FrameParent, ID3_Field* Fiel
 
 STDMETHODIMP CID3Field::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IID3ComField
 	};
@@ -94,7 +94,7 @@ STDMETHODIMP CID3Field::get_Text(long ItemNum, BSTR *pVal)
         if(ID3TE_IS_DOUBLE_BYTE_ENC(m_Field->GetEncoding()))
         {
 		    unicode_t* sText = new unicode_t[nText + 1];
-		    try 
+		    try
 		    {
 			    m_Field->Get(sText, nText, ItemNum - 1);
 			    sText[nText] = '\0';
@@ -109,7 +109,7 @@ STDMETHODIMP CID3Field::get_Text(long ItemNum, BSTR *pVal)
         else
         {
 		    char* sText = new char[nText + 1];
-		    try 
+		    try
 		    {
 			    m_Field->Get(sText, nText, ItemNum - 1);
 			    sText[nText] = '\0';
@@ -233,10 +233,10 @@ STDMETHODIMP CID3Field::get_Binary(BSTR *pVal)
 		const uchar *pData = m_Field->GetRawBinary();
 		if (pData == NULL)
 			return E_FAIL;
-		ID3_Frame *pFrame = ((CID3Frame*)m_FrameParent)->GetID3Frame();		
+		ID3_Frame *pFrame = ((CID3Frame*)m_FrameParent)->GetID3Frame();
 		if (pFrame->GetID() == ID3FID_PICTURE)
 		{
-			*pVal = _bstr_t((LPCTSTR)pData).copy();			
+			*pVal = _bstr_t((LPCTSTR)pData).copy();
 		}
 		else
 		{

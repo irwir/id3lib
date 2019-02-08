@@ -15,11 +15,11 @@
 @SET_MAKE@
 
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
-#  
+#
 # This file is free software; as a special exception the author gives
-# unlimited permission to copy and/or distribute it, with or without 
+# unlimited permission to copy and/or distribute it, with or without
 # modifications, as long as this notice is preserved.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -116,15 +116,15 @@ cxxflags_set = @cxxflags_set@
 install_sh = @install_sh@
 
 @ID3_NEEDDEBUG_TRUE@ID3_DEBUG_LIBS = -lcwd -lbfd -liberty
-@ID3_NEEDDEBUG_FALSE@ID3_DEBUG_LIBS = 
+@ID3_NEEDDEBUG_FALSE@ID3_DEBUG_LIBS =
 
 @ID3_NEEDZLIB_TRUE@zlib_lib = $(top_builddir)/zlib/src/libz.la
 @ID3_NEEDZLIB_FALSE@zlib_lib = -lz
 @ID3_NEEDZLIB_TRUE@zlib_include = -I$(top_srcdir)/zlib/include
-@ID3_NEEDZLIB_FALSE@zlib_include = 
+@ID3_NEEDZLIB_FALSE@zlib_include =
 
 @ID3_NEEDGETOPT_LONG_TRUE@getopt_lib = getopt.o getopt1.o
-@ID3_NEEDGETOPT_LONG_FALSE@getopt_lib = 
+@ID3_NEEDGETOPT_LONG_FALSE@getopt_lib =
 
 LDADD = $(top_builddir)/src/libid3.la $(zlib_lib) $(ID3_DEBUG_LIBS) $(getopt_lib)
 
@@ -171,13 +171,13 @@ tag_files = \
   230-syncedlyrics.tag  \
   thatspot.tag          \
   ozzy.tag              \
-  crc53865.mp3 
+  crc53865.mp3
 
 
 getopt_files = \
   getopt.c              \
   getopt.h              \
-  getopt1.c             
+  getopt1.c
 
 
 header_files = \
@@ -190,7 +190,7 @@ header_files = \
 EXTRA_DIST = \
   $(tag_files)          \
   $(getopt_files)       \
-  $(header_files)       
+  $(header_files)
 
 
 PROGNAME = gengetopt
@@ -717,43 +717,43 @@ clean-checkPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
-findeng$(EXEEXT): $(findeng_OBJECTS) $(findeng_DEPENDENCIES) 
+findeng$(EXEEXT): $(findeng_OBJECTS) $(findeng_DEPENDENCIES)
 	@rm -f findeng$(EXEEXT)
 	$(CXXLINK) $(findeng_LDFLAGS) $(findeng_OBJECTS) $(findeng_LDADD) $(LIBS)
-findstr$(EXEEXT): $(findstr_OBJECTS) $(findstr_DEPENDENCIES) 
+findstr$(EXEEXT): $(findstr_OBJECTS) $(findstr_DEPENDENCIES)
 	@rm -f findstr$(EXEEXT)
 	$(CXXLINK) $(findstr_LDFLAGS) $(findstr_OBJECTS) $(findstr_LDADD) $(LIBS)
-get_pic$(EXEEXT): $(get_pic_OBJECTS) $(get_pic_DEPENDENCIES) 
+get_pic$(EXEEXT): $(get_pic_OBJECTS) $(get_pic_DEPENDENCIES)
 	@rm -f get_pic$(EXEEXT)
 	$(CXXLINK) $(get_pic_LDFLAGS) $(get_pic_OBJECTS) $(get_pic_LDADD) $(LIBS)
-id3convert$(EXEEXT): $(id3convert_OBJECTS) $(id3convert_DEPENDENCIES) 
+id3convert$(EXEEXT): $(id3convert_OBJECTS) $(id3convert_DEPENDENCIES)
 	@rm -f id3convert$(EXEEXT)
 	$(CXXLINK) $(id3convert_LDFLAGS) $(id3convert_OBJECTS) $(id3convert_LDADD) $(LIBS)
-id3cp$(EXEEXT): $(id3cp_OBJECTS) $(id3cp_DEPENDENCIES) 
+id3cp$(EXEEXT): $(id3cp_OBJECTS) $(id3cp_DEPENDENCIES)
 	@rm -f id3cp$(EXEEXT)
 	$(CXXLINK) $(id3cp_LDFLAGS) $(id3cp_OBJECTS) $(id3cp_LDADD) $(LIBS)
-id3info$(EXEEXT): $(id3info_OBJECTS) $(id3info_DEPENDENCIES) 
+id3info$(EXEEXT): $(id3info_OBJECTS) $(id3info_DEPENDENCIES)
 	@rm -f id3info$(EXEEXT)
 	$(CXXLINK) $(id3info_LDFLAGS) $(id3info_OBJECTS) $(id3info_LDADD) $(LIBS)
-id3simple$(EXEEXT): $(id3simple_OBJECTS) $(id3simple_DEPENDENCIES) 
+id3simple$(EXEEXT): $(id3simple_OBJECTS) $(id3simple_DEPENDENCIES)
 	@rm -f id3simple$(EXEEXT)
 	$(CXXLINK) $(id3simple_LDFLAGS) $(id3simple_OBJECTS) $(id3simple_LDADD) $(LIBS)
-id3tag$(EXEEXT): $(id3tag_OBJECTS) $(id3tag_DEPENDENCIES) 
+id3tag$(EXEEXT): $(id3tag_OBJECTS) $(id3tag_DEPENDENCIES)
 	@rm -f id3tag$(EXEEXT)
 	$(CXXLINK) $(id3tag_LDFLAGS) $(id3tag_OBJECTS) $(id3tag_LDADD) $(LIBS)
-testcompression$(EXEEXT): $(testcompression_OBJECTS) $(testcompression_DEPENDENCIES) 
+testcompression$(EXEEXT): $(testcompression_OBJECTS) $(testcompression_DEPENDENCIES)
 	@rm -f testcompression$(EXEEXT)
 	$(CXXLINK) $(testcompression_LDFLAGS) $(testcompression_OBJECTS) $(testcompression_LDADD) $(LIBS)
-testio$(EXEEXT): $(testio_OBJECTS) $(testio_DEPENDENCIES) 
+testio$(EXEEXT): $(testio_OBJECTS) $(testio_DEPENDENCIES)
 	@rm -f testio$(EXEEXT)
 	$(CXXLINK) $(testio_LDFLAGS) $(testio_OBJECTS) $(testio_LDADD) $(LIBS)
-testpic$(EXEEXT): $(testpic_OBJECTS) $(testpic_DEPENDENCIES) 
+testpic$(EXEEXT): $(testpic_OBJECTS) $(testpic_DEPENDENCIES)
 	@rm -f testpic$(EXEEXT)
 	$(CXXLINK) $(testpic_LDFLAGS) $(testpic_OBJECTS) $(testpic_LDADD) $(LIBS)
-testremove$(EXEEXT): $(testremove_OBJECTS) $(testremove_DEPENDENCIES) 
+testremove$(EXEEXT): $(testremove_OBJECTS) $(testremove_DEPENDENCIES)
 	@rm -f testremove$(EXEEXT)
 	$(CXXLINK) $(testremove_LDFLAGS) $(testremove_OBJECTS) $(testremove_LDADD) $(LIBS)
-testunicode$(EXEEXT): $(testunicode_OBJECTS) $(testunicode_DEPENDENCIES) 
+testunicode$(EXEEXT): $(testunicode_OBJECTS) $(testunicode_DEPENDENCIES)
 	@rm -f testunicode$(EXEEXT)
 	$(CXXLINK) $(testunicode_LDFLAGS) $(testunicode_OBJECTS) $(testunicode_LDADD) $(LIBS)
 

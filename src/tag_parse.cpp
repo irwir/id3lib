@@ -35,7 +35,7 @@
 #include <string.h> //for strncmp
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 //#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
-#include "io_strings.h"
+#include "id3/io_strings.h"
 
 using namespace dami;
 
@@ -45,21 +45,17 @@ namespace
   {
     ID3_Reader::pos_type beg = rdr.getCur();
     io::ExitTrigger et(rdr, beg);
-    ID3_Reader::pos_type last_pos = beg;
-    size_t totalSize = 0;
-    size_t frameSize = 0;
     while (!rdr.atEnd() && rdr.peekChar() != '\0')
     {
       ID3D_NOTICE( "id3::v2::parseFrames(): rdr.getBeg() = " << rdr.getBeg() );
       ID3D_NOTICE( "id3::v2::parseFrames(): rdr.getCur() = " << rdr.getCur() );
       ID3D_NOTICE( "id3::v2::parseFrames(): rdr.getEnd() = " << rdr.getEnd() );
-      last_pos = rdr.getCur();
+      ID3_Reader::pos_type last_pos = rdr.getCur();
       ID3_Frame* f = LEAKTESTNEW(ID3_Frame);
       f->SetSpec(tag.GetSpec());
       bool goodParse = f->Parse(rdr);
-      frameSize = rdr.getCur() - last_pos;
+      size_t frameSize = rdr.getCur() - last_pos;
       ID3D_NOTICE( "id3::v2::parseFrames(): frameSize = " << frameSize );
-      totalSize += frameSize;
 
       if (frameSize == 0)
       {
@@ -90,11 +86,11 @@ namespace
                      "compressed frame");
         // hmm.  an ID3v2.2.1 compressed frame.  It contains 1 or more
         // compressed frames.  Uncompress and call parseFrames recursively.
-        ID3_Field* fld = f->GetField(ID3FN_DATA);
+        const ID3_Field* fld = f->GetField(ID3FN_DATA);
         if (fld)
         {
           ID3_MemoryReader mr(fld->GetRawBinary(), fld->BinSize());
-          ID3_Reader::char_type ch = mr.readChar();
+          ID3_Reader::char_type ch = (ID3_Reader::char_type)mr.readChar();
           if (ch != 'z')
           {
             // unknown compression method
@@ -104,8 +100,7 @@ namespace
           else
           {
             uint32 newSize = io::readBENumber(mr, sizeof(uint32));
-            size_t oldSize = f->GetDataSize() - sizeof(uint32) - 1;
-            io::CompressedReader cr(mr, newSize);
+            io::CompressedReader cr(mr, (uLong)newSize);
             parseFrames(tag, cr);
             if (!cr.atEnd())
             {
@@ -122,7 +117,7 @@ namespace
     }
     if (rdr.peekChar() == '\0')
     {
-      ID3D_NOTICE( "id3::v2::parseFrames: done parsing, padding at postion " <<
+      ID3D_NOTICE( "id3::v2::parseFrames: done parsing, padding at position " <<
                    rdr.getCur() );
     }
     else
@@ -145,7 +140,7 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 
   if (!hdr.Parse(wr) || wr.getCur() == beg)
   {
-    ID3D_NOTICE( "id3::v2::parse(): parsing header failes" );
+    ID3D_NOTICE( "id3::v2::parse(): parsing header failed" );
     return false;
   }
   if (hdr.GetExtended())
@@ -205,8 +200,6 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 void ID3_TagImpl::ParseFile()
 { //changes in this routine should also be made in the routine for streaming parsing below
   ifstream file;
-  size_t mp3_core_size;
-  size_t bytes_till_sync;
 
   _last_error = openReadableFile(this->GetFileName(), file);
   if (ID3E_NoError != _last_error)
@@ -221,9 +214,9 @@ void ID3_TagImpl::ParseFile()
   _file_tags.clear();
   _file_size = getFileSize(file);
 
-  ID3_Reader::pos_type beg  = wr.getBeg();
-  ID3_Reader::pos_type cur  = wr.getCur();
-  ID3_Reader::pos_type end  = wr.getEnd();
+  ID3_Reader::pos_type beg = wr.getBeg();
+  ID3_Reader::pos_type cur = wr.getCur();
+  ID3_Reader::pos_type en  = wr.getEnd();
 
   ID3_Reader::pos_type last = cur;
 
@@ -254,11 +247,11 @@ void ID3_TagImpl::ParseFile()
     } while (!wr.atEnd() &&  cur > last && wr.peekChar() == '\0');
   }
   if (!wr.atEnd() && _file_size - (cur - beg) > 4 && wr.peekChar() == 255)
-  { //unfortunatly, this is necessary for finding an invalid padding
+  { //unfortunately, this is necessary for finding an invalid padding
     wr.setCur(cur + 1); //cur is known by peekChar
     if (wr.readChar() == '\0' && wr.readChar() == '\0' && wr.peekChar() == '\0')
     { //three empty bytes found, enough for me, this is stupid padding
-      cur += 3; //those are now allready read in (excluding the peekChar, since it will be added by do{})
+      cur += 3; //those are now already read in (excluding the peekChar, since it will be added by do{})
       do
       {
         last = cur;
@@ -307,7 +300,7 @@ void ID3_TagImpl::ParseFile()
       }
       else
       { //since we set the cursor 4 bytes ahead for looking for RIFF, RIFX or fLaC, better set it back
-        // but peekChar allready checked the first one, so we add one
+        // but peekChar already checked the first one, so we add one
         cur = cur + 1;
         wr.setCur(cur);
         //go looking for a sync byte
@@ -329,9 +322,9 @@ void ID3_TagImpl::ParseFile()
       //return;
     }
   }
-  bytes_till_sync = cur - beg;
+  size_t bytes_till_sync = cur - beg;
 
-  cur = wr.setCur(end);
+  cur = wr.setCur(en);
   if (_file_size > _prepended_bytes)
   {
     do
@@ -381,10 +374,10 @@ void ID3_TagImpl::ParseFile()
       }
       cur = wr.getCur();
     } while (cur != last);
-    _appended_bytes = end - cur;
+    _appended_bytes = en - cur;
 
     // Now get the mp3 header
-    mp3_core_size = (_file_size - _appended_bytes) - (_prepended_bytes + bytes_till_sync);
+    size_t mp3_core_size = (_file_size - _appended_bytes) - (_prepended_bytes + bytes_till_sync);
     if (mp3_core_size >= 4)
     { //it has at least the size for a mp3 header (a mp3 header is 4 bytes)
       wr.setBeg(_prepended_bytes + bytes_till_sync);
@@ -413,9 +406,7 @@ void ID3_TagImpl::ParseFile()
 //used for streaming media
 void ID3_TagImpl::ParseReader(ID3_Reader &reader)
 {
-//allthough largely the same, stays a severate routine than ParseFile() above.
-  size_t mp3_core_size;
-  size_t bytes_till_sync;
+//although largely the same, stays as a different routine from ParseFile() above.
 
   io::WindowedReader wr(reader);
   wr.setBeg(wr.getCur());
@@ -423,9 +414,9 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
   _file_tags.clear();
   _file_size = reader.getEnd();
 
-  ID3_Reader::pos_type beg  = wr.getBeg();
-  ID3_Reader::pos_type cur  = wr.getCur();
-  ID3_Reader::pos_type end  = wr.getEnd();
+  ID3_Reader::pos_type beg = wr.getBeg();
+  ID3_Reader::pos_type cur = wr.getCur();
+  ID3_Reader::pos_type en  = wr.getEnd();
 
   ID3_Reader::pos_type last = cur;
 
@@ -491,7 +482,7 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
       }
       else
       { //since we set the cursor 4 bytes ahead for looking for RIFF, RIFX or fLaC, better set it back
-        // but peekChar allready checked the first one, so we add one
+        // but peekChar already checked the first one, so we add one
         cur = cur + 1;
         wr.setCur(cur);
         //go looking for a sync byte
@@ -513,9 +504,9 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
       //return;
     }
   }
-  bytes_till_sync = cur - beg;
+  size_t bytes_till_sync = cur - beg;
 
-  cur = wr.setCur(end);
+  cur = wr.setCur(en);
   if (_file_size > _prepended_bytes)
   {
     do
@@ -565,10 +556,10 @@ void ID3_TagImpl::ParseReader(ID3_Reader &reader)
       }
       cur = wr.getCur();
     } while (cur != last);
-    _appended_bytes = end - cur;
+    _appended_bytes = en - cur;
 
     // Now get the mp3 header
-    mp3_core_size = (_file_size - _appended_bytes) - (_prepended_bytes + bytes_till_sync);
+    size_t mp3_core_size = (_file_size - _appended_bytes) - (_prepended_bytes + bytes_till_sync);
     if (mp3_core_size >= 4)
     { //it has at least the size for a mp3 header (a mp3 header is 4 bytes)
       wr.setBeg(_prepended_bytes + bytes_till_sync);
