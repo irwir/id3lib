@@ -198,16 +198,48 @@ ID3_Reader::int_type io::UnsyncedReader::readChar()
 }
 
 io::CompressedReader::CompressedReader(ID3_Reader& reader, uLong newSize)
-  : _uncompressed(new char_type[newSize])
+  : _uncompressed(NULL)
 {
   size_type oldSize = reader.remainingBytes();
 
   BString binary = readBinary(reader, oldSize);
 
-  ::uncompress(_uncompressed,
-               &newSize,
-               static_cast<const uchar*>(binary.data()),
-               static_cast<uLong>(oldSize));
+  // newSize is the uncompressed length the tag declares, read verbatim from
+  // four bytes of the file, and nothing so far has compared it against the
+  // compressed data actually at hand. Deflate cannot expand by more than
+  // 1032:1, so anything past that ceiling is unattainable no matter what the
+  // stream turns out to hold, and clamping to it costs a well-formed tag
+  // nothing. The slack keeps the arithmetic honest for tiny inputs. Computed
+  // wider than uLong (32 bits on Windows) and only then narrowed, so a large
+  // frame cannot wrap the ceiling round to a small one.
+  const uLong maxUL = static_cast<uLong>(-1);
+  const uLong maxSize = (oldSize > (maxUL - 1024) / 1032)
+                            ? maxUL
+                            : static_cast<uLong>(oldSize) * 1032 + 1024;
+  if (newSize > maxSize)
+  {
+    ID3D_WARNING( "io::CompressedReader: claimed uncompressed size " << newSize <<
+                  " exceeds what " << oldSize << " compressed bytes can yield, "
+                  "clamping to " << maxSize );
+    newSize = maxSize;
+  }
+
+  _uncompressed = new char_type[newSize];
+
+  // uncompress() leaves newSize at however much it actually wrote, so a short
+  // or corrupt stream yields a correspondingly short buffer rather than one
+  // with an uninitialised tail. A failure is worth noting but not worth
+  // discarding what did come out - the frames that decompressed are still
+  // parseable.
+  int err = ::uncompress(_uncompressed,
+                         &newSize,
+                         static_cast<const uchar*>(binary.data()),
+                         static_cast<uLong>(oldSize));
+  if (err != Z_OK)
+  {
+    ID3D_WARNING( "io::CompressedReader: uncompress failed with " << err <<
+                  ", using the " << newSize << " bytes it produced" );
+  }
   this->setBuffer(_uncompressed, newSize);
 }
 
