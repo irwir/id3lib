@@ -41,7 +41,15 @@ using namespace dami;
 
 namespace
 {
-  bool parseFrames(ID3_TagImpl& tag, ID3_Reader& rdr)
+  // An ID3v2.2.1 compressed meta frame (CDM) holds frames of its own, which
+  // parseFrames() below unpacks by calling itself. Nothing in the format stops
+  // those inner frames from being CDM frames too, so the nesting depth is
+  // whatever the file says it is, and each level costs a decompression buffer
+  // and a stack frame. No real tag nests these at all; the ceiling below is
+  // generous and only ever stops the pathological case.
+  const size_t MAX_COMPRESSION_DEPTH = 16;
+
+  bool parseFrames(ID3_TagImpl& tag, ID3_Reader& rdr, size_t depth = 0)
   {
     ID3_Reader::pos_type beg = rdr.getCur();
     io::ExitTrigger et(rdr, beg);
@@ -99,15 +107,26 @@ namespace
           }
           else
           {
-            uint32 newSize = io::readBENumber(mr, sizeof(uint32));
-            io::CompressedReader cr(mr, (uLong)newSize);
-            parseFrames(tag, cr);
-            if (!cr.atEnd())
+            if (depth + 1 >= MAX_COMPRESSION_DEPTH)
             {
-              // hmm.  it didn't parse the entire uncompressed data.  wonder
-              // why.
-              ID3D_WARNING( "id3::v2::parseFrames(): didn't parse entire " <<
-                            "id3v2.2.1 compressed memory stream");
+              // Don't descend, and don't uncompress either - the buffer this
+              // level would allocate is as much a waste as the recursion.
+              ID3D_WARNING( "id3::v2::parseFrames(): compressed frames nested " <<
+                            "deeper than " << MAX_COMPRESSION_DEPTH <<
+                            " levels, not descending" );
+            }
+            else
+            {
+              uint32 newSize = io::readBENumber(mr, sizeof(uint32));
+              io::CompressedReader cr(mr, (uLong)newSize);
+              parseFrames(tag, cr, depth + 1);
+              if (!cr.atEnd())
+              {
+                // hmm.  it didn't parse the entire uncompressed data.  wonder
+                // why.
+                ID3D_WARNING( "id3::v2::parseFrames(): didn't parse entire " <<
+                              "id3v2.2.1 compressed memory stream");
+              }
             }
           }
         }
