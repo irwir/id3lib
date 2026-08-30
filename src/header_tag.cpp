@@ -179,14 +179,21 @@ void ID3_TagHeader::ParseExtended(ID3_Reader& reader)
     io::readUInt28(reader);
     const int extflagbytes = reader.readChar(); //Number of flag bytes
     if (extflagbytes > 0) {
-      ID3_Flags* extflags[1]; // ID3V2_4_0 has 1 flag byte, extflagbytes should be equal to 1
-      for (uint16 i = 0; i < extflagbytes; ++i)
+      // ID3V2_4_0 defines exactly one flag byte, and only that one is ever
+      // examined below. extflagbytes, however, is a single byte read straight
+      // from the file, so a malformed tag can declare up to 255 of them: the
+      // loop that used to fill an ID3_Flags*[1] here wrote one pointer per
+      // declared byte into a one-element array, and never freed any of the
+      // ID3_Flags it allocated. Keep the first flag byte, consume and discard
+      // the rest, and never index past the one flag byte the spec defines.
+      ID3_Flags extflags;
+      extflags.set(static_cast<ID3_Flags::TYPE>(reader.readChar())); //flags
+      for (int i = 1; i < extflagbytes; ++i)
       {
-        extflags[i] = LEAKTESTNEW(ID3_Flags);
-        extflags[i]->set(reader.readChar()); //flags
+        reader.readChar(); //flag bytes beyond the one ID3V2_4_0 defines
       }
-      //extflags[0]->test(EXT_HEADER_FLAG_BIT1); // ID3V2_4_0 ext header flag bit 1 *should* be 0
-      if (extflags[0]->test(EXT_HEADER_FLAG_BIT2))
+      //extflags.test(EXT_HEADER_FLAG_BIT1); // ID3V2_4_0 ext header flag bit 1 *should* be 0
+      if (extflags.test(EXT_HEADER_FLAG_BIT2))
       {
         // ID3V2_4_0 ext header flag bit 2 = Tag is an update
         // read size
@@ -197,7 +204,7 @@ void ID3_TagHeader::ParseExtended(ID3_Reader& reader)
         reader.setCur(reader.getCur() + extheaderflagdatasize);
         //reader.readChars(buf, extheaderflagdatasize); //buf should be at least 127 bytes = max extended header flagdata size
       }
-      if (extflags[0]->test(EXT_HEADER_FLAG_BIT3))
+      if (extflags.test(EXT_HEADER_FLAG_BIT3))
       {
         // ID3V2_4_0 ext header flag bit 3 = CRC data present
         // read size
@@ -208,7 +215,7 @@ void ID3_TagHeader::ParseExtended(ID3_Reader& reader)
         reader.setCur(reader.getCur() + extheaderflagdatasize);
         //reader.readChars(buf, extheaderflagdatasize); //buf should be at least 127 bytes = max extended header flagdata size
       }
-      if (extflags[0]->test(EXT_HEADER_FLAG_BIT4))
+      if (extflags.test(EXT_HEADER_FLAG_BIT4))
       {
         // ID3V2_4_0 ext header flag bit 4 = Tag restrictions
         // read size
